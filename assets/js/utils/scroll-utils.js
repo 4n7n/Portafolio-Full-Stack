@@ -1,110 +1,231 @@
-import { ScrollUtils } from '../utils/scroll-utils.js';
+export const ScrollUtils = {
+    /**
+     * Obtener posición de scroll actual
+     */
+    getScrollPosition() {
+        return {
+            x: window.pageXOffset || document.documentElement.scrollLeft,
+            y: window.pageYOffset || document.documentElement.scrollTop
+        };
+    },
 
-export class ScrollNavbar {
-    constructor(navbarElement) {
-        this.navbar = navbarElement;
-        this.lastScrollY = 0;
-        this.scrollThreshold = 100;
-        this.isScrolling = false;
-        this.ticking = false;
+    /**
+     * Obtener altura total del documento
+     */
+    getDocumentHeight() {
+        return Math.max(
+            document.body.scrollHeight,
+            document.body.offsetHeight,
+            document.documentElement.clientHeight,
+            document.documentElement.scrollHeight,
+            document.documentElement.offsetHeight
+        );
+    },
+
+    /**
+     * Obtener altura del viewport
+     */
+    getViewportHeight() {
+        return window.innerHeight || document.documentElement.clientHeight;
+    },
+
+    /**
+     * Calcular porcentaje de scroll
+     */
+    getScrollPercentage() {
+        const scrollTop = this.getScrollPosition().y;
+        const documentHeight = this.getDocumentHeight();
+        const viewportHeight = this.getViewportHeight();
+        const scrollableHeight = documentHeight - viewportHeight;
         
-        // Estados
-        this.isHidden = false;
-        this.isScrolled = false;
-    }
+        return scrollableHeight > 0 ? (scrollTop / scrollableHeight) * 100 : 0;
+    },
 
-    init() {
-        this.bindScrollEvents();
-        this.setInitialState();
-    }
+    /**
+     * Verificar si el scroll está en el top
+     */
+    isAtTop(threshold = 0) {
+        return this.getScrollPosition().y <= threshold;
+    },
 
-    bindScrollEvents() {
-        // Throttled scroll event
-        window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
+    /**
+     * Verificar si el scroll está en el bottom
+     */
+    isAtBottom(threshold = 0) {
+        const { y } = this.getScrollPosition();
+        const documentHeight = this.getDocumentHeight();
+        const viewportHeight = this.getViewportHeight();
         
-        // Resize event
-        window.addEventListener('resize', this.handleResize.bind(this));
-    }
+        return (y + viewportHeight) >= (documentHeight - threshold);
+    },
 
-    handleScroll() {
-        if (!this.ticking) {
-            requestAnimationFrame(() => {
-                this.updateNavbar();
-                this.ticking = false;
-            });
-            this.ticking = true;
-        }
-    }
+    /**
+     * Smooth scroll a posición específica
+     */
+    scrollTo(x = 0, y = 0, behavior = 'smooth') {
+        window.scrollTo({
+            left: x,
+            top: y,
+            behavior: behavior
+        });
+    },
 
-    updateNavbar() {
-        const currentScrollY = window.pageYOffset;
-        const scrollingDown = currentScrollY > this.lastScrollY;
-        const scrollDistance = Math.abs(currentScrollY - this.lastScrollY);
+    /**
+     * Smooth scroll a elemento específico
+     */
+    scrollToElement(selector, offset = 0, behavior = 'smooth') {
+        const element = typeof selector === 'string' ? 
+            document.querySelector(selector) : selector;
+            
+        if (!element) return;
+        
+        const elementRect = element.getBoundingClientRect();
+        const absoluteElementTop = elementRect.top + window.pageYOffset;
+        const targetPosition = absoluteElementTop - offset;
+        
+        this.scrollTo(0, targetPosition, behavior);
+    },
 
-        // Añadir clase 'scrolled' después del threshold
-        if (currentScrollY > 50 && !this.isScrolled) {
-            this.navbar.classList.add('scrolled');
-            this.isScrolled = true;
-        } else if (currentScrollY <= 50 && this.isScrolled) {
-            this.navbar.classList.remove('scrolled');
-            this.isScrolled = false;
-        }
-
-        // Hide/Show navbar basado en dirección de scroll
-        if (scrollDistance > 10) {
-            if (scrollingDown && currentScrollY > this.scrollThreshold && !this.isHidden) {
-                this.hideNavbar();
-            } else if (!scrollingDown && this.isHidden) {
-                this.showNavbar();
+    /**
+     * Scroll horizontal suave
+     */
+    scrollHorizontally(container, amount, duration = 300) {
+        const startLeft = container.scrollLeft;
+        const targetLeft = startLeft + amount;
+        const startTime = performance.now();
+        
+        const animateScroll = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function (ease-out)
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            
+            container.scrollLeft = startLeft + (targetLeft - startLeft) * easeOut;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animateScroll);
             }
-        }
-
-        this.lastScrollY = currentScrollY;
-    }
-
-    hideNavbar() {
-        this.navbar.classList.add('hidden');
-        this.isHidden = true;
+        };
         
-        // Evento personalizado
-        window.dispatchEvent(new CustomEvent('navbarHidden'));
-    }
+        requestAnimationFrame(animateScroll);
+    },
 
-    showNavbar() {
-        this.navbar.classList.remove('hidden');
-        this.isHidden = false;
+    /**
+     * Crear observer para elementos en viewport
+     */
+    createIntersectionObserver(callback, options = {}) {
+        const defaultOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
         
-        // Evento personalizado
-        window.dispatchEvent(new CustomEvent('navbarShown'));
-    }
-
-    handleResize() {
-        // Resetear estado en resize
-        this.setInitialState();
-    }
-
-    setInitialState() {
-        const currentScrollY = window.pageYOffset;
+        const observerOptions = { ...defaultOptions, ...options };
         
-        if (currentScrollY > 50) {
-            this.navbar.classList.add('scrolled');
-            this.isScrolled = true;
-        }
+        return new IntersectionObserver(callback, observerOptions);
+    },
+
+    /**
+     * Observar múltiples elementos
+     */
+    observeElements(elements, callback, options = {}) {
+        const observer = this.createIntersectionObserver(callback, options);
         
-        this.lastScrollY = currentScrollY;
-    }
+        elements.forEach(element => {
+            if (element) observer.observe(element);
+        });
+        
+        return observer;
+    },
 
-    // Métodos públicos
-    forceShow() {
-        this.showNavbar();
-    }
+    /**
+     * Crear scroll spy para navegación
+     */
+    createScrollSpy(sections, navLinks, options = {}) {
+        const defaultOptions = {
+            offset: 100,
+            activeClass: 'active'
+        };
+        
+        const config = { ...defaultOptions, ...options };
+        
+        const observerOptions = {
+            rootMargin: `-${config.offset}px 0px -50% 0px`,
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const sectionId = entry.target.id;
+                    
+                    // Remover clase activa de todos los links
+                    navLinks.forEach(link => {
+                        link.classList.remove(config.activeClass);
+                    });
+                    
+                    // Añadir clase activa al link correspondiente
+                    const activeLink = navLinks.find(link => {
+                        const href = link.getAttribute('href');
+                        return href === `#${sectionId}`;
+                    });
+                    
+                    if (activeLink) {
+                        activeLink.classList.add(config.activeClass);
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        sections.forEach(section => observer.observe(section));
+        
+        return observer;
+    },
 
-    forceHide() {
-        this.hideNavbar();
-    }
+    /**
+     * Throttle scroll events
+     */
+    throttleScroll(callback, limit = 16) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                callback.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
+    },
 
-    destroy() {
-        window.removeEventListener('scroll', this.handleScroll);
-        window.removeEventListener('resize', this.handleResize);
+    /**
+     * Detectar dirección de scroll
+     */
+    createScrollDirectionDetector(callback) {
+        let lastScrollY = window.pageYOffset;
+        
+        const handleScroll = this.throttleScroll(() => {
+            const currentScrollY = window.pageYOffset;
+            const direction = currentScrollY > lastScrollY ? 'down' : 'up';
+            const delta = Math.abs(currentScrollY - lastScrollY);
+            
+            callback({
+                direction,
+                currentY: currentScrollY,
+                lastY: lastScrollY,
+                delta
+            });
+            
+            lastScrollY = currentScrollY;
+        });
+        
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }
-}
+};
+
+export default ScrollUtils;
