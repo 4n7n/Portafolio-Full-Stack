@@ -1,6 +1,8 @@
 import { Navbar } from './components/navbar.js';
 import { NavigationConfig } from './config/navigation-config.js';
 import { DOMHelpers } from './utils/dom-helpers.js';
+import HeroBanner from './components/hero-banner.js';
+const heroBanner = new HeroBanner();
 
 class PortfolioApp {
     constructor() {
