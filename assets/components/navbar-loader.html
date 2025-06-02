@@ -1,0 +1,253 @@
+<!-- Navbar Container with Loading State -->
+<div id="navbar-container" class="navbar-container-wrapper">
+    <!-- Loading Skeleton -->
+    <div class="navbar-skeleton" id="navbar-skeleton">
+        <div class="skeleton-brand">
+            <div class="skeleton-logo"></div>
+            <div class="skeleton-text"></div>
+        </div>
+        <div class="skeleton-menu">
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+        </div>
+        <div class="skeleton-actions">
+            <div class="skeleton-toggle"></div>
+            <div class="skeleton-lang"></div>
+            <div class="skeleton-button"></div>
+            <div class="skeleton-hamburger"></div>
+        </div>
+    </div>
+    
+    <!-- El navbar real se carga aquí via JavaScript -->
+</div>
+
+<style>
+/* ===================================
+   NAVBAR SKELETON LOADING STYLES
+   =================================== */
+
+:root {
+    --skeleton-color: #e2e8f0;
+    --skeleton-highlight: #f1f5f9;
+}
+
+[data-theme="dark"] {
+    --skeleton-color: #374151;
+    --skeleton-highlight: #4b5563;
+}
+
+.navbar-skeleton {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--navbar-height);
+    background: var(--navbar-bg);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--spacing-lg);
+    backdrop-filter: blur(10px);
+}
+
+.skeleton-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.skeleton-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-color) 25%,
+        var(--skeleton-highlight) 50%,
+        var(--skeleton-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.skeleton-text {
+    width: 120px;
+    height: 20px;
+    border-radius: 4px;
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-color) 25%,
+        var(--skeleton-highlight) 50%,
+        var(--skeleton-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.skeleton-menu {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+.skeleton-item {
+    width: 80px;
+    height: 16px;
+    border-radius: 4px;
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-color) 25%,
+        var(--skeleton-highlight) 50%,
+        var(--skeleton-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.skeleton-item:nth-child(1) { animation-delay: 0.1s; }
+.skeleton-item:nth-child(2) { animation-delay: 0.2s; }
+.skeleton-item:nth-child(3) { animation-delay: 0.3s; }
+.skeleton-item:nth-child(4) { animation-delay: 0.4s; }
+.skeleton-item:nth-child(5) { animation-delay: 0.5s; }
+.skeleton-item:nth-child(6) { animation-delay: 0.6s; }
+
+.skeleton-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.skeleton-toggle {
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-color) 25%,
+        var(--skeleton-highlight) 50%,
+        var(--skeleton-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.skeleton-lang {
+    width: 60px;
+    height: 32px;
+    border-radius: 6px;
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-color) 25%,
+        var(--skeleton-highlight) 50%,
+        var(--skeleton-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.skeleton-button {
+    width: 80px;
+    height: 36px;
+    border-radius: 6px;
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-color) 25%,
+        var(--skeleton-highlight) 50%,
+        var(--skeleton-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.skeleton-hamburger {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-color) 25%,
+        var(--skeleton-highlight) 50%,
+        var(--skeleton-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    display: none;
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Hide skeleton when navbar loads */
+.navbar-loaded .navbar-skeleton {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.navbar-loaded .navbar-skeleton.hidden {
+    display: none;
+}
+
+/* Mobile skeleton adjustments */
+@media (max-width: 768px) {
+    .navbar-skeleton {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .skeleton-menu,
+    .skeleton-lang,
+    .skeleton-button {
+        display: none;
+    }
+    
+    .skeleton-hamburger {
+        display: block;
+    }
+    
+    .skeleton-text {
+        width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .skeleton-text {
+        display: none;
+    }
+    
+    .navbar-skeleton {
+        padding: 0 var(--spacing-sm);
+    }
+}
+
+/* Accessibility - reduce motion */
+@media (prefers-reduced-motion: reduce) {
+    .skeleton-logo,
+    .skeleton-text,
+    .skeleton-item,
+    .skeleton-toggle,
+    .skeleton-lang,
+    .skeleton-button,
+    .skeleton-hamburger {
+        animation: skeleton-pulse 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes skeleton-pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+    }
+}
