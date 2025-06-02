@@ -1,0 +1,505 @@
+<template id="project-card-template">
+    <div class="project-card" data-project-id="" data-category="" data-technologies="">
+        <!-- Project Image -->
+        <div class="project-image">
+            <img 
+                data-src="" 
+                alt=""
+                class="loading"
+                loading="lazy"
+            >
+            <!-- Optional: Overlay with quick actions -->
+            <div class="project-overlay">
+                <div class="project-actions">
+                    <button class="action-btn" data-action="preview" aria-label="Vista previa">
+                        <i class="icon-eye"></i>
+                    </button>
+                    <button class="action-btn" data-action="code" aria-label="Ver código">
+                        <i class="icon-code"></i>
+                    </button>
+                    <button class="action-btn" data-action="info" aria-label="Más información">
+                        <i class="icon-info"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Content -->
+        <div class="project-content">
+            <!-- Project Header -->
+            <div class="project-header">
+                <h3 class="project-title"></h3>
+                <div class="project-status">
+                    <span class="status-badge" data-status=""></span>
+                </div>
+            </div>
+
+            <!-- Project Description -->
+            <p class="project-description"></p>
+
+            <!-- Project Tech Stack -->
+            <div class="project-tech">
+                <!-- Tech tags will be populated dynamically -->
+            </div>
+
+            <!-- Project Metadata -->
+            <div class="project-meta">
+                <div class="project-date">
+                    <i class="icon-calendar"></i>
+                    <span class="date-text"></span>
+                </div>
+                <div class="project-category">
+                    <i class="icon-tag"></i>
+                    <span class="category-text"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Footer -->
+        <div class="project-footer">
+            <!-- Project Links -->
+            <div class="project-links">
+                <a href="#" target="_blank" rel="noopener" class="project-link demo-link" aria-label="Ver demo">
+                    <i class="icon-external-link"></i>
+                </a>
+                <a href="#" target="_blank" rel="noopener" class="project-link repo-link" aria-label="Ver código">
+                    <i class="icon-github"></i>
+                </a>
+                <button class="project-link info-link" aria-label="Más información">
+                    <i class="icon-info"></i>
+                </button>
+            </div>
+
+            <!-- Project Stats -->
+            <div class="project-stats">
+                <div class="stat-item">
+                    <i class="icon-star"></i>
+                    <span class="stat-value stars">0</span>
+                </div>
+                <div class="stat-item">
+                    <i class="icon-git-branch"></i>
+                    <span class="stat-value forks">0</span>
+                </div>
+                <div class="stat-item">
+                    <i class="icon-eye"></i>
+                    <span class="stat-value views">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Badge (hidden by default) -->
+        <div class="featured-badge" style="display: none;">
+            <i class="icon-star"></i>
+            <span>Destacado</span>
+        </div>
+
+        <!-- Loading Skeleton Overlay -->
+        <div class="project-skeleton" style="display: none;">
+            <div class="skeleton-image"></div>
+            <div class="skeleton-content">
+                <div class="skeleton-title"></div>
+                <div class="skeleton-description"></div>
+                <div class="skeleton-tags"></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Featured Project Card (Larger variant) -->
+<template id="featured-project-card-template">
+    <div class="project-card featured-card" data-project-id="" data-category="" data-technologies="">
+        <!-- Featured Project Image -->
+        <div class="featured-project-image">
+            <img 
+                data-src="" 
+                alt=""
+                class="loading"
+                loading="lazy"
+            >
+            <!-- Featured Badge -->
+            <div class="featured-badge">
+                <i class="icon-star"></i>
+                <span>Destacado</span>
+            </div>
+            <!-- Gradient Overlay -->
+            <div class="featured-overlay"></div>
+        </div>
+
+        <!-- Featured Project Content -->
+        <div class="featured-project-content">
+            <!-- Featured Header -->
+            <div class="featured-header">
+                <div class="featured-meta">
+                    <span class="featured-category"></span>
+                    <span class="featured-date"></span>
+                </div>
+                <h3 class="featured-title"></h3>
+                <p class="featured-description"></p>
+            </div>
+
+            <!-- Featured Tech Stack -->
+            <div class="featured-tech">
+                <!-- Tech stack will be populated dynamically -->
+            </div>
+
+            <!-- Featured Stats -->
+            <div class="featured-stats">
+                <div class="featured-stat">
+                    <i class="icon-star"></i>
+                    <span class="stat-label">Stars</span>
+                    <span class="stat-value stars">0</span>
+                </div>
+                <div class="featured-stat">
+                    <i class="icon-git-branch"></i>
+                    <span class="stat-label">Forks</span>
+                    <span class="stat-value forks">0</span>
+                </div>
+                <div class="featured-stat">
+                    <i class="icon-code"></i>
+                    <span class="stat-label">Commits</span>
+                    <span class="stat-value commits">0</span>
+                </div>
+            </div>
+
+            <!-- Featured Actions -->
+            <div class="featured-actions">
+                <a href="#" target="_blank" rel="noopener" class="btn btn-primary demo-link">
+                    <i class="icon-external-link"></i>
+                    <span>Ver Demo</span>
+                </a>
+                <a href="#" target="_blank" rel="noopener" class="btn btn-secondary repo-link">
+                    <i class="icon-github"></i>
+                    <span>Ver Código</span>
+                </a>
+                <button class="btn btn-outline info-link">
+                    <i class="icon-info"></i>
+                    <span>Detalles</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Project Card Skeleton Loading -->
+<template id="project-card-skeleton-template">
+    <div class="project-card skeleton-card">
+        <div class="skeleton-image"></div>
+        <div class="skeleton-content">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-description">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+            <div class="skeleton-tech">
+                <div class="skeleton-tag"></div>
+                <div class="skeleton-tag"></div>
+                <div class="skeleton-tag"></div>
+            </div>
+            <div class="skeleton-footer">
+                <div class="skeleton-links"></div>
+                <div class="skeleton-stats"></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Tech Tag Template -->
+<template id="tech-tag-template">
+    <span class="tech-tag" data-tech="">
+        <img src="" alt="" class="tech-icon" width="16" height="16">
+        <span class="tech-name"></span>
+    </span>
+</template>
+
+<!-- Project Status Badge Template -->
+<template id="status-badge-template">
+    <span class="status-badge" data-status="">
+        <i class="status-icon"></i>
+        <span class="status-text"></span>
+    </span>
+</template>
+
+<!-- Empty State Template -->
+<template id="projects-empty-template">
+    <div class="projects-empty">
+        <div class="empty-icon">
+            <i class="icon-folder"></i>
+        </div>
+        <h3 class="empty-title">No se encontraron proyectos</h3>
+        <p class="empty-description">
+            Prueba con diferentes filtros o navega por todos los proyectos.
+        </p>
+        <div class="empty-actions">
+            <button class="btn btn-primary" data-action="reset-filters">
+                <i class="icon-refresh"></i>
+                <span>Limpiar Filtros</span>
+            </button>
+            <a href="#contact" class="btn btn-secondary">
+                <i class="icon-message-circle"></i>
+                <span>Contactar</span>
+            </a>
+        </div>
+    </div>
+</template>
+
+<!-- Loading State Template -->
+<template id="projects-loading-template">
+    <div class="projects-loading">
+        <div class="loading-spinner"></div>
+        <h3 class="loading-title">Cargando proyectos...</h3>
+        <p class="loading-description">
+            Obteniendo la información más actualizada desde GitHub
+        </p>
+    </div>
+</template>
+
+<!-- Error State Template -->
+<template id="projects-error-template">
+    <div class="projects-error">
+        <div class="error-icon">
+            <i class="icon-alert-circle"></i>
+        </div>
+        <h3 class="error-title">Error al cargar proyectos</h3>
+        <p class="error-description">
+            Ha ocurrido un error al cargar los proyectos. Por favor, inténtalo de nuevo.
+        </p>
+        <div class="error-actions">
+            <button class="btn btn-primary" data-action="retry">
+                <i class="icon-refresh"></i>
+                <span>Reintentar</span>
+            </button>
+            <button class="btn btn-secondary" data-action="reload">
+                <i class="icon-rotate-ccw"></i>
+                <span>Recargar Página</span>
+            </button>
+        </div>
+    </div>
+</template>
+
+<!-- CSS for Component Templates -->
+<style>
+/* Project Card Overlay Styles */
+.project-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.project-card:hover .project-overlay {
+    opacity: 1;
+}
+
+.project-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.action-btn {
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius-full);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-normal);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+}
+
+/* Featured Project Specific Styles */
+.featured-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+}
+
+.featured-project-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    color: white;
+    z-index: 2;
+}
+
+.featured-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.featured-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: white;
+}
+
+.featured-description {
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.featured-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.featured-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.featured-stat .stat-label {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.featured-stat .stat-value {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.featured-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Skeleton Loading Styles */
+.skeleton-card {
+    pointer-events: none;
+}
+
+.skeleton-image,
+.skeleton-title,
+.skeleton-line,
+.skeleton-tag,
+.skeleton-links,
+.skeleton-stats {
+    background: linear-gradient(90deg, var(--color-border) 25%, var(--color-background) 50%, var(--color-border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-image {
+    height: 200px;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.skeleton-title {
+    height: 24px;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.skeleton-line {
+    height: 16px;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+}
+
+.skeleton-line.short {
+    width: 60%;
+}
+
+.skeleton-tech {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.skeleton-tag {
+    width: 60px;
+    height: 24px;
+    border-radius: var(--border-radius-full);
+}
+
+.skeleton-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.skeleton-links,
+.skeleton-stats {
+    width: 80px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Responsive Adjustments for Templates */
+@media (max-width: 768px) {
+    .featured-project-content {
+        padding: 1.5rem;
+    }
+    
+    .featured-title {
+        font-size: 1.25rem;
+    }
+    
+    .featured-stats {
+        gap: 1rem;
+    }
+    
+    .featured-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .featured-project-content {
+        padding: 1rem;
+    }
+    
+    .featured-actions {
+        gap: 0.5rem;
+    }
+    
+    .project-actions {
+        gap: 0.5rem;
+    }
+}
+</style>
