@@ -1,124 +1,158 @@
-<!-- Skills Section -->
-<section id="skills" class="skills-section section-padding" data-aos="fade-up">
+<section id="projects" class="projects-section section-padding" data-aos="fade-up">
     <div class="container">
         <!-- Section Header -->
         <div class="section-header">
-            <span class="section-number">03</span>
+            <span class="section-number">04</span>
             <h2 class="section-title">
-                <span class="highlight">Habilidades</span> Técnicas
+                Mis <span class="highlight">Proyectos</span>
             </h2>
             <p class="section-subtitle">
-                Tecnologías y herramientas con las que trabajo día a día
+                Una selección de proyectos que demuestran mis habilidades técnicas
             </p>
         </div>
 
-        <!-- Skills Categories Filter -->
-        <div class="skills-filter" data-filter-container>
-            <button class="filter-btn active" data-filter="all">Todas</button>
-            <button class="filter-btn" data-filter="frontend">Frontend</button>
-            <button class="filter-btn" data-filter="backend">Backend</button>
-            <button class="filter-btn" data-filter="database">Databases</button>
-            <button class="filter-btn" data-filter="tools">Tools</button>
-        </div>
-
-        <!-- Technical Skills Grid -->
-        <div class="skills-grid">
-            <!-- Frontend Skills -->
-            <div class="skill-category" data-category="frontend">
-                <h3 class="category-title">
-                    <i class="icon-code"></i>
-                    Frontend Development
-                </h3>
-                <div class="skills-list" id="frontend-skills">
-                    <!-- Skills will be populated by JavaScript -->
+        <!-- Projects Filter -->
+        <div class="projects-filter" data-projects-filter>
+            <div class="filter-group">
+                <label class="filter-label">Filtrar por:</label>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">
+                        <span>Todos</span>
+                        <span class="filter-count">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="web">
+                        <span>Web Apps</span>
+                        <span class="filter-count">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="mobile">
+                        <span>Mobile</span>
+                        <span class="filter-count">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="api">
+                        <span>APIs</span>
+                        <span class="filter-count">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="fullstack">
+                        <span>Full Stack</span>
+                        <span class="filter-count">0</span>
+                    </button>
                 </div>
             </div>
-
-            <!-- Backend Skills -->
-            <div class="skill-category" data-category="backend">
-                <h3 class="category-title">
-                    <i class="icon-server"></i>
-                    Backend Development
-                </h3>
-                <div class="skills-list" id="backend-skills">
-                    <!-- Skills will be populated by JavaScript -->
-                </div>
-            </div>
-
-            <!-- Database Skills -->
-            <div class="skill-category" data-category="database">
-                <h3 class="category-title">
-                    <i class="icon-database"></i>
-                    Databases & Storage
-                </h3>
-                <div class="skills-list" id="database-skills">
-                    <!-- Skills will be populated by JavaScript -->
-                </div>
-            </div>
-
-            <!-- Tools & Others -->
-            <div class="skill-category" data-category="tools">
-                <h3 class="category-title">
-                    <i class="icon-tool"></i>
-                    Tools & Others
-                </h3>
-                <div class="skills-list" id="tools-skills">
-                    <!-- Skills will be populated by JavaScript -->
-                </div>
+            
+            <div class="filter-tech">
+                <label class="filter-label">Tecnología:</label>
+                <select class="tech-select" data-tech-filter>
+                    <option value="all">Todas las tecnologías</option>
+                    <option value="react">React</option>
+                    <option value="vue">Vue.js</option>
+                    <option value="angular">Angular</option>
+                    <option value="node">Node.js</option>
+                    <option value="python">Python</option>
+                    <option value="mongodb">MongoDB</option>
+                    <option value="postgresql">PostgreSQL</option>
+                </select>
             </div>
         </div>
 
-        <!-- Soft Skills -->
-        <div class="soft-skills-section" data-aos="fade-up" data-aos-delay="200">
-            <h3 class="soft-skills-title">Soft Skills</h3>
-            <div class="soft-skills-grid">
-                <div class="soft-skill-item">
-                    <div class="soft-skill-icon">
-                        <i class="icon-users"></i>
-                    </div>
-                    <span>Trabajo en Equipo</span>
-                </div>
-                <div class="soft-skill-item">
-                    <div class="soft-skill-icon">
-                        <i class="icon-lightbulb"></i>
-                    </div>
-                    <span>Resolución de Problemas</span>
-                </div>
-                <div class="soft-skill-item">
-                    <div class="soft-skill-icon">
-                        <i class="icon-clock"></i>
-                    </div>
-                    <span>Gestión del Tiempo</span>
-                </div>
-                <div class="soft-skill-item">
-                    <div class="soft-skill-icon">
-                        <i class="icon-message-circle"></i>
-                    </div>
-                    <span>Comunicación</span>
-                </div>
+        <!-- Featured Projects -->
+        <div class="featured-projects" data-aos="fade-up" data-aos-delay="200">
+            <h3 class="featured-title">
+                <i class="icon-star"></i>
+                Proyectos Destacados
+            </h3>
+            <div class="featured-grid" id="featured-projects-container">
+                <!-- Featured projects populated by JavaScript -->
             </div>
         </div>
 
-        <!-- Certifications -->
-        <div class="certifications-section" data-aos="fade-up" data-aos-delay="300">
-            <h3 class="certifications-title">Certificaciones</h3>
-            <div class="certifications-grid">
-                <div class="certification-item">
-                    <img src="assets/images/certificates/aws-cert.jpg" alt="AWS Certification" loading="lazy">
-                    <div class="certification-info">
-                        <h4>AWS Solutions Architect</h4>
-                        <span class="cert-issuer">Amazon Web Services</span>
-                        <span class="cert-date">2024</span>
+        <!-- All Projects Grid -->
+        <div class="projects-grid-container">
+            <div class="projects-grid" id="projects-container" data-aos="fade-up" data-aos-delay="300">
+                <!-- Projects populated by JavaScript -->
+            </div>
+            
+            <!-- Loading State -->
+            <div class="projects-loading" id="projects-loading">
+                <div class="loading-spinner"></div>
+                <p>Cargando proyectos...</p>
+            </div>
+            
+            <!-- Empty State -->
+            <div class="projects-empty" id="projects-empty" style="display: none;">
+                <div class="empty-icon">
+                    <i class="icon-folder"></i>
+                </div>
+                <h3>No se encontraron proyectos</h3>
+                <p>Prueba con diferentes filtros o navega por todos los proyectos.</p>
+            </div>
+        </div>
+
+        <!-- Load More Button -->
+        <div class="load-more-container" data-aos="fade-up" data-aos-delay="400">
+            <button class="load-more-btn" id="load-more-btn" style="display: none;">
+                <span>Cargar más proyectos</span>
+                <i class="icon-chevron-down"></i>
+            </button>
+        </div>
+
+        <!-- GitHub Integration -->
+        <div class="github-section" data-aos="fade-up" data-aos-delay="500">
+            <div class="github-banner">
+                <div class="github-content">
+                    <div class="github-info">
+                        <i class="icon-github"></i>
+                        <div>
+                            <h3>Más proyectos en GitHub</h3>
+                            <p>Explora mi perfil completo con más de <span id="github-repo-count">50</span> repositorios</p>
+                        </div>
+                    </div>
+                    <a href="https://github.com/tu-usuario" target="_blank" rel="noopener" class="github-btn">
+                        <span>Ver GitHub</span>
+                        <i class="icon-external-link"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Detail Modal -->
+    <div class="project-modal" id="project-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-backdrop" data-modal-close></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <button class="modal-close" data-modal-close aria-label="Cerrar modal">
+                    <i class="icon-x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modal-image" src="" alt="" loading="lazy">
+                </div>
+                <div class="modal-info">
+                    <div class="modal-description">
+                        <p id="modal-description"></p>
+                    </div>
+                    <div class="modal-tech">
+                        <h4>Tecnologías utilizadas:</h4>
+                        <div class="tech-tags" id="modal-tech-tags">
+                            <!-- Tech tags populated by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="modal-stats" id="modal-stats">
+                        <!-- GitHub stats populated by JavaScript -->
                     </div>
                 </div>
-                <div class="certification-item">
-                    <img src="assets/images/certificates/google-cert.jpg" alt="Google Certification" loading="lazy">
-                    <div class="certification-info">
-                        <h4>Google Cloud Developer</h4>
-                        <span class="cert-issuer">Google Cloud</span>
-                        <span class="cert-date">2024</span>
-                    </div>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="modal-demo-link" href="#" target="_blank" rel="noopener" class="btn btn-primary">
+                    <i class="icon-external-link"></i>
+                    Ver Demo
+                </a>
+                <a id="modal-repo-link" href="#" target="_blank" rel="noopener" class="btn btn-secondary">
+                    <i class="icon-github"></i>
+                    Ver Código
+                </a>
             </div>
         </div>
     </div>
