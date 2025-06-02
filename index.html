@@ -1,160 +1,122 @@
-<section id="hero" class="hero" data-section="hero">
-    <div class="hero__background">
-        <div class="hero__particles" id="particles-js"></div>
-        <div class="hero__gradient"></div>
-    </div>
-    
-    <div class="container hero__container">
-        <div class="hero__content">
-            <span class="hero__greeting" data-i18n="hero.greeting">¡Hola! 👋 Soy</span>
-            <h1 class="hero__name">
-                <span class="hero__firstname">Tu</span>
-                <span class="hero__lastname">Nombre</span>
-            </h1>
-            <div class="hero__title">
-                <span data-i18n="hero.iam">Soy</span>
-                <span class="hero__role" id="typing-text"></span>
-                <span class="hero__cursor">|</span>
-            </div>
-            <p class="hero__description" data-i18n="hero.description">
-                Apasionado por crear experiencias digitales excepcionales. 
-                Especializado en desarrollo web moderno con enfoque en 
-                performance, accesibilidad y diseño responsive.
-            </p>
-            
-            <div class="hero__cta">
-                <a href="#projects" class="btn btn--primary">
-                    <i data-lucide="folder-open"></i>
-                    <span data-i18n="hero.viewProjects">Ver Proyectos</span>
-                </a>
-                <a href="#contact" class="btn btn--secondary">
-                    <i data-lucide="mail"></i>
-                    <span data-i18n="hero.contact">Contactar</span>
-                </a>
-            </div>
-            
-            <div class="hero__social">
-                <a href="#" class="hero__social-link" aria-label="GitHub">
-                    <i data-lucide="github"></i>
-                </a>
-                <a href="#" class="hero__social-link" aria-label="LinkedIn">
-                    <i data-lucide="linkedin"></i>
-                </a>
-                <a href="#" class="hero__social-link" aria-label="Twitter">
-                    <i data-lucide="twitter"></i>
-                </a>
-            </div>
-        </div>
-        
-        <div class="hero__image">
-            <div class="hero__image-wrapper">
-                <img src="assets/images/profile/avatar.jpg" 
-                     alt="Profile picture" 
-                     class="hero__avatar"
-                     loading="eager">
-                <div class="hero__image-decoration"></div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="hero__scroll">
-        <span data-i18n="hero.scroll">Scroll para explorar</span>
-        <i data-lucide="chevron-down" class="hero__scroll-icon"></i>
-    </div>
-</section>
-
-<!-- About Section -->
-<section id="about" class="about" data-section="about">
+<!-- Skills Section -->
+<section id="skills" class="skills-section section-padding" data-aos="fade-up">
     <div class="container">
-        <div class="section__header">
-            <h2 class="section__title" data-i18n="about.title">
-                <span class="section__number">01.</span>
-                Sobre Mí
+        <!-- Section Header -->
+        <div class="section-header">
+            <span class="section-number">03</span>
+            <h2 class="section-title">
+                <span class="highlight">Habilidades</span> Técnicas
             </h2>
-            <div class="section__line"></div>
+            <p class="section-subtitle">
+                Tecnologías y herramientas con las que trabajo día a día
+            </p>
         </div>
-        
-        <div class="about__content">
-            <div class="about__text">
-                <p class="about__intro" data-i18n="about.intro">
-                    ¡Hola! Soy [Tu Nombre], un desarrollador Full Stack 
-                    apasionado por crear soluciones web innovadoras y eficientes.
-                </p>
-                
-                <div class="about__description" data-i18n="about.description">
-                    <p>
-                        Mi viaje en el desarrollo web comenzó hace [X] años, 
-                        y desde entonces he estado en constante aprendizaje, 
-                        explorando nuevas tecnologías y mejorando mis habilidades.
-                    </p>
-                    <p>
-                        Me especializo en crear aplicaciones web robustas y 
-                        escalables, siempre priorizando la experiencia del 
-                        usuario y las mejores prácticas de desarrollo.
-                    </p>
-                </div>
-                
-                <div class="about__highlights">
-                    <h3 class="about__subtitle" data-i18n="about.highlights">
-                        Algunos highlights:
-                    </h3>
-                    <ul class="about__list">
-                        <li data-i18n="about.highlight1">
-                            <i data-lucide="check"></i>
-                            +3 años de experiencia en desarrollo web
-                        </li>
-                        <li data-i18n="about.highlight2">
-                            <i data-lucide="check"></i>
-                            Proyectos completados para clientes internacionales
-                        </li>
-                        <li data-i18n="about.highlight3">
-                            <i data-lucide="check"></i>
-                            Contribuidor activo en proyectos Open Source
-                        </li>
-                        <li data-i18n="about.highlight4">
-                            <i data-lucide="check"></i>
-                            Certificaciones en AWS y Google Cloud
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="about__tech">
-                    <h3 class="about__subtitle" data-i18n="about.techTitle">
-                        Tecnologías que uso:
-                    </h3>
-                    <div class="about__tech-grid">
-                        <span class="about__tech-item">JavaScript (ES6+)</span>
-                        <span class="about__tech-item">React / Next.js</span>
-                        <span class="about__tech-item">Node.js</span>
-                        <span class="about__tech-item">TypeScript</span>
-                        <span class="about__tech-item">Python</span>
-                        <span class="about__tech-item">PostgreSQL</span>
-                    </div>
+
+        <!-- Skills Categories Filter -->
+        <div class="skills-filter" data-filter-container>
+            <button class="filter-btn active" data-filter="all">Todas</button>
+            <button class="filter-btn" data-filter="frontend">Frontend</button>
+            <button class="filter-btn" data-filter="backend">Backend</button>
+            <button class="filter-btn" data-filter="database">Databases</button>
+            <button class="filter-btn" data-filter="tools">Tools</button>
+        </div>
+
+        <!-- Technical Skills Grid -->
+        <div class="skills-grid">
+            <!-- Frontend Skills -->
+            <div class="skill-category" data-category="frontend">
+                <h3 class="category-title">
+                    <i class="icon-code"></i>
+                    Frontend Development
+                </h3>
+                <div class="skills-list" id="frontend-skills">
+                    <!-- Skills will be populated by JavaScript -->
                 </div>
             </div>
-            
-            <div class="about__image">
-                <div class="about__image-wrapper">
-                    <img src="assets/images/profile/about-me.jpg" 
-                         alt="About me" 
-                         class="about__photo"
-                         loading="lazy">
-                    <div class="about__image-overlay"></div>
-                    <div class="about__image-border"></div>
+
+            <!-- Backend Skills -->
+            <div class="skill-category" data-category="backend">
+                <h3 class="category-title">
+                    <i class="icon-server"></i>
+                    Backend Development
+                </h3>
+                <div class="skills-list" id="backend-skills">
+                    <!-- Skills will be populated by JavaScript -->
                 </div>
-                
-                <div class="about__stats">
-                    <div class="about__stat">
-                        <span class="about__stat-number" data-count="25">0</span>
-                        <span class="about__stat-label" data-i18n="about.projectsCompleted">
-                            Proyectos Completados
-                        </span>
+            </div>
+
+            <!-- Database Skills -->
+            <div class="skill-category" data-category="database">
+                <h3 class="category-title">
+                    <i class="icon-database"></i>
+                    Databases & Storage
+                </h3>
+                <div class="skills-list" id="database-skills">
+                    <!-- Skills will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Tools & Others -->
+            <div class="skill-category" data-category="tools">
+                <h3 class="category-title">
+                    <i class="icon-tool"></i>
+                    Tools & Others
+                </h3>
+                <div class="skills-list" id="tools-skills">
+                    <!-- Skills will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Soft Skills -->
+        <div class="soft-skills-section" data-aos="fade-up" data-aos-delay="200">
+            <h3 class="soft-skills-title">Soft Skills</h3>
+            <div class="soft-skills-grid">
+                <div class="soft-skill-item">
+                    <div class="soft-skill-icon">
+                        <i class="icon-users"></i>
                     </div>
-                    <div class="about__stat">
-                        <span class="about__stat-number" data-count="15">0</span>
-                        <span class="about__stat-label" data-i18n="about.happyClients">
-                            Clientes Satisfechos
-                        </span>
+                    <span>Trabajo en Equipo</span>
+                </div>
+                <div class="soft-skill-item">
+                    <div class="soft-skill-icon">
+                        <i class="icon-lightbulb"></i>
+                    </div>
+                    <span>Resolución de Problemas</span>
+                </div>
+                <div class="soft-skill-item">
+                    <div class="soft-skill-icon">
+                        <i class="icon-clock"></i>
+                    </div>
+                    <span>Gestión del Tiempo</span>
+                </div>
+                <div class="soft-skill-item">
+                    <div class="soft-skill-icon">
+                        <i class="icon-message-circle"></i>
+                    </div>
+                    <span>Comunicación</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certifications -->
+        <div class="certifications-section" data-aos="fade-up" data-aos-delay="300">
+            <h3 class="certifications-title">Certificaciones</h3>
+            <div class="certifications-grid">
+                <div class="certification-item">
+                    <img src="assets/images/certificates/aws-cert.jpg" alt="AWS Certification" loading="lazy">
+                    <div class="certification-info">
+                        <h4>AWS Solutions Architect</h4>
+                        <span class="cert-issuer">Amazon Web Services</span>
+                        <span class="cert-date">2024</span>
+                    </div>
+                </div>
+                <div class="certification-item">
+                    <img src="assets/images/certificates/google-cert.jpg" alt="Google Certification" loading="lazy">
+                    <div class="certification-info">
+                        <h4>Google Cloud Developer</h4>
+                        <span class="cert-issuer">Google Cloud</span>
+                        <span class="cert-date">2024</span>
                     </div>
                 </div>
             </div>
