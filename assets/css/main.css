@@ -1,22 +1,141 @@
-/* Agregar al final del main.css existente */
+@import 'components/skills.css';
 
-/* ===================================
-   NAVBAR INTEGRATION
-   =================================== */
-
-/* Asegurar que el navbar funcione con el layout */
-body {
-    padding-top: var(--navbar-height);
-    transition: padding-top var(--transition-normal);
+:root {
+    /* Colors */
+    --color-primary: #3b82f6;
+    --color-secondary: #1e40af;
+    --color-accent: #10b981;
+    --color-background: #ffffff;
+    --color-background-alt: #f8fafc;
+    --color-surface: #ffffff;
+    --color-text-primary: #1f2937;
+    --color-text-secondary: #6b7280;
+    --color-border: #e5e7eb;
+    
+    /* Navbar específicas */
+    --navbar-height: 70px;
+    --navbar-bg: rgba(255, 255, 255, 0.95);
+    --navbar-bg-scrolled: rgba(255, 255, 255, 0.98);
+    --navbar-border: rgba(0, 0, 0, 0.1);
+    
+    /* Overlay para mobile menu */
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --overlay-blur: blur(20px);
+    
+    /* Focus states */
+    --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    --focus-ring-offset: 2px;
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --spacing-2xl: 4rem;
+    --spacing-3xl: 5rem;
+    
+    /* Border radius */
+    --border-radius-sm: 0.25rem;
+    --border-radius: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-xl: 1rem;
+    --border-radius-full: 50%;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    
+    /* Transitions */
+    --transition-fast: 0.15s ease-in-out;
+    --transition-normal: 0.3s ease-in-out;
+    --transition-slow: 0.5s ease-in-out;
 }
 
-/* Smooth scroll para toda la página */
+[data-theme="dark"] {
+    --color-background: #111827;
+    --color-background-alt: #1f2937;
+    --color-surface: #374151;
+    --color-text-primary: #f9fafb;
+    --color-text-secondary: #d1d5db;
+    --color-border: #374151;
+    
+    --navbar-bg: rgba(17, 24, 39, 0.95);
+    --navbar-bg-scrolled: rgba(17, 24, 39, 0.98);
+    --navbar-border: rgba(255, 255, 255, 0.1);
+    --overlay-bg: rgba(0, 0, 0, 0.8);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 html {
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--navbar-height) + 20px);
+    font-size: 16px;
 }
 
-/* Estados del navbar para el layout */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    background-color: var(--color-background);
+    padding-top: var(--navbar-height);
+    transition: padding-top var(--transition-normal);
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 2.5rem;
+}
+
+h3 {
+    font-size: 2rem;
+}
+
+h4 {
+    font-size: 1.5rem;
+}
+
+h5 {
+    font-size: 1.25rem;
+}
+
+h6 {
+    font-size: 1rem;
+}
+
+p {
+    margin-bottom: 1rem;
+    color: var(--color-text-secondary);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color var(--transition-normal);
+}
+
+a:hover {
+    color: var(--color-secondary);
+}
+
 .navbar-hidden {
     transform: translateY(-100%);
 }
@@ -27,17 +146,27 @@ html {
     box-shadow: var(--shadow-lg);
 }
 
-/* ===================================
-   NAVIGATION SECTIONS SPACING
-   =================================== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
 
-/* Espaciado correcto para las secciones del portfolio */
+.container-fluid {
+    width: 100%;
+    padding: 0 var(--spacing-md);
+}
+
 section[id] {
     scroll-margin-top: calc(var(--navbar-height) + 20px);
     position: relative;
 }
 
-/* Asegurar que las secciones tengan suficiente altura */
+.section-padding {
+    padding: 5rem 0;
+}
+
+/* Portfolio sections */
 #home,
 #about,
 #skills,
@@ -53,30 +182,203 @@ section[id] {
     padding: 0;
 }
 
-/* ===================================
-   THEME VARIABLES EXTENSION
-   =================================== */
-
-/* Variables adicionales para el navbar */
-:root {
-    /* Navbar específicas */
-    --navbar-height: 70px;
-    --navbar-bg: rgba(255, 255, 255, 0.95);
-    --navbar-bg-scrolled: rgba(255, 255, 255, 0.98);
-    --navbar-border: rgba(0, 0, 0, 0.1);
-    
-    /* Overlay para mobile menu */
-    --overlay-bg: rgba(0, 0, 0, 0.5);
-    --overlay-blur: blur(20px);
-    
-    /* Focus states */
-    --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    --focus-ring-offset: 2px;
+.section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
 }
 
-[data-theme="dark"] {
-    --navbar-bg: rgba(17, 24, 39, 0.95);
-    --navbar-bg-scrolled: rgba(17, 24, 39, 0.98);
-    --navbar-border: rgba(255, 255, 255, 0.1);
-    --overlay-bg: rgba(0, 0, 0, 0.8);
+.section-number {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background: rgba(59, 130, 246, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-full);
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+}
+
+.section-title .highlight {
+    color: var(--color-primary);
+    position: relative;
+}
+
+.section-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.hidden {
+    display: none;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus states */
+.focus-visible:focus {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+}
+
+/* Loading states */
+.loading {
+    opacity: 0;
+    transition: opacity var(--transition-slow);
+}
+
+.loaded {
+    opacity: 1;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+}
+
+@media (max-width: 1024px) {
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+    
+    body {
+        padding-top: calc(var(--navbar-height) - 10px);
+    }
+    
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .section-padding {
+        padding: 3rem 0;
+    }
+    
+    #home,
+    #about,
+    #skills,
+    #projects,
+    #experience,
+    #contact {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .section-header {
+        margin-bottom: 3rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .section-padding {
+        padding: 2rem 0;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+    }
 }
