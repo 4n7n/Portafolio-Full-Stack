@@ -1,0 +1,79 @@
+/* Import base styles */
+@import url('./utils/variables.css');
+@import url('./utils/reset.css');
+@import url('./utils/responsive.css');
+
+/* Import component styles */
+@import url('./components/navbar.css');
+@import url('./components/footer.css');
+
+/* Global Styles */
+.main-content {
+    min-height: 100vh;
+    padding-top: 80px; /* Space for fixed navbar */
+}
+
+section {
+    padding: var(--spacing-3xl) var(--spacing-md);
+    max-width: var(--large);
+    margin: 0 auto;
+}
+
+.container {
+    max-width: var(--large);
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--spacing-md);
+}
+
+h1 {
+    font-size: var(--font-size-4xl);
+}
+
+h2 {
+    font-size: var(--font-size-3xl);
+}
+
+h3 {
+    font-size: var(--font-size-2xl);
+}
+
+p {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-secondary);
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.text-primary {
+    color: var(--primary-color);
+}
+
+.bg-primary {
+    background-color: var(--primary-color);
+}
+
+.hidden {
+    display: none;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
