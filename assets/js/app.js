@@ -2,12 +2,15 @@ import { Navbar } from './components/navbar.js';
 import { NavigationConfig } from './config/navigation-config.js';
 import { DOMHelpers } from './utils/dom-helpers.js';
 import HeroBanner from './components/hero-banner.js';
+import SkillsChart from './components/skills-chart.js';
+
 const heroBanner = new HeroBanner();
 
 class PortfolioApp {
     constructor() {
         this.components = {};
         this.isInitialized = false;
+        this.skillsChart = null;
     }
 
     async init() {
@@ -22,6 +25,9 @@ class PortfolioApp {
             
             // Inicializar navegación
             await this.initNavigation();
+            
+            // Inicializar skills
+            await this.initializeSkills();
             
             // Inicializar otros componentes
             this.initGlobalFeatures();
@@ -76,6 +82,16 @@ class PortfolioApp {
     async initNavigation() {
         this.components.navbar = new Navbar();
         await this.components.navbar.init();
+    }
+
+    async initializeSkills() {
+        try {
+            this.skillsChart = new SkillsChart();
+            this.components.skillsChart = this.skillsChart;
+            console.log('✅ Skills component initialized');
+        } catch (error) {
+            console.error('❌ Error initializing skills:', error);
+        }
     }
 
     initGlobalFeatures() {
@@ -167,6 +183,9 @@ class PortfolioApp {
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 // Página visible - reactivar animaciones si es necesario
+                if (this.skillsChart && this.skillsChart.animationTriggered) {
+                    // Opcional: reactivar animaciones de skills si es necesario
+                }
             }
         });
     }
@@ -189,7 +208,10 @@ class PortfolioApp {
         
         // Evento personalizado
         window.dispatchEvent(new CustomEvent('portfolioReady', {
-            detail: { components: this.components }
+            detail: { 
+                components: this.components,
+                skillsChart: this.skillsChart
+            }
         }));
     }
 
@@ -198,8 +220,36 @@ class PortfolioApp {
         return this.components[name];
     }
 
+    getSkillsChart() {
+        return this.skillsChart;
+    }
+
     isReady() {
         return this.isInitialized;
+    }
+
+    // Método para actualizar skills dinámicamente
+    updateSkills(newSkillsData) {
+        if (this.skillsChart) {
+            this.skillsChart.updateSkills(newSkillsData);
+        }
+    }
+
+    // Método para destruir componentes (cleanup)
+    destroy() {
+        if (this.skillsChart) {
+            this.skillsChart.destroy();
+        }
+        
+        Object.values(this.components).forEach(component => {
+            if (component && typeof component.destroy === 'function') {
+                component.destroy();
+            }
+        });
+        
+        this.components = {};
+        this.skillsChart = null;
+        this.isInitialized = false;
     }
 }
 
@@ -209,3 +259,11 @@ app.init();
 
 // Exportar para uso global
 window.portfolioApp = app;
+
+// Manejo de hot reload en desarrollo
+if (module.hot) {
+    module.hot.accept(() => {
+        app.destroy();
+        location.reload();
+    });
+}
