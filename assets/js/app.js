@@ -1,16 +1,19 @@
-import { createGitHubAPI } from './services/github-api.js';
-import ProjectGallery from './components/project-gallery.js';
-import ProjectFilter from './components/project-filter.js';
-import { projectsConfig } from './config/portfolio-config.js';
+// App.js - Contact Integration
+// Update existing assets/js/app.js
+
+import ContactForm from './components/contact-form.js';
+import { createEmailService } from './services/email-service.js';
+import { showNotification } from './utils/notifications.js';
+import { contactConfig } from './config/portfolio-config.js';
 
 // Add to existing PortfolioApp class
 class PortfolioApp {
     constructor() {
         // ... existing properties
-        this.projectGallery = null;
-        this.projectFilter = null;
-        this.githubAPI = null;
-        this.isProjectsInitialized = false;
+        this.contactForm = null;
+        this.emailService = null;
+        this.isContactInitialized = false;
+        this.contactVisibilityObserver = null;
     }
 
     async init() {
@@ -19,8 +22,8 @@ class PortfolioApp {
             
             // ... existing initialization (DOM, components loading, etc.)
             
-            // Initialize projects components
-            await this.initializeProjects();
+            // Initialize contact components
+            await this.initializeContact();
             
             // ... rest of existing initialization
             
@@ -31,187 +34,394 @@ class PortfolioApp {
         }
     }
 
-    async initializeProjects() {
+    async initializeContact() {
         try {
-            console.log('📁 Initializing Projects components...');
+            console.log('📧 Initializing Contact components...');
             
-            // Initialize GitHub API first
-            await this.initializeGitHubAPI();
+            // Initialize email service first
+            await this.initializeEmailService();
             
-            // Initialize project gallery
-            await this.initializeProjectGallery();
+            // Initialize contact form
+            await this.initializeContactForm();
             
-            // Initialize project filters
-            await this.initializeProjectFilter();
+            // Setup contact events
+            this.setupContactEvents();
             
-            // Setup projects event listeners
-            this.setupProjectsEvents();
+            // Setup contact section visibility tracking
+            this.setupContactVisibilityTracking();
             
-            // Load URL state for projects
-            this.loadProjectsURLState();
+            // Setup availability status
+            this.setupAvailabilityStatus();
             
-            this.isProjectsInitialized = true;
-            console.log('✅ Projects components initialized');
+            this.isContactInitialized = true;
+            console.log('✅ Contact components initialized');
             
         } catch (error) {
-            console.error('❌ Error initializing projects:', error);
+            console.error('❌ Error initializing contact:', error);
             throw error;
         }
     }
 
-    async initializeGitHubAPI() {
+    async initializeEmailService() {
         try {
-            this.githubAPI = createGitHubAPI({
-                username: projectsConfig.github.username,
-                token: projectsConfig.github.token
+            this.emailService = createEmailService({
+                primaryProvider: contactConfig.email.provider,
+                fallbackProviders: contactConfig.email.fallbackProviders,
+                enableAutoResponse: contactConfig.email.enableAutoResponse,
+                enableAnalytics: contactConfig.email.enableAnalytics,
+                timeout: contactConfig.email.timeout,
+                retryAttempts: contactConfig.email.retryAttempts,
+                
+                // Provider-specific configurations
+                emailjs: contactConfig.email.emailjs,
+                formspree: contactConfig.email.formspree,
+                netlify: contactConfig.email.netlify
             });
             
-            // Preload some GitHub data in background
-            if (projectsConfig.github.enableAPI) {
-                this.githubAPI.preloadData().catch(error => {
-                    console.warn('GitHub API preload failed:', error);
-                });
-            }
-            
-            console.log('✅ GitHub API initialized');
+            console.log('✅ Email service initialized');
         } catch (error) {
-            console.error('❌ Error initializing GitHub API:', error);
-            // Continue without GitHub API
+            console.error('❌ Error initializing email service:', error);
+            // Continue without email service
         }
     }
 
-    async initializeProjectGallery() {
+    async initializeContactForm() {
         try {
-            // Wait for projects section to be visible or DOM ready
-            await this.waitForElement('#projects');
+            // Wait for contact section to be visible or DOM ready
+            await this.waitForElement('#contact-form');
             
-            this.projectGallery = new ProjectGallery();
+            this.contactForm = new ContactForm();
             
-            console.log('✅ ProjectGallery initialized');
+            console.log('✅ ContactForm initialized');
         } catch (error) {
-            console.error('❌ Error initializing ProjectGallery:', error);
+            console.error('❌ Error initializing ContactForm:', error);
             throw error;
         }
     }
 
-    async initializeProjectFilter() {
-        try {
-            if (!this.projectGallery) {
-                throw new Error('ProjectGallery must be initialized before ProjectFilter');
-            }
-            
-            this.projectFilter = new ProjectFilter(this.projectGallery);
-            
-            console.log('✅ ProjectFilter initialized');
-        } catch (error) {
-            console.error('❌ Error initializing ProjectFilter:', error);
-            throw error;
-        }
+    setupContactEvents() {
+        // Listen for form submission events
+        document.addEventListener('contactFormSubmitted', (event) => {
+            this.handleContactFormSubmitted(event.detail);
+        });
+
+        // Listen for form validation events
+        document.addEventListener('contactFormValidated', (event) => {
+            this.handleContactFormValidated(event.detail);
+        });
+
+        // Listen for email service events
+        document.addEventListener('emailServiceStatusChanged', (event) => {
+            this.handleEmailServiceStatusChanged(event.detail);
+        });
+
+        // Setup social media link tracking
+        this.setupSocialMediaTracking();
+        
+        // Setup download tracking
+        this.setupDownloadTracking();
+        
+        // Setup CTA button tracking
+        this.setupCTATracking();
     }
 
-    setupProjectsEvents() {
-        // Listen for project filter changes
-        document.addEventListener('projectsFiltered', (event) => {
-            this.handleProjectsFiltered(event.detail);
-        });
+    setupContactVisibilityTracking() {
+        const contactSection = document.getElementById('contact');
+        if (!contactSection) return;
 
-        // Listen for project modal events
-        document.addEventListener('projectModalOpened', (event) => {
-            this.handleProjectModalOpened(event.detail);
-        });
+        const options = {
+            threshold: 0.3,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-        document.addEventListener('projectModalClosed', (event) => {
-            this.handleProjectModalClosed(event.detail);
-        });
-
-        // Listen for GitHub data updates
-        document.addEventListener('githubDataUpdated', (event) => {
-            this.handleGitHubDataUpdated(event.detail);
-        });
-
-        // Handle browser back/forward for project URLs
-        window.addEventListener('popstate', (event) => {
-            if (event.state && event.state.filters) {
-                this.loadProjectsURLState();
-            }
-        });
-
-        // Handle intersection with projects section for analytics
-        this.setupProjectsIntersectionObserver();
-    }
-
-    setupProjectsIntersectionObserver() {
-        const projectsSection = document.getElementById('projects');
-        if (!projectsSection) return;
-
-        const observer = new IntersectionObserver((entries) => {
+        this.contactVisibilityObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    this.trackProjectsSectionView();
-                    observer.unobserve(entry.target);
+                    this.trackContactSectionView();
+                    this.contactVisibilityObserver.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.3 });
+        }, options);
 
-        observer.observe(projectsSection);
+        this.contactVisibilityObserver.observe(contactSection);
     }
 
-    loadProjectsURLState() {
-        if (!this.projectFilter) return;
+    setupAvailabilityStatus() {
+        const statusElement = document.querySelector('.availability-status');
+        if (!statusElement) return;
 
-        try {
-            this.projectFilter.loadFiltersFromURL();
-        } catch (error) {
-            console.error('Error loading projects URL state:', error);
+        const availability = contactConfig.personal.availability;
+        const indicator = statusElement.querySelector('.status-indicator');
+        const text = statusElement.querySelector('span');
+
+        if (indicator && text) {
+            indicator.className = `status-indicator ${availability}`;
+            
+            const statusTexts = {
+                available: 'Disponible para nuevos proyectos',
+                busy: 'Ocupado actualmente',
+                unavailable: 'No disponible'
+            };
+            
+            text.textContent = statusTexts[availability] || statusTexts.available;
         }
+
+        // Update working hours if enabled
+        if (contactConfig.ui.enableWorkingHours) {
+            this.updateWorkingHoursDisplay();
+        }
+    }
+
+    updateWorkingHoursDisplay() {
+        const workingHours = contactConfig.personal.workingHours;
+        const timezone = contactConfig.personal.timezone;
+        const now = new Date();
+        const currentDay = now.toLocaleLowerCase().slice(0, 3) + 'day';
+        
+        const todayHours = workingHours[currentDay];
+        
+        if (todayHours) {
+            const isWorkingTime = this.isCurrentlyWorkingHours(todayHours);
+            
+            // Update status based on working hours
+            const statusElement = document.querySelector('.availability-status');
+            if (statusElement && contactConfig.personal.availability === 'available') {
+                const indicator = statusElement.querySelector('.status-indicator');
+                const text = statusElement.querySelector('span');
+                
+                if (isWorkingTime) {
+                    indicator.classList.add('online');
+                    text.textContent = 'En línea ahora';
+                } else {
+                    indicator.classList.remove('online');
+                    text.textContent = `Disponible mañana a las ${todayHours.start}`;
+                }
+            }
+        }
+    }
+
+    isCurrentlyWorkingHours(dayHours) {
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        
+        const [startHour, startMin] = dayHours.start.split(':').map(Number);
+        const [endHour, endMin] = dayHours.end.split(':').map(Number);
+        
+        const startTime = startHour * 60 + startMin;
+        const endTime = endHour * 60 + endMin;
+        
+        return currentTime >= startTime && currentTime <= endTime;
+    }
+
+    setupSocialMediaTracking() {
+        const socialLinks = document.querySelectorAll('.social-link');
+        socialLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const platform = this.getSocialPlatform(link.href);
+                this.trackSocialClick(platform, link.href);
+            });
+        });
+    }
+
+    setupDownloadTracking() {
+        const downloadLinks = document.querySelectorAll('a[download], a[href*=".pdf"]');
+        downloadLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const fileName = link.download || link.href.split('/').pop();
+                this.trackDownload(fileName, link.href);
+            });
+        });
+    }
+
+    setupCTATracking() {
+        const ctaButtons = document.querySelectorAll('.cta-buttons .btn');
+        ctaButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const action = button.textContent.trim();
+                this.trackCTAClick(action, button.href || '#');
+            });
+        });
+    }
+
+    getSocialPlatform(url) {
+        const platforms = {
+            'linkedin.com': 'LinkedIn',
+            'github.com': 'GitHub',
+            'twitter.com': 'Twitter',
+            'instagram.com': 'Instagram',
+            'wa.me': 'WhatsApp',
+            't.me': 'Telegram',
+            'discord': 'Discord',
+            'mailto:': 'Email'
+        };
+
+        for (const [domain, platform] of Object.entries(platforms)) {
+            if (url.includes(domain)) {
+                return platform;
+            }
+        }
+        
+        return 'Unknown';
     }
 
     // Event handlers
-    handleProjectsFiltered(detail) {
-        const { projects, filters, count } = detail;
+    handleContactFormSubmitted(detail) {
+        const { success, data, error } = detail;
         
-        // Track filter usage for analytics
-        if (projectsConfig.analytics.trackFilterUsage) {
-            this.trackFilterUsage(filters);
+        if (success) {
+            // Show success notification
+            showNotification(
+                contactConfig.success?.contact?.emailSent || 
+                '¡Mensaje enviado exitosamente! Te responderé pronto.',
+                'success',
+                { duration: 6000 }
+            );
+            
+            // Track successful submission
+            this.trackFormSubmission(true, data);
+            
+            // Update UI state
+            this.updateContactUIAfterSuccess();
+            
+        } else {
+            // Show error notification
+            showNotification(
+                error || contactConfig.errors?.contact?.submitFailed || 
+                'Error al enviar el mensaje. Por favor, inténtalo de nuevo.',
+                'error',
+                { duration: 8000 }
+            );
+            
+            // Track failed submission
+            this.trackFormSubmission(false, null, error);
         }
-        
-        // Update page title if needed
-        this.updatePageTitleForFilters(filters, count);
-        
-        // Custom event for other components
-        this.emit('projectsStateChanged', { projects, filters, count });
     }
 
-    handleProjectModalOpened(detail) {
-        const { projectId, project } = detail;
+    handleContactFormValidated(detail) {
+        const { isValid, errors, fieldName } = detail;
         
-        // Track modal opens for analytics
-        if (projectsConfig.analytics.trackModalOpens) {
-            this.trackProjectModalOpen(projectId);
+        // Track validation events for analytics
+        if (contactConfig.analytics.trackFormErrors && !isValid) {
+            this.trackFormValidationError(fieldName, errors);
         }
-        
-        // Update meta tags for social sharing
-        this.updateMetaTagsForProject(project);
-        
-        // Pause other animations/videos if any
-        this.pauseBackgroundAnimations();
     }
 
-    handleProjectModalClosed(detail) {
-        // Restore original meta tags
-        this.restoreOriginalMetaTags();
+    handleEmailServiceStatusChanged(detail) {
+        const { status, provider, error } = detail;
         
-        // Resume background animations
-        this.resumeBackgroundAnimations();
+        console.log(`Email service status changed: ${status} (${provider})`);
+        
+        if (status === 'failed') {
+            console.warn(`Email provider ${provider} failed:`, error);
+        }
     }
 
-    handleGitHubDataUpdated(detail) {
-        console.log('GitHub data updated:', detail);
-        
-        // Refresh projects display if needed
-        if (this.projectGallery && detail.repositories) {
-            this.projectGallery.updateProjectsWithGitHubData(detail.repositories);
+    updateContactUIAfterSuccess() {
+        // Update availability status if needed
+        const availability = contactConfig.personal.availability;
+        if (availability === 'busy') {
+            const statusElement = document.querySelector('.availability-status');
+            if (statusElement) {
+                const text = statusElement.querySelector('span');
+                if (text) {
+                    text.textContent = 'Ocupado actualmente - responderé pronto';
+                }
+            }
         }
+        
+        // Show auto-response notification if enabled
+        if (contactConfig.email.enableAutoResponse) {
+            setTimeout(() => {
+                showNotification(
+                    contactConfig.success?.contact?.autoResponse ||
+                    'Recibirás una confirmación en tu email en breve.',
+                    'info',
+                    { duration: 4000 }
+                );
+            }, 2000);
+        }
+    }
+
+    // Analytics methods
+    trackContactSectionView() {
+        if (!contactConfig.analytics.trackFormInteractions || !window.gtag) return;
+        
+        window.gtag('event', 'page_view', {
+            page_title: 'Contact Section',
+            page_location: window.location.href + '#contact'
+        });
+    }
+
+    trackFormSubmission(success, data = null, error = null) {
+        if (!contactConfig.analytics.trackFormSubmission || !window.gtag) return;
+        
+        window.gtag('event', 'form_submit', {
+            event_category: 'Contact Form',
+            event_label: success ? 'success' : 'error',
+            value: success ? 1 : 0,
+            custom_parameters: {
+                subject: data?.subject || '',
+                has_phone: !!(data?.phone),
+                has_budget: !!(data?.budget),
+                message_length: data?.message?.length || 0,
+                error_message: error
+            }
+        });
+        
+        // Track conversion if successful
+        if (success) {
+            window.gtag('event', 'conversion', {
+                send_to: 'AW-CONVERSION_ID/CONVERSION_LABEL' // Replace with actual conversion ID
+            });
+        }
+    }
+
+    trackFormValidationError(fieldName, errors) {
+        if (!window.gtag) return;
+        
+        window.gtag('event', 'form_error', {
+            event_category: 'Contact Form',
+            event_label: fieldName,
+            custom_parameters: {
+                error_message: errors.join(', ')
+            }
+        });
+    }
+
+    trackSocialClick(platform, url) {
+        if (!contactConfig.analytics.trackSocialClicks || !window.gtag) return;
+        
+        window.gtag('event', 'social_click', {
+            event_category: 'Social Media',
+            event_label: platform,
+            custom_parameters: {
+                url: url
+            }
+        });
+    }
+
+    trackDownload(fileName, url) {
+        if (!contactConfig.analytics.trackDownloads || !window.gtag) return;
+        
+        window.gtag('event', 'file_download', {
+            event_category: 'Downloads',
+            event_label: fileName,
+            custom_parameters: {
+                url: url
+            }
+        });
+    }
+
+    trackCTAClick(action, url) {
+        if (!contactConfig.analytics.trackButtonClicks || !window.gtag) return;
+        
+        window.gtag('event', 'cta_click', {
+            event_category: 'Contact CTA',
+            event_label: action,
+            custom_parameters: {
+                url: url
+            }
+        });
     }
 
     // Utility methods
@@ -243,193 +453,102 @@ class PortfolioApp {
         });
     }
 
-    updatePageTitleForFilters(filters, count) {
-        if (filters.category !== 'all' || filters.technology !== 'all' || filters.search) {
-            let titleSuffix = ` (${count} proyecto${count !== 1 ? 's' : ''})`;
-            if (filters.category !== 'all') titleSuffix += ` - ${filters.category}`;
-            if (filters.technology !== 'all') titleSuffix += ` - ${filters.technology}`;
-            if (filters.search) titleSuffix += ` - "${filters.search}"`;
-            
-            document.title = `Proyectos${titleSuffix} | Mi Portfolio`;
-        } else {
-            document.title = 'Proyectos | Mi Portfolio';
+    // Contact-specific utility methods
+    getContactFormData() {
+        if (this.contactForm) {
+            return this.contactForm.getFormData();
+        }
+        return null;
+    }
+
+    isContactFormValid() {
+        if (this.contactForm) {
+            return this.contactForm.isValid();
+        }
+        return false;
+    }
+
+    resetContactForm() {
+        if (this.contactForm) {
+            this.contactForm.reset();
         }
     }
 
-    updateMetaTagsForProject(project) {
-        if (!project) return;
-
-        // Store original meta tags
-        this.originalMetaTags = {
-            title: document.title,
-            description: document.querySelector('meta[name="description"]')?.content,
-            ogTitle: document.querySelector('meta[property="og:title"]')?.content,
-            ogDescription: document.querySelector('meta[property="og:description"]')?.content,
-            ogImage: document.querySelector('meta[property="og:image"]')?.content
-        };
-
-        // Update meta tags
-        document.title = `${project.title} | Mi Portfolio`;
-        
-        this.updateMetaTag('name', 'description', project.description);
-        this.updateMetaTag('property', 'og:title', project.title);
-        this.updateMetaTag('property', 'og:description', project.description);
-        this.updateMetaTag('property', 'og:image', project.image);
-        this.updateMetaTag('name', 'twitter:title', project.title);
-        this.updateMetaTag('name', 'twitter:description', project.description);
-        this.updateMetaTag('name', 'twitter:image', project.image);
-    }
-
-    updateMetaTag(attribute, name, content) {
-        let tag = document.querySelector(`meta[${attribute}="${name}"]`);
-        if (!tag) {
-            tag = document.createElement('meta');
-            tag.setAttribute(attribute, name);
-            document.head.appendChild(tag);
+    testEmailService() {
+        if (this.emailService) {
+            return this.emailService.testConnection();
         }
-        tag.content = content;
+        return Promise.resolve({ error: 'Email service not initialized' });
     }
 
-    restoreOriginalMetaTags() {
-        if (!this.originalMetaTags) return;
-
-        document.title = this.originalMetaTags.title;
-        
-        if (this.originalMetaTags.description) {
-            this.updateMetaTag('name', 'description', this.originalMetaTags.description);
-        }
-        if (this.originalMetaTags.ogTitle) {
-            this.updateMetaTag('property', 'og:title', this.originalMetaTags.ogTitle);
-        }
-        if (this.originalMetaTags.ogDescription) {
-            this.updateMetaTag('property', 'og:description', this.originalMetaTags.ogDescription);
-        }
-        if (this.originalMetaTags.ogImage) {
-            this.updateMetaTag('property', 'og:image', this.originalMetaTags.ogImage);
-        }
-    }
-
-    pauseBackgroundAnimations() {
-        // Pause any background animations when modal is open
-        const heroSection = document.getElementById('hero');
-        if (heroSection) {
-            heroSection.style.animationPlayState = 'paused';
-        }
-    }
-
-    resumeBackgroundAnimations() {
-        // Resume background animations when modal is closed
-        const heroSection = document.getElementById('hero');
-        if (heroSection) {
-            heroSection.style.animationPlayState = 'running';
-        }
-    }
-
-    // Analytics methods
-    trackProjectsSectionView() {
-        if (window.gtag && projectsConfig.analytics.trackProjectViews) {
-            window.gtag('event', 'page_view', {
-                page_title: 'Projects Section',
-                page_location: window.location.href + '#projects'
-            });
-        }
-    }
-
-    trackFilterUsage(filters) {
-        if (!window.gtag) return;
-
-        Object.entries(filters).forEach(([filterType, filterValue]) => {
-            if (filterValue && filterValue !== 'all' && filterValue !== '') {
-                window.gtag('event', 'filter_used', {
-                    event_category: 'Projects',
-                    event_label: `${filterType}:${filterValue}`,
-                    value: 1
-                });
-            }
-        });
-    }
-
-    trackProjectModalOpen(projectId) {
-        if (window.gtag && projectsConfig.analytics.trackModalOpens) {
-            window.gtag('event', 'project_view', {
-                event_category: 'Projects',
-                event_label: projectId,
-                value: 1
-            });
-        }
-    }
-
-    // Public API methods for projects
-    getProjectGallery() {
-        return this.projectGallery;
-    }
-
-    getProjectFilter() {
-        return this.projectFilter;
-    }
-
-    getGitHubAPI() {
-        return this.githubAPI;
-    }
-
-    // Error handling for projects
-    handleProjectsError(error, context = 'projects') {
-        console.error(`Projects error in ${context}:`, error);
+    // Error handling for contact
+    handleContactError(error, context = 'contact') {
+        console.error(`Contact error in ${context}:`, error);
         
         // Show user-friendly error message
-        this.showErrorNotification(
-            projectsConfig.errors?.[context] || 'Ha ocurrido un error en los proyectos.'
-        );
+        const errorMessage = contactConfig.errors?.contact?.[context] || 
+                           'Ha ocurrido un error en la sección de contacto.';
+        
+        showNotification(errorMessage, 'error');
         
         // Track error for analytics
         if (window.gtag) {
             window.gtag('event', 'exception', {
-                description: `Projects error: ${error.message}`,
+                description: `Contact error: ${error.message}`,
                 fatal: false
             });
         }
     }
 
-    showErrorNotification(message) {
-        // Create or show error notification
-        // This could integrate with your notification system
-        console.error('User notification:', message);
+    // Public API methods for contact
+    getContactForm() {
+        return this.contactForm;
     }
 
-    // Custom event emitter
-    emit(eventName, data) {
-        const event = new CustomEvent(eventName, { detail: data });
-        document.dispatchEvent(event);
+    getEmailService() {
+        return this.emailService;
     }
 
     // Cleanup methods
-    destroyProjects() {
-        if (this.projectGallery) {
-            this.projectGallery.destroy();
-            this.projectGallery = null;
+    destroyContact() {
+        if (this.contactForm) {
+            this.contactForm.destroy();
+            this.contactForm = null;
         }
         
-        if (this.projectFilter) {
-            this.projectFilter.destroy();
-            this.projectFilter = null;
+        if (this.contactVisibilityObserver) {
+            this.contactVisibilityObserver.disconnect();
+            this.contactVisibilityObserver = null;
         }
         
-        if (this.githubAPI) {
-            this.githubAPI.clearCache();
-            this.githubAPI = null;
-        }
-        
-        this.isProjectsInitialized = false;
+        this.isContactInitialized = false;
     }
 
     // Add to existing destroy method
     destroy() {
         // ... existing cleanup
-        this.destroyProjects();
+        this.destroyContact();
+    }
+
+    // Custom event emitter for contact events
+    emitContactEvent(eventName, data) {
+        const event = new CustomEvent(eventName, { detail: data });
+        document.dispatchEvent(event);
+    }
+
+    // Health check method
+    getContactHealthStatus() {
+        return {
+            contactFormInitialized: !!this.contactForm,
+            emailServiceInitialized: !!this.emailService,
+            isContactInitialized: this.isContactInitialized,
+            contactSectionVisible: !!document.getElementById('contact'),
+            emailServiceStatus: this.emailService?.getStatus() || null
+        };
     }
 }
 
-// Update DOMContentLoaded listener to include projects
+// Update DOMContentLoaded listener to include contact
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const app = new PortfolioApp();
@@ -437,6 +556,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Make app globally available for debugging
         window.portfolioApp = app;
+        
+        // Add contact-specific global methods for debugging
+        window.debugContact = {
+            getFormData: () => app.getContactFormData(),
+            isFormValid: () => app.isContactFormValid(),
+            resetForm: () => app.resetContactForm(),
+            testEmail: () => app.testEmailService(),
+            getHealthStatus: () => app.getContactHealthStatus()
+        };
         
     } catch (error) {
         console.error('Failed to initialize portfolio app:', error);
