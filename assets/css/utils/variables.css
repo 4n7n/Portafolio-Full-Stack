@@ -1,281 +1,386 @@
 :root {
-    --color-status-completed: #10b981;
-    --color-status-in-progress: #f59e0b;
-    --color-status-archived: #6b7280;
-    --color-status-planning: #8b5cf6;
-
-    --color-category-web: #3b82f6;
-    --color-category-mobile: #10b981;
-    --color-category-api: #f59e0b;
-    --color-category-fullstack: #8b5cf6;
-    --color-category-desktop: #ef4444;
-
-    --color-tech-frontend: #3b82f6;
-    --color-tech-backend: #10b981;
-    --color-tech-database: #f59e0b;
-    --color-tech-tools: #8b5cf6;
-    --color-tech-cloud: #06b6d4;
+    --color-form-valid: #10b981;
+    --color-form-invalid: #ef4444;
+    --color-form-warning: #f59e0b;
+    --color-form-info: #3b82f6;
+    --color-form-focus: var(--color-primary);
     
-    --color-filter-active: var(--color-primary);
-    --color-filter-hover: var(--color-primary-light);
-    --color-filter-disabled: var(--color-text-disabled);
+    /* Form State Colors */
+    --color-form-placeholder: #9ca3af;
+    --color-form-disabled: #d1d5db;
+    --color-form-readonly: #f3f4f6;
+    --color-form-required: var(--color-error);
     
-    --color-modal-backdrop: rgba(0, 0, 0, 0.8);
-    --color-modal-background: var(--color-background);
-    --color-modal-border: var(--color-border);
-    --color-modal-header: var(--color-background-alt);
+    /* Contact Method Colors */
+    --color-contact-email: #3b82f6;
+    --color-contact-phone: #10b981;
+    --color-contact-location: #f59e0b;
+    --color-contact-social: #8b5cf6;
     
-    --color-github-star: #f59e0b;
-    --color-github-fork: #6b7280;
-    --color-github-issue: #ef4444;
-    --color-github-commit: #10b981;
+    /* Availability Status Colors */
+    --color-status-available: #10b981;
+    --color-status-busy: #f59e0b;
+    --color-status-unavailable: #ef4444;
+    --color-status-online: #22c55e;
+    
+    /* Notification Colors */
+    --color-notification-success: #10b981;
+    --color-notification-error: #ef4444;
+    --color-notification-warning: #f59e0b;
+    --color-notification-info: #3b82f6;
+    
+    /* Budget Selection Colors */
+    --color-budget-selected: var(--color-primary);
+    --color-budget-hover: var(--color-primary)20;
+    --color-budget-border: var(--color-border);
+    
+    /* Form Progress Colors */
+    --color-progress-bg: var(--color-border);
+    --color-progress-fill: var(--color-primary);
+    --color-progress-success: var(--color-success);
 }
 
+/* Contact-specific Spacing */
 :root {
-    /* Grid Spacing */
-    --grid-gap-projects: 2rem;
-    --grid-gap-featured: 2rem;
-    --grid-gap-filters: 1rem;
+    /* Form Spacing */
+    --form-padding: 2rem;
+    --form-gap: 1.5rem;
+    --form-group-gap: 1rem;
+    --form-label-spacing: 0.5rem;
+    --form-error-spacing: 0.25rem;
     
-    /* Card Spacing */
-    --card-padding: 1.5rem;
-    --card-margin: 1rem;
-    --card-border-radius: var(--border-radius-xl);
+    /* Input Spacing */
+    --input-padding: 1rem;
+    --input-padding-sm: 0.75rem;
+    --input-padding-lg: 1.25rem;
+    --input-icon-spacing: 3rem;
     
-    /* Modal Spacing */
-    --modal-padding: 2rem;
-    --modal-margin: 1rem;
-    --modal-header-height: 80px;
-    --modal-footer-height: 80px;
+    /* Contact Method Spacing */
+    --contact-method-padding: 1.5rem;
+    --contact-method-gap: 1rem;
+    --contact-icon-size: 48px;
+    --contact-icon-spacing: 1rem;
     
-    /* Filter Spacing */
-    --filter-padding: 2rem;
-    --filter-gap: 1rem;
-    --filter-button-padding: 0.75rem 1.5rem;
+    /* Social Media Spacing */
+    --social-link-size: 44px;
+    --social-link-gap: 1rem;
+    --social-icon-size: 20px;
+    
+    /* FAQ Spacing */
+    --faq-item-padding: 1.5rem;
+    --faq-gap: 1.5rem;
+    --faq-title-spacing: 0.75rem;
+    
+    /* CTA Spacing */
+    --cta-padding: 3rem 2rem;
+    --cta-button-gap: 1rem;
+    --cta-title-spacing: 0.75rem;
+    --cta-description-spacing: 2rem;
+    
+    /* Notification Spacing */
+    --notification-padding: 16px;
+    --notification-gap: 12px;
+    --notification-margin: 10px;
+    --notification-border-width: 4px;
 }
 
-/* Projects-specific Typography */
+/* Contact-specific Typography */
 :root {
-    /* Project Card Typography */
-    --font-size-project-title: 1.25rem;
-    --font-size-project-description: 0.875rem;
-    --font-size-project-meta: 0.75rem;
-    --font-size-tech-tag: 0.75rem;
+    /* Form Typography */
+    --font-size-form-label: 0.875rem;
+    --font-size-form-input: 0.875rem;
+    --font-size-form-error: 0.75rem;
+    --font-size-form-help: 0.75rem;
+    --font-size-form-placeholder: 0.875rem;
     
-    /* Modal Typography */
-    --font-size-modal-title: 1.5rem;
-    --font-size-modal-description: 1rem;
-    --font-size-modal-meta: 0.875rem;
+    /* Contact Info Typography */
+    --font-size-contact-title: 1.5rem;
+    --font-size-contact-method-title: 1rem;
+    --font-size-contact-method-text: 0.875rem;
+    --font-size-contact-link: 0.875rem;
     
-    /* Filter Typography */
-    --font-size-filter-label: 0.875rem;
-    --font-size-filter-button: 0.875rem;
-    --font-size-filter-count: 0.75rem;
+    /* FAQ Typography */
+    --font-size-faq-title: 1.5rem;
+    --font-size-faq-question: 1rem;
+    --font-size-faq-answer: 0.875rem;
+    
+    /* CTA Typography */
+    --font-size-cta-title: 1.5rem;
+    --font-size-cta-description: 1rem;
+    --font-size-cta-button: 0.875rem;
+    
+    /* Notification Typography */
+    --font-size-notification-title: 14px;
+    --font-size-notification-message: 13px;
     
     /* Line Heights */
-    --line-height-project-title: 1.3;
-    --line-height-project-description: 1.5;
-    --line-height-modal-description: 1.7;
+    --line-height-form-input: 1.5;
+    --line-height-form-label: 1.3;
+    --line-height-contact-text: 1.6;
+    --line-height-faq-answer: 1.6;
+    --line-height-cta-description: 1.6;
 }
 
-/* Projects-specific Shadows */
+/* Contact-specific Shadows */
 :root {
-    /* Card Shadows */
-    --shadow-project-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-project-card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-featured-card: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* Form Shadows */
+    --shadow-form-container: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-form-focus: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    --shadow-form-error: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    --shadow-form-success: 0 0 0 3px rgba(16, 185, 129, 0.1);
     
-    /* Modal Shadows */
-    --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    --shadow-modal-header: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    /* Contact Method Shadows */
+    --shadow-contact-method: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-contact-method-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     
-    /* Filter Shadows */
-    --shadow-filter-container: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-filter-dropdown: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    /* Button Shadows */
+    --shadow-submit-button: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-submit-button-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Social Media Shadows */
+    --shadow-social-link: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-social-link-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    
+    /* Notification Shadows */
+    --shadow-notification: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --shadow-notification-hover: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
-/* Projects-specific Transitions */
+/* Contact-specific Transitions */
 :root {
-    /* Card Transitions */
-    --transition-project-card: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-project-image: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-tech-tag: all 0.2s ease-in-out;
+    /* Form Transitions */
+    --transition-form-input: all 0.2s ease-in-out;
+    --transition-form-focus: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    --transition-form-validation: all 0.3s ease-in-out;
     
-    /* Modal Transitions */
-    --transition-modal-backdrop: all 0.3s ease-in-out;
-    --transition-modal-content: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    --transition-modal-scale: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Button Transitions */
+    --transition-submit-button: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-social-button: all 0.2s ease-in-out;
+    --transition-cta-button: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* Filter Transitions */
-    --transition-filter-button: all 0.2s ease-in-out;
-    --transition-filter-state: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Contact Method Transitions */
+    --transition-contact-method: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-contact-hover: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     
-    /* Loading Transitions */
-    --transition-loading-fade: opacity 0.3s ease-in-out;
-    --transition-loading-slide: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Status Transitions */
+    --transition-status-change: all 0.4s ease-in-out;
+    --transition-availability: color 0.3s ease-in-out;
+    
+    /* Notification Transitions */
+    --transition-notification-slide: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-notification-fade: opacity 0.3s ease-in-out;
 }
 
-/* Projects-specific Z-Index */
+/* Contact-specific Z-Index */
 :root {
-    --z-project-card: 1;
-    --z-project-card-hover: 2;
-    --z-featured-badge: 3;
-    --z-filter-dropdown: 10;
-    --z-modal-backdrop: 1040;
-    --z-modal-content: 1050;
-    --z-loading-overlay: 1030;
+    --z-form-dropdown: 100;
+    --z-form-tooltip: 200;
+    --z-contact-modal: 1000;
+    --z-notification-container: 10000;
+    --z-notification-item: 10001;
+    --z-form-validation: 10;
+    --z-availability-status: 5;
 }
 
-/* Projects-specific Breakpoints */
+/* Contact-specific Breakpoints */
 :root {
-    /* Project Grid Breakpoints */
-    --bp-projects-mobile: 320px;
-    --bp-projects-tablet: 768px;
-    --bp-projects-desktop: 1024px;
-    --bp-projects-wide: 1200px;
+    /* Contact Layout Breakpoints */
+    --bp-contact-stack: 1024px;
+    --bp-form-single-column: 768px;
+    --bp-social-stack: 480px;
+    --bp-cta-stack: 640px;
     
-    /* Modal Breakpoints */
-    --bp-modal-mobile: 480px;
-    --bp-modal-tablet: 768px;
+    /* Form Breakpoints */
+    --bp-form-compact: 480px;
+    --bp-input-small: 320px;
+    --bp-budget-stack: 768px;
     
-    /* Filter Breakpoints */
-    --bp-filter-stack: 640px;
+    /* Notification Breakpoints */
+    --bp-notification-full: 640px;
 }
 
-/* Projects-specific Grid Systems */
+/* Contact-specific Grid Systems */
 :root {
-    /* Projects Grid */
-    --grid-projects-mobile: 1fr;
-    --grid-projects-tablet: repeat(2, 1fr);
-    --grid-projects-desktop: repeat(3, 1fr);
-    --grid-projects-wide: repeat(4, 1fr);
+    /* Contact Layout Grid */
+    --grid-contact-desktop: 1fr 1.5fr;
+    --grid-contact-tablet: 1fr;
+    --grid-contact-mobile: 1fr;
     
-    /* Featured Grid */
-    --grid-featured-mobile: 1fr;
-    --grid-featured-tablet: 1fr;
-    --grid-featured-desktop: repeat(2, 1fr);
+    /* Form Grid */
+    --grid-form-row: 1fr 1fr;
+    --grid-form-single: 1fr;
+    --grid-budget-options: repeat(auto-fit, minmax(200px, 1fr));
+    --grid-budget-mobile: 1fr;
     
-    /* Filter Grid */
-    --grid-filters-mobile: 1fr;
-    --grid-filters-desktop: auto 1fr auto;
+    /* FAQ Grid */
+    --grid-faq-desktop: repeat(auto-fit, minmax(280px, 1fr));
+    --grid-faq-mobile: 1fr;
+    
+    /* Social Grid */
+    --grid-social-links: repeat(auto-fit, 44px);
+    --grid-contact-methods: 1fr;
 }
 
-/* Projects-specific Animations */
+/* Contact-specific Animations */
 :root {
     /* Animation Durations */
-    --duration-project-entrance: 0.6s;
-    --duration-filter-change: 0.4s;
-    --duration-modal-open: 0.3s;
-    --duration-loading-spinner: 1s;
+    --duration-form-validation: 0.3s;
+    --duration-form-submission: 0.5s;
+    --duration-notification-slide: 0.3s;
+    --duration-status-pulse: 2s;
+    --duration-button-press: 0.1s;
     
     /* Animation Delays */
-    --delay-project-stagger: 0.1s;
-    --delay-filter-feedback: 0.05s;
-    --delay-modal-content: 0.1s;
+    --delay-form-stagger: 0.1s;
+    --delay-validation-feedback: 0.05s;
+    --delay-success-animation: 0.2s;
+    --delay-notification-auto-hide: 5s;
     
     /* Animation Timing Functions */
-    --easing-project-entrance: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --easing-project-hover: cubic-bezier(0.4, 0, 0.2, 1);
-    --easing-modal-scale: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --easing-filter-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --easing-form-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --easing-form-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --easing-notification-slide: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --easing-status-pulse: ease-in-out;
 }
 
-/* Projects-specific Sizes */
+/* Contact-specific Sizes */
 :root {
-    /* Card Sizes */
-    --size-project-card-min-width: 320px;
-    --size-project-card-max-width: 400px;
-    --size-project-image-height: 200px;
-    --size-featured-image-height: 250px;
+    /* Form Sizes */
+    --size-form-input-height: 44px;
+    --size-form-input-sm: 36px;
+    --size-form-input-lg: 52px;
+    --size-form-textarea-min-height: 120px;
+    --size-form-select-height: 44px;
     
-    /* Tech Tag Sizes */
-    --size-tech-tag-height: 28px;
-    --size-tech-icon: 16px;
+    /* Contact Method Sizes */
+    --size-contact-icon: 48px;
+    --size-contact-method-min-height: 80px;
     
-    /* Modal Sizes */
-    --size-modal-max-width: 800px;
-    --size-modal-max-height: 90vh;
-    --size-modal-image-height: 300px;
+    /* Social Media Sizes */
+    --size-social-link: 44px;
+    --size-social-icon: 20px;
     
-    /* Filter Sizes */
-    --size-filter-button-min-width: 100px;
-    --size-filter-count: 20px;
-    --size-search-input-height: 44px;
+    /* Button Sizes */
+    --size-submit-button-height: 52px;
+    --size-submit-button-min-width: 160px;
+    --size-cta-button-height: 48px;
     
-    /* Loading Sizes */
-    --size-loading-spinner: 40px;
-    --size-loading-spinner-border: 3px;
+    /* Status Indicator Sizes */
+    --size-status-indicator: 12px;
+    --size-status-pulse: 20px;
+    
+    /* Notification Sizes */
+    --size-notification-min-width: 300px;
+    --size-notification-max-width: 400px;
+    --size-notification-icon: 24px;
+    --size-notification-close: 24px;
 }
 
-/* Dark Theme Overrides for Projects */
+/* Dark Theme Overrides for Contact */
 [data-theme="dark"] {
-    /* Project-specific dark mode adjustments */
-    --color-modal-backdrop: rgba(0, 0, 0, 0.9);
-    --shadow-project-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-    --shadow-project-card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-    --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    /* Contact-specific dark mode adjustments */
+    --color-form-placeholder: #6b7280;
+    --color-form-disabled: #374151;
+    --color-form-readonly: #1f2937;
+    
+    --shadow-form-container: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-contact-method: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-notification: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
-/* Responsive Variable Adjustments */
+/* Responsive Variable Adjustments for Contact */
+@media (max-width: 1024px) {
+    :root {
+        /* Adjust grid for tablet */
+        --grid-contact-desktop: 1fr;
+        --form-padding: 1.5rem;
+        --contact-method-padding: 1.25rem;
+        --cta-padding: 2rem 1.5rem;
+    }
+}
+
 @media (max-width: 768px) {
     :root {
         /* Adjust spacing for mobile */
-        --grid-gap-projects: 1rem;
-        --grid-gap-featured: 1.5rem;
-        --card-padding: 1rem;
-        --modal-padding: 1rem;
-        --filter-padding: 1rem;
+        --form-gap: 1rem;
+        --form-group-gap: 0.75rem;
+        --contact-method-gap: 0.75rem;
+        --faq-gap: 1rem;
+        --social-link-gap: 0.75rem;
         
         /* Adjust typography for mobile */
-        --font-size-project-title: 1.125rem;
-        --font-size-modal-title: 1.25rem;
+        --font-size-contact-title: 1.25rem;
+        --font-size-faq-title: 1.25rem;
+        --font-size-cta-title: 1.25rem;
         
-        /* Adjust sizes for mobile */
-        --size-project-image-height: 180px;
-        --size-modal-image-height: 200px;
-        --size-modal-max-height: 95vh;
+        /* Adjust grid for mobile */
+        --grid-form-row: 1fr;
+        --grid-budget-options: 1fr;
+        --grid-faq-desktop: 1fr;
     }
 }
 
 @media (max-width: 480px) {
     :root {
         /* Further mobile adjustments */
-        --grid-gap-projects: 0.75rem;
-        --card-padding: 0.75rem;
-        --modal-padding: 0.75rem;
-        --filter-padding: 0.75rem;
+        --form-padding: 1rem;
+        --contact-method-padding: 1rem;
+        --faq-item-padding: 1rem;
+        --cta-padding: 2rem 1rem;
         
         /* Smaller typography for small screens */
-        --font-size-project-title: 1rem;
-        --font-size-project-description: 0.8rem;
-        --font-size-tech-tag: 0.7rem;
+        --font-size-form-input: 0.8rem;
+        --font-size-contact-method-text: 0.8rem;
+        --font-size-faq-answer: 0.8rem;
         
         /* Smaller sizes for small screens */
-        --size-project-image-height: 160px;
-        --size-modal-image-height: 180px;
-        --size-filter-button-min-width: 80px;
+        --size-contact-icon: 40px;
+        --size-social-link: 40px;
+        --size-submit-button-height: 48px;
+        --size-notification-min-width: auto;
     }
 }
 
-/* High Performance Mode Variables */
+/* High Performance Mode Variables for Contact */
 @media (prefers-reduced-motion: reduce) {
     :root {
         /* Disable or reduce animations */
-        --duration-project-entrance: 0s;
-        --duration-filter-change: 0s;
-        --duration-modal-open: 0s;
-        --transition-project-card: none;
-        --transition-modal-content: none;
-        --transition-filter-state: none;
+        --duration-form-validation: 0s;
+        --duration-notification-slide: 0s;
+        --duration-status-pulse: 0s;
+        --transition-form-input: none;
+        --transition-contact-method: none;
+        --transition-notification-slide: none;
     }
 }
 
-/* High Contrast Mode Variables */
+/* High Contrast Mode Variables for Contact */
 @media (prefers-contrast: high) {
     :root {
         /* Increase contrasts */
-        --color-modal-backdrop: rgba(0, 0, 0, 0.95);
-        --shadow-project-card: 0 0 0 2px var(--color-border);
-        --shadow-project-card-hover: 0 0 0 3px var(--color-primary);
+        --shadow-form-focus: 0 0 0 4px rgba(37, 99, 235, 0.3);
+        --shadow-form-error: 0 0 0 4px rgba(239, 68, 68, 0.3);
+        --shadow-form-success: 0 0 0 4px rgba(16, 185, 129, 0.3);
+        
+        /* Higher contrast borders */
+        --color-form-border: #000;
+        --color-contact-border: #000;
     }
+}
+
+/* Contact Form States */
+:root {
+    /* Validation State Variables */
+    --form-state-pristine: initial;
+    --form-state-valid: var(--color-form-valid);
+    --form-state-invalid: var(--color-form-invalid);
+    --form-state-warning: var(--color-form-warning);
+    --form-state-pending: var(--color-form-info);
+    
+    /* Submit Button States */
+    --button-state-idle: var(--color-primary);
+    --button-state-loading: var(--color-primary);
+    --button-state-success: var(--color-form-valid);
+    --button-state-error: var(--color-form-invalid);
+    --button-state-disabled: var(--color-form-disabled);
 }
