@@ -1,36 +1,66 @@
-// App.js - Contact Integration
-// Update existing assets/js/app.js
+// App.js - Portfolio App with Contact Integration and Experience Timeline
+// Complete integration of contact functionality and experience timeline
 
 import ContactForm from './components/contact-form.js';
+import ExperienceTimeline from './components/experience-timeline.js';
 import { createEmailService } from './services/email-service.js';
 import { showNotification } from './utils/notifications.js';
 import { contactConfig } from './config/portfolio-config.js';
 
-// Add to existing PortfolioApp class
+// Main PortfolioApp class with both contact and experience functionality
 class PortfolioApp {
     constructor() {
-        // ... existing properties
+        // Existing properties
+        this.components = new Map();
+        this.isInitialized = false;
+        
+        // Contact-specific properties
         this.contactForm = null;
         this.emailService = null;
         this.isContactInitialized = false;
         this.contactVisibilityObserver = null;
+        
+        // Experience-specific properties
+        this.experienceTimeline = null;
+        this.isExperienceInitialized = false;
     }
 
     async init() {
         try {
             console.log('🚀 Initializing Portfolio App...');
             
-            // ... existing initialization (DOM, components loading, etc.)
+            // Initialize core components first
+            await this.initializeCore();
             
             // Initialize contact components
             await this.initializeContact();
             
-            // ... rest of existing initialization
+            // Initialize experience timeline
+            await this.initializeExperience();
             
+            // Initialize other existing components
+            await this.initializeOtherComponents();
+            
+            this.isInitialized = true;
             console.log('✅ Portfolio App initialized successfully');
+            
         } catch (error) {
             console.error('❌ Error initializing Portfolio App:', error);
             this.handleInitializationError(error);
+        }
+    }
+
+    async initializeCore() {
+        try {
+            console.log('🔧 Initializing core components...');
+            
+            // Initialize any existing core functionality here
+            // (theme management, navigation, etc.)
+            
+            console.log('✅ Core components initialized');
+        } catch (error) {
+            console.error('❌ Error initializing core:', error);
+            throw error;
         }
     }
 
@@ -58,10 +88,55 @@ class PortfolioApp {
             
         } catch (error) {
             console.error('❌ Error initializing contact:', error);
-            throw error;
+            // Don't throw here - contact is optional
         }
     }
 
+    async initializeExperience() {
+        try {
+            console.log('💼 Initializing Experience Timeline...');
+            
+            // Check if experience section exists
+            const experienceSection = document.querySelector('#experience');
+            if (!experienceSection) {
+                console.log('ℹ️ Experience section not found, skipping timeline initialization');
+                return;
+            }
+
+            // Initialize Experience Timeline
+            this.experienceTimeline = new ExperienceTimeline({
+                container: '#experience-timeline',
+                filtersContainer: '.experience-filters',
+                achievementsContainer: '.achievements-summary',
+                testimonialsContainer: '#testimonials-container',
+                animationDelay: 150,
+                scrollOffset: 100
+            });
+
+            this.isExperienceInitialized = true;
+            console.log('✅ Experience Timeline initialized');
+            
+        } catch (error) {
+            console.error('❌ Error initializing experience timeline:', error);
+            // Don't throw here - experience timeline is optional
+        }
+    }
+
+    async initializeOtherComponents() {
+        try {
+            console.log('🔗 Initializing other components...');
+            
+            // Add initialization for any other existing components
+            // (portfolio gallery, skills charts, etc.)
+            
+            console.log('✅ Other components initialized');
+        } catch (error) {
+            console.error('❌ Error initializing other components:', error);
+            // Continue with initialization
+        }
+    }
+
+    // Contact-specific initialization methods
     async initializeEmailService() {
         try {
             this.emailService = createEmailService({
@@ -95,7 +170,7 @@ class PortfolioApp {
             console.log('✅ ContactForm initialized');
         } catch (error) {
             console.error('❌ Error initializing ContactForm:', error);
-            throw error;
+            // Continue without contact form
         }
     }
 
@@ -264,7 +339,7 @@ class PortfolioApp {
         return 'Unknown';
     }
 
-    // Event handlers
+    // Contact event handlers
     handleContactFormSubmitted(detail) {
         const { success, data, error } = detail;
         
@@ -481,7 +556,31 @@ class PortfolioApp {
         return Promise.resolve({ error: 'Email service not initialized' });
     }
 
-    // Error handling for contact
+    // Experience-specific utility methods
+    getExperienceTimeline() {
+        return this.experienceTimeline;
+    }
+
+    refreshExperienceTimeline() {
+        if (this.experienceTimeline) {
+            this.experienceTimeline.refresh();
+        }
+    }
+
+    // Error handling
+    handleInitializationError(error) {
+        console.error('Portfolio app initialization failed:', error);
+        
+        // Show user-friendly error message
+        if (typeof showNotification === 'function') {
+            showNotification(
+                'Ha ocurrido un error al cargar la aplicación. Por favor, recarga la página.',
+                'error',
+                { duration: 10000 }
+            );
+        }
+    }
+
     handleContactError(error, context = 'contact') {
         console.error(`Contact error in ${context}:`, error);
         
@@ -500,13 +599,45 @@ class PortfolioApp {
         }
     }
 
-    // Public API methods for contact
+    // Public API methods
     getContactForm() {
         return this.contactForm;
     }
 
     getEmailService() {
         return this.emailService;
+    }
+
+    getComponent(name) {
+        return this.components.get(name);
+    }
+
+    // Health check methods
+    getContactHealthStatus() {
+        return {
+            contactFormInitialized: !!this.contactForm,
+            emailServiceInitialized: !!this.emailService,
+            isContactInitialized: this.isContactInitialized,
+            contactSectionVisible: !!document.getElementById('contact'),
+            emailServiceStatus: this.emailService?.getStatus() || null
+        };
+    }
+
+    getExperienceHealthStatus() {
+        return {
+            experienceTimelineInitialized: !!this.experienceTimeline,
+            isExperienceInitialized: this.isExperienceInitialized,
+            experienceSectionVisible: !!document.getElementById('experience')
+        };
+    }
+
+    getOverallHealthStatus() {
+        return {
+            isInitialized: this.isInitialized,
+            contact: this.getContactHealthStatus(),
+            experience: this.getExperienceHealthStatus(),
+            componentsCount: this.components.size
+        };
     }
 
     // Cleanup methods
@@ -524,49 +655,106 @@ class PortfolioApp {
         this.isContactInitialized = false;
     }
 
-    // Add to existing destroy method
-    destroy() {
-        // ... existing cleanup
-        this.destroyContact();
+    destroyExperience() {
+        if (this.experienceTimeline) {
+            this.experienceTimeline.destroy();
+            this.experienceTimeline = null;
+        }
+        
+        this.isExperienceInitialized = false;
     }
 
-    // Custom event emitter for contact events
-    emitContactEvent(eventName, data) {
+    destroy() {
+        // Cleanup contact components
+        this.destroyContact();
+        
+        // Cleanup experience components
+        this.destroyExperience();
+        
+        // Cleanup other components
+        this.components.forEach(component => {
+            if (component && typeof component.destroy === 'function') {
+                component.destroy();
+            }
+        });
+        this.components.clear();
+        
+        this.isInitialized = false;
+    }
+
+    // Custom event emitter
+    emitEvent(eventName, data) {
         const event = new CustomEvent(eventName, { detail: data });
         document.dispatchEvent(event);
     }
-
-    // Health check method
-    getContactHealthStatus() {
-        return {
-            contactFormInitialized: !!this.contactForm,
-            emailServiceInitialized: !!this.emailService,
-            isContactInitialized: this.isContactInitialized,
-            contactSectionVisible: !!document.getElementById('contact'),
-            emailServiceStatus: this.emailService?.getStatus() || null
-        };
-    }
 }
 
-// Update DOMContentLoaded listener to include contact
+// Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        console.log('🎯 Starting Portfolio App initialization...');
+        
         const app = new PortfolioApp();
         await app.init();
         
         // Make app globally available for debugging
         window.portfolioApp = app;
         
-        // Add contact-specific global methods for debugging
-        window.debugContact = {
-            getFormData: () => app.getContactFormData(),
-            isFormValid: () => app.isContactFormValid(),
-            resetForm: () => app.resetContactForm(),
-            testEmail: () => app.testEmailService(),
-            getHealthStatus: () => app.getContactHealthStatus()
+        // Create global debug objects
+        window.portfolioComponents = {
+            experienceTimeline: app.getExperienceTimeline(),
+            contactForm: app.getContactForm(),
+            emailService: app.getEmailService()
         };
         
+        // Add comprehensive debug methods
+        window.debugPortfolio = {
+            // Contact debugging
+            getContactData: () => app.getContactFormData(),
+            isContactValid: () => app.isContactFormValid(),
+            resetContactForm: () => app.resetContactForm(),
+            testEmail: () => app.testEmailService(),
+            
+            // Experience debugging
+            getExperienceTimeline: () => app.getExperienceTimeline(),
+            refreshExperience: () => app.refreshExperienceTimeline(),
+            
+            // General debugging
+            getHealthStatus: () => app.getOverallHealthStatus(),
+            getContactHealth: () => app.getContactHealthStatus(),
+            getExperienceHealth: () => app.getExperienceHealthStatus(),
+            
+            // Component access
+            getApp: () => app,
+            getComponents: () => window.portfolioComponents
+        };
+        
+        console.log('🎉 Portfolio App fully initialized and ready!');
+        
     } catch (error) {
-        console.error('Failed to initialize portfolio app:', error);
+        console.error('❌ Failed to initialize portfolio app:', error);
+        
+        // Fallback initialization for critical components
+        try {
+            console.log('🔄 Attempting fallback initialization...');
+            
+            // Try to initialize experience timeline independently
+            if (document.querySelector('#experience')) {
+                const experienceTimeline = new ExperienceTimeline({
+                    container: '#experience-timeline',
+                    filtersContainer: '.experience-filters',
+                    achievementsContainer: '.achievements-summary',
+                    testimonialsContainer: '#testimonials-container',
+                    animationDelay: 150,
+                    scrollOffset: 100
+                });
+                
+                window.portfolioComponents = { experienceTimeline };
+                console.log('✅ Experience Timeline initialized as fallback');
+            }
+            
+        } catch (fallbackError) {
+            console.error('❌ Fallback initialization also failed:', fallbackError);
+        }
     }
 });
