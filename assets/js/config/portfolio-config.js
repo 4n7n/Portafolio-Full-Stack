@@ -160,6 +160,7 @@ export const contactConfig = {
         enableErrorShaking: true,
         enableProgressBar: false,
         enableFloatingLabels: false,
+        enableWorkingHours: false,
         theme: 'auto', // light, dark, auto
         enableDarkMode: true
     },
@@ -173,7 +174,7 @@ export const contactConfig = {
         enableFieldEncryption: false,
         allowedDomains: [], // Empty array means all domains allowed
         blockDisposableEmails: false,
-        enableBotDetection: true // CORREGIDO: era "enableBot Detection"
+        enableBotDetection: true
     },
 
     // Accessibility Settings
@@ -214,31 +215,155 @@ export const contactConfig = {
     }
 };
 
-// Update existing navigation config to include contact
+// Experience Section Configuration
+export const experienceConfig = {
+    // Animation settings
+    animationDelay: 150,
+    scrollOffset: 100,
+    
+    // Filter settings
+    defaultFilter: 'all',
+    enableFiltering: true,
+    enableFilterAnimations: true,
+    
+    // Display settings
+    showTestimonials: true,
+    maxFeaturedTestimonials: 3,
+    showAchievements: true,
+    enableDetailModal: true,
+    
+    // Skills integration
+    enableSkillsIntegration: true,
+    highlightRelatedSkills: true,
+    showSkillBadges: true,
+    
+    // Counter animation
+    counterDuration: 2000,
+    counterEasing: 'easeOutCubic',
+    enableCounterAnimation: true,
+    
+    // Timeline visual settings
+    timeline: {
+        showLine: true,
+        pointSize: 24,
+        lineWidth: 2,
+        mobileBreakpoint: 768,
+        enableHoverEffects: true,
+        showDates: true,
+        dateFormat: 'MMM YYYY'
+    },
+    
+    // Testimonials settings
+    testimonials: {
+        enableCarousel: false,
+        autoplay: false,
+        autoplayDelay: 5000,
+        showRatings: false,
+        enableLinkedInLinks: true,
+        showPhotos: true,
+        maxVisible: 3
+    },
+    
+    // Interactive features
+    interactions: {
+        enableHoverPreview: true,
+        enableClickToExpand: true,
+        enableKeyboardNavigation: true,
+        enableTooltips: true,
+        enableShareButtons: false
+    },
+    
+    // Performance settings
+    performance: {
+        enableLazyLoading: true,
+        enableVirtualScrolling: false,
+        batchSize: 10,
+        debounceDelay: 300
+    },
+    
+    // Accessibility
+    accessibility: {
+        enableScreenReader: true,
+        enableKeyboardNavigation: true,
+        enableFocusIndicators: true,
+        announceChanges: true
+    }
+};
+
+// Navigation Configuration (updated to include both contact and experience)
 export const navigationConfig = {
-    // ... existing navigation items
     items: [
-        // ... existing items (home, about, skills, projects)
+        {
+            name: 'home',
+            label: 'Inicio',
+            href: '#hero',
+            icon: 'icon-home',
+            order: 1,
+            enabled: true
+        },
+        {
+            name: 'about',
+            label: 'Sobre Mí',
+            href: '#about',
+            icon: 'icon-user',
+            order: 2,
+            enabled: true
+        },
+        {
+            name: 'skills',
+            label: 'Habilidades',
+            href: '#skills',
+            icon: 'icon-code',
+            order: 3,
+            enabled: true
+        },
+        {
+            name: 'experience',
+            label: 'Experiencia',
+            href: '#experience',
+            icon: 'icon-briefcase',
+            order: 4,
+            enabled: true
+        },
+        {
+            name: 'projects',
+            label: 'Proyectos',
+            href: '#projects',
+            icon: 'icon-portfolio',
+            order: 5,
+            enabled: true
+        },
         {
             name: 'contact',
             label: 'Contacto',
             href: '#contact',
             icon: 'icon-mail',
-            order: 5,
+            order: 6,
             enabled: true
         }
-        // ... rest of navigation items
-    ]
+    ],
+    
+    // Navigation behavior
+    behavior: {
+        enableSmoothScroll: true,
+        scrollOffset: 100,
+        highlightOnScroll: true,
+        enableMobileMenu: true,
+        stickyNavigation: true
+    }
 };
 
-// Update scroll spy targets
+// Scroll Spy Configuration (updated to include experience)
 export const scrollSpyConfig = {
-    targets: ['#hero', '#about', '#skills', '#projects', '#contact'],
+    targets: ['#hero', '#about', '#skills', '#experience', '#projects', '#contact'],
     offset: 100,
-    threshold: 0.3
+    threshold: 0.3,
+    enableHistoryUpdate: true,
+    smoothScroll: true,
+    scrollDuration: 800
 };
 
-// Contact form field configurations
+// Contact Form Field Configurations
 export const formFieldsConfig = {
     name: {
         type: 'text',
@@ -344,6 +469,7 @@ export const formFieldsConfig = {
     }
 };
 
+// Error Messages
 export const errorMessages = {
     contact: {
         submitFailed: 'Error al enviar el mensaje. Por favor, inténtalo de nuevo.',
@@ -356,10 +482,22 @@ export const errorMessages = {
         emailServiceDown: 'El servicio de email está temporalmente no disponible.',
         invalidData: 'Los datos enviados no son válidos.',
         sessionExpired: 'Tu sesión ha expirado. Recarga la página e inténtalo de nuevo.'
+    },
+    experience: {
+        loadFailed: 'Error al cargar la información de experiencia.',
+        filterFailed: 'Error al filtrar elementos.',
+        timelineFailed: 'Error al cargar el timeline.',
+        testimonialsFailed: 'Error al cargar testimonios.',
+        animationFailed: 'Error en las animaciones.'
+    },
+    general: {
+        networkError: 'Error de conexión. Verifica tu conexión a internet.',
+        unexpectedError: 'Ha ocurrido un error inesperado. Recarga la página.',
+        dataCorrupted: 'Los datos están corruptos. Contacta al administrador.'
     }
 };
 
-// Success messages
+// Success Messages
 export const successMessages = {
     contact: {
         emailSent: '¡Mensaje enviado exitosamente! Te responderé pronto.',
@@ -367,10 +505,16 @@ export const successMessages = {
         formSaved: 'Tus datos han sido guardados automáticamente.',
         subscribed: 'Te has suscrito exitosamente a las actualizaciones.',
         downloadStarted: 'La descarga de tu CV ha comenzado.'
+    },
+    experience: {
+        loaded: 'Experiencia cargada exitosamente.',
+        filtered: 'Filtros aplicados.',
+        expanded: 'Información expandida.',
+        testimonialLoaded: 'Testimonio cargado.'
     }
 };
 
-// Feature flags for contact
+// Feature Flags
 export const contactFeatureFlags = {
     enableContactForm: true,
     enableEmailIntegration: true,
@@ -385,10 +529,25 @@ export const contactFeatureFlags = {
     enableMapIntegration: false,
     enableTestimonials: false,
     enableContactAnalytics: true,
-    enableABTesting: false // CORREGIDO: era "enableA B Testing"
+    enableABTesting: false
 };
 
-// A/B Testing configurations
+export const experienceFeatureFlags = {
+    enableExperienceSection: true,
+    enableTimeline: true,
+    enableFiltering: true,
+    enableTestimonials: true,
+    enableAchievements: true,
+    enableSkillsIntegration: true,
+    enableAnimations: true,
+    enableModalView: true,
+    enableExport: false,
+    enablePrint: false,
+    enableShare: false,
+    enableExperienceAnalytics: true
+};
+
+// A/B Testing Configurations
 export const abTestingConfig = {
     contact: {
         enabled: false,
@@ -404,17 +563,191 @@ export const abTestingConfig = {
                 trafficSplit: 33
             }
         ]
+    },
+    experience: {
+        enabled: false,
+        experiments: [
+            {
+                name: 'timeline_style',
+                variants: ['vertical', 'horizontal'],
+                trafficSplit: 50
+            },
+            {
+                name: 'filter_position',
+                variants: ['top', 'sidebar'],
+                trafficSplit: 50
+            }
+        ]
     }
 };
 
-// Default export with all configurations
-export default {
+// Theme Configuration
+export const themeConfig = {
+    // Colors for both contact and experience sections
+    colors: {
+        primary: '#007bff',
+        secondary: '#6c757d',
+        success: '#28a745',
+        danger: '#dc3545',
+        warning: '#ffc107',
+        info: '#17a2b8',
+        light: '#f8f9fa',
+        dark: '#343a40',
+        
+        // Experience specific colors
+        timeline: {
+            line: '#e9ecef',
+            point: '#007bff',
+            pointActive: '#0056b3',
+            background: '#ffffff',
+            backgroundAlt: '#f8f9fa'
+        },
+        
+        // Contact specific colors
+        form: {
+            border: '#ced4da',
+            focus: '#80bdff',
+            error: '#dc3545',
+            success: '#28a745'
+        }
+    },
+    
+    // Typography
+    typography: {
+        fontFamily: {
+            primary: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            secondary: '"Poppins", sans-serif',
+            mono: '"Fira Code", "Consolas", monospace'
+        },
+        fontSize: {
+            xs: '0.75rem',
+            sm: '0.875rem',
+            base: '1rem',
+            lg: '1.125rem',
+            xl: '1.25rem',
+            '2xl': '1.5rem',
+            '3xl': '1.875rem',
+            '4xl': '2.25rem'
+        }
+    },
+    
+    // Spacing
+    spacing: {
+        xs: '0.25rem',
+        sm: '0.5rem',
+        md: '1rem',
+        lg: '1.5rem',
+        xl: '2rem',
+        '2xl': '3rem',
+        '3xl': '4rem'
+    },
+    
+    // Breakpoints
+    breakpoints: {
+        sm: '576px',
+        md: '768px',
+        lg: '992px',
+        xl: '1200px',
+        '2xl': '1400px'
+    }
+};
+
+// Animation Configuration
+export const animationConfig = {
+    // Duration presets
+    duration: {
+        fast: 200,
+        normal: 300,
+        slow: 500,
+        verySlow: 800
+    },
+    
+    // Easing functions
+    easing: {
+        linear: 'linear',
+        easeIn: 'ease-in',
+        easeOut: 'ease-out',
+        easeInOut: 'ease-in-out',
+        bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        smooth: 'cubic-bezier(0.4, 0, 0.2, 1)'
+    },
+    
+    // Animation presets
+    presets: {
+        fadeIn: {
+            from: { opacity: 0 },
+            to: { opacity: 1 },
+            duration: 300
+        },
+        slideUp: {
+            from: { opacity: 0, transform: 'translateY(20px)' },
+            to: { opacity: 1, transform: 'translateY(0)' },
+            duration: 400
+        },
+        scaleIn: {
+            from: { opacity: 0, transform: 'scale(0.9)' },
+            to: { opacity: 1, transform: 'scale(1)' },
+            duration: 300
+        }
+    }
+};
+
+// Complete Portfolio Configuration Object
+export const portfolioConfig = {
+    // Core sections
     contact: contactConfig,
+    experience: experienceConfig,
     navigation: navigationConfig,
     scrollSpy: scrollSpyConfig,
+    
+    // Form and data
     formFields: formFieldsConfig,
+    
+    // Messages
     errors: errorMessages,
     success: successMessages,
-    features: contactFeatureFlags,
-    abTesting: abTestingConfig
+    
+    // Feature flags
+    features: {
+        contact: contactFeatureFlags,
+        experience: experienceFeatureFlags
+    },
+    
+    // Testing and optimization
+    abTesting: abTestingConfig,
+    
+    // Design system
+    theme: themeConfig,
+    animations: animationConfig,
+    
+    // Global settings
+    global: {
+        enableAnalytics: true,
+        enableErrorTracking: true,
+        enablePerformanceMonitoring: true,
+        enableAccessibility: true,
+        enableResponsiveDesign: true,
+        enableDarkMode: true,
+        enablePWA: false,
+        enableOfflineMode: false
+    }
+};
+
+// Backward compatibility exports
+export default portfolioConfig;
+
+// Individual section exports for modular usage
+export {
+    contactConfig,
+    experienceConfig,
+    navigationConfig,
+    scrollSpyConfig,
+    formFieldsConfig,
+    errorMessages,
+    successMessages,
+    contactFeatureFlags,
+    experienceFeatureFlags,
+    abTestingConfig,
+    themeConfig,
+    animationConfig
 };
