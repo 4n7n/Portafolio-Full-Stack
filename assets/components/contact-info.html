@@ -1,0 +1,669 @@
+<template id="contact-method-email-template">
+    <div class="contact-method" data-contact-type="email">
+        <div class="contact-icon email">
+            <i class="icon-mail"></i>
+        </div>
+        <div class="contact-details">
+            <h4>Email</h4>
+            <p class="contact-value">tu@email.com</p>
+            <a href="mailto:tu@email.com?subject=Consulta desde Portfolio" class="contact-link">
+                Enviar Email
+            </a>
+        </div>
+    </div>
+</template>
+
+<template id="contact-method-phone-template">
+    <div class="contact-method" data-contact-type="phone">
+        <div class="contact-icon phone">
+            <i class="icon-phone"></i>
+        </div>
+        <div class="contact-details">
+            <h4>Teléfono</h4>
+            <p class="contact-value">+34 123 456 789</p>
+            <a href="tel:+34123456789" class="contact-link">
+                Llamar Ahora
+            </a>
+        </div>
+    </div>
+</template>
+
+<!-- WhatsApp Contact Method Template -->
+<template id="contact-method-whatsapp-template">
+    <div class="contact-method" data-contact-type="whatsapp">
+        <div class="contact-icon phone">
+            <i class="icon-message-circle"></i>
+        </div>
+        <div class="contact-details">
+            <h4>WhatsApp</h4>
+            <p class="contact-value">+34 123 456 789</p>
+            <a href="https://wa.me/34123456789?text=Hola%2C%20me%20interesa%20hablar%20sobre%20un%20proyecto" 
+               target="_blank" rel="noopener" class="contact-link">
+                Enviar Mensaje
+            </a>
+        </div>
+    </div>
+</template>
+
+<!-- Location Contact Method Template -->
+<template id="contact-method-location-template">
+    <div class="contact-method" data-contact-type="location">
+        <div class="contact-icon location">
+            <i class="icon-map-pin"></i>
+        </div>
+        <div class="contact-details">
+            <h4>Ubicación</h4>
+            <p class="contact-value">Madrid, España</p>
+            <p class="timezone">UTC+1 (CET)</p>
+        </div>
+    </div>
+</template>
+
+<!-- Social Media Link Template -->
+<template id="social-link-template">
+    <a href="#" target="_blank" rel="noopener" class="social-link" aria-label="">
+        <i class="social-icon"></i>
+    </a>
+</template>
+
+<!-- Availability Status Template -->
+<template id="availability-status-template">
+    <div class="availability-status">
+        <div class="status-indicator available"></div>
+        <span class="status-text">Disponible para nuevos proyectos</span>
+    </div>
+</template>
+
+<!-- Working Hours Template -->
+<template id="working-hours-template">
+    <div class="working-hours">
+        <h4>Horario de Trabajo</h4>
+        <div class="hours-list">
+            <div class="hours-item">
+                <span class="day">Lunes - Viernes</span>
+                <span class="time">09:00 - 18:00</span>
+            </div>
+            <div class="hours-item">
+                <span class="day">Fin de Semana</span>
+                <span class="time">Solo emergencias</span>
+            </div>
+        </div>
+        <div class="current-time">
+            <span class="current-time-label">Hora actual:</span>
+            <span class="current-time-value">--:--</span>
+        </div>
+    </div>
+</template>
+
+<!-- FAQ Item Template -->
+<template id="faq-item-template">
+    <div class="faq-item">
+        <h4 class="faq-question"></h4>
+        <p class="faq-answer"></p>
+    </div>
+</template>
+
+<!-- Contact CTA Template -->
+<template id="contact-cta-template">
+    <div class="contact-cta">
+        <div class="cta-content">
+            <h3 class="cta-title">¿Listo para empezar tu proyecto?</h3>
+            <p class="cta-description">
+                No dudes en contactarme. Hablemos sobre cómo puedo ayudarte a hacer realidad tu idea.
+            </p>
+            <div class="cta-buttons">
+                <a href="mailto:tu@email.com?subject=Consulta desde Portfolio" class="btn btn-primary">
+                    <i class="icon-mail"></i>
+                    Enviar Email Directo
+                </a>
+                <a href="assets/documents/cv-es.pdf" download class="btn btn-secondary">
+                    <i class="icon-download"></i>
+                    Descargar CV
+                </a>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Contact Stats Template -->
+<template id="contact-stats-template">
+    <div class="contact-stats">
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="icon-clock"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-value">24h</span>
+                <span class="stat-label">Tiempo de respuesta</span>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="icon-globe"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-value">Global</span>
+                <span class="stat-label">Clientes</span>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="icon-check"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-value">100%</span>
+                <span class="stat-label">Satisfacción</span>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Contact Form Success Message Template -->
+<template id="contact-success-template">
+    <div class="contact-success">
+        <div class="success-icon">
+            <i class="icon-check-circle"></i>
+        </div>
+        <div class="success-content">
+            <h3>¡Mensaje Enviado!</h3>
+            <p>Gracias por contactarme. Te responderé lo antes posible, normalmente dentro de 24 horas.</p>
+            <div class="success-actions">
+                <button class="btn btn-primary" onclick="location.reload()">
+                    Enviar Otro Mensaje
+                </button>
+                <a href="#projects" class="btn btn-secondary">
+                    Ver Mis Proyectos
+                </a>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Contact Form Error Template -->
+<template id="contact-error-template">
+    <div class="contact-error">
+        <div class="error-icon">
+            <i class="icon-alert-circle"></i>
+        </div>
+        <div class="error-content">
+            <h3>Error al Enviar</h3>
+            <p class="error-message">
+                Ha ocurrido un error al enviar tu mensaje. Por favor, inténtalo de nuevo o contáctame directamente por email.
+            </p>
+            <div class="error-actions">
+                <button class="btn btn-primary" onclick="this.closest('.contact-error').style.display='none'">
+                    Intentar de Nuevo
+                </button>
+                <a href="mailto:tu@email.com" class="btn btn-secondary">
+                    Email Directo
+                </a>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Contact Form Validation Message Template -->
+<template id="validation-message-template">
+    <div class="validation-message" role="alert">
+        <i class="validation-icon"></i>
+        <span class="validation-text"></span>
+    </div>
+</template>
+
+<!-- Contact Method Skeleton Loading Template -->
+<template id="contact-skeleton-template">
+    <div class="contact-method skeleton">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-content">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-link"></div>
+        </div>
+    </div>
+</template>
+
+<!-- Contact Form Loading Template -->
+<template id="form-loading-template">
+    <div class="form-loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Enviando mensaje...</p>
+    </div>
+</template>
+
+<!-- Contact Section CSS for Templates -->
+<style>
+/* Template-specific styles */
+.contact-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+    padding: 2rem;
+    background: var(--color-background-alt);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-border);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+}
+
+/* Working Hours Styles */
+.working-hours {
+    background: var(--color-background);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-border);
+    margin-bottom: 1.5rem;
+}
+
+.working-hours h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+}
+
+.hours-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.hours-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.hours-item:last-child {
+    border-bottom: none;
+}
+
+.day {
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.time {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.current-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--color-primary)10;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-primary)30;
+}
+
+.current-time-label {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.current-time-value {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-family: 'Fira Code', monospace;
+}
+
+/* Success/Error Message Styles */
+.contact-success,
+.contact-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 2rem;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid;
+    margin: 2rem 0;
+}
+
+.contact-success {
+    background: var(--color-success)10;
+    border-color: var(--color-success)30;
+    color: var(--color-success);
+}
+
+.contact-error {
+    background: var(--color-error)10;
+    border-color: var(--color-error)30;
+    color: var(--color-error);
+}
+
+.success-icon,
+.error-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.success-icon {
+    background: var(--color-success);
+    color: white;
+}
+
+.error-icon {
+    background: var(--color-error);
+    color: white;
+}
+
+.success-content h3,
+.error-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-primary);
+}
+
+.success-content p,
+.error-content p {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+}
+
+.success-actions,
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Validation Message Styles */
+.validation-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--border-radius-md);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    margin-top: 0.25rem;
+}
+
+.validation-message.error {
+    background: var(--color-error)10;
+    color: var(--color-error);
+    border: 1px solid var(--color-error)30;
+}
+
+.validation-message.success {
+    background: var(--color-success)10;
+    color: var(--color-success);
+    border: 1px solid var(--color-success)30;
+}
+
+.validation-message.warning {
+    background: var(--color-warning)10;
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning)30;
+}
+
+.validation-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+/* Skeleton Loading Styles */
+.contact-method.skeleton {
+    pointer-events: none;
+}
+
+.skeleton-icon,
+.skeleton-title,
+.skeleton-text,
+.skeleton-link {
+    background: linear-gradient(90deg, var(--color-border) 25%, var(--color-background) 50%, var(--color-border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.skeleton-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-lg);
+}
+
+.skeleton-title {
+    height: 20px;
+    width: 80px;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-text {
+    height: 16px;
+    width: 120px;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-link {
+    height: 14px;
+    width: 90px;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .contact-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .stat-item {
+        justify-content: center;
+    }
+    
+    .stat-content {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .success-actions,
+    .error-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .success-actions .btn,
+    .error-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-success,
+    .contact-error {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+    
+    .working-hours {
+        padding: 1rem;
+    }
+    
+    .hours-item {
+        flex-direction: column;
+        gap: 0.25rem;
+        text-align: center;
+        padding: 0.75rem 0;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .contact-stats,
+    .working-hours,
+    .contact-success,
+    .contact-error,
+    .validation-message {
+        border-width: 2px;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .skeleton-icon,
+    .skeleton-title,
+    .skeleton-text,
+    .skeleton-link {
+        animation: none;
+    }
+}
+</style>
+
+<!-- JavaScript for Template Usage -->
+<script>
+// Utility functions for using contact templates
+window.ContactTemplates = {
+    // Create contact method from template
+    createContactMethod(type, data) {
+        const template = document.getElementById(`contact-method-${type}-template`);
+        if (!template) return null;
+        
+        const clone = template.content.cloneNode(true);
+        const method = clone.querySelector('.contact-method');
+        
+        // Populate with data
+        if (data.value) {
+            method.querySelector('.contact-value').textContent = data.value;
+        }
+        if (data.link) {
+            const link = method.querySelector('.contact-link');
+            if (link) link.href = data.link;
+        }
+        if (data.timezone) {
+            const timezone = method.querySelector('.timezone');
+            if (timezone) timezone.textContent = data.timezone;
+        }
+        
+        return clone;
+    },
+    
+    // Create social link from template
+    createSocialLink(platform, url) {
+        const template = document.getElementById('social-link-template');
+        if (!template) return null;
+        
+        const clone = template.content.cloneNode(true);
+        const link = clone.querySelector('.social-link');
+        
+        link.href = url;
+        link.setAttribute('aria-label', platform);
+        link.querySelector('.social-icon').className = `social-icon icon-${platform.toLowerCase()}`;
+        
+        return clone;
+    },
+    
+    // Create FAQ item from template
+    createFAQItem(question, answer) {
+        const template = document.getElementById('faq-item-template');
+        if (!template) return null;
+        
+        const clone = template.content.cloneNode(true);
+        clone.querySelector('.faq-question').textContent = question;
+        clone.querySelector('.faq-answer').textContent = answer;
+        
+        return clone;
+    },
+    
+    // Show success message
+    showSuccessMessage() {
+        const template = document.getElementById('contact-success-template');
+        if (!template) return null;
+        
+        return template.content.cloneNode(true);
+    },
+    
+    // Show error message
+    showErrorMessage(message) {
+        const template = document.getElementById('contact-error-template');
+        if (!template) return null;
+        
+        const clone = template.content.cloneNode(true);
+        if (message) {
+            clone.querySelector('.error-message').textContent = message;
+        }
+        
+        return clone;
+    },
+    
+    // Create validation message
+    createValidationMessage(type, text) {
+        const template = document.getElementById('validation-message-template');
+        if (!template) return null;
+        
+        const clone = template.content.cloneNode(true);
+        const message = clone.querySelector('.validation-message');
+        
+        message.className = `validation-message ${type}`;
+        message.querySelector('.validation-text').textContent = text;
+        
+        const iconClass = {
+            error: 'icon-alert-circle',
+            success: 'icon-check-circle',
+            warning: 'icon-alert-triangle',
+            info: 'icon-info'
+        };
+        
+        message.querySelector('.validation-icon').className = `validation-icon ${iconClass[type] || iconClass.info}`;
+        
+        return clone;
+    }
+};
+</script>
