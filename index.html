@@ -1,144 +1,362 @@
-<!-- Experience Section - Después de Projects -->
-<section id="experience" class="experience" aria-labelledby="experience-title">
-  <div class="container">
-    <!-- Section Header -->
-    <header class="section-header">
-      <span class="section-number" aria-hidden="true">06</span>
-      <h2 id="experience-title" class="section-title">
-        <span class="title-line">Mi</span>
-        <span class="title-highlight">Experiencia</span>
-      </h2>
-      <p class="section-description">
-        Trayectoria profesional y educativa que me ha formado como desarrollador
-      </p>
-    </header>
-
-    <!-- Experience Filters -->
-    <div class="experience-filters" role="tablist">
-      <button 
-        class="filter-btn active" 
-        data-filter="all"
-        role="tab"
-        aria-selected="true"
-        aria-controls="experience-timeline"
-      >
-        <i class="icon" data-lucide="briefcase"></i>
-        <span>Todo</span>
-        <span class="count" data-count="all">0</span>
-      </button>
-      <button 
-        class="filter-btn" 
-        data-filter="work"
-        role="tab"
-        aria-selected="false"
-        aria-controls="experience-timeline"
-      >
-        <i class="icon" data-lucide="building-2"></i>
-        <span>Trabajo</span>
-        <span class="count" data-count="work">0</span>
-      </button>
-      <button 
-        class="filter-btn" 
-        data-filter="freelance"
-        role="tab"
-        aria-selected="false"
-        aria-controls="experience-timeline"
-      >
-        <i class="icon" data-lucide="user"></i>
-        <span>Freelance</span>
-        <span class="count" data-count="freelance">0</span>
-      </button>
-      <button 
-        class="filter-btn" 
-        data-filter="education"
-        role="tab"
-        aria-selected="false"
-        aria-controls="experience-timeline"
-      >
-        <i class="icon" data-lucide="graduation-cap"></i>
-        <span>Educación</span>
-        <span class="count" data-count="education">0</span>
-      </button>
-    </div>
-
-    <!-- Timeline Container -->
-    <div class="timeline-container" id="experience-timeline" role="tabpanel">
-      <div class="timeline-line" aria-hidden="true"></div>
-      
-      <!-- Timeline items will be injected here -->
-      <div class="timeline-items">
-        <!-- Loading skeleton -->
-        <div class="timeline-loading">
-          <div class="timeline-skeleton" aria-hidden="true">
-            <div class="skeleton-point"></div>
-            <div class="skeleton-card">
-              <div class="skeleton-header"></div>
-              <div class="skeleton-content">
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line short"></div>
-                <div class="skeleton-tags"></div>
-              </div>
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portafolio Full-Stack Developer - Desarrollo web moderno con React, Node.js, Python y más">
+    <meta name="keywords" content="desarrollador, full-stack, react, nodejs, python, portafolio, web developer">
+    <meta name="author" content="Tu Nombre">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Mi Portafolio - Full-Stack Developer">
+    <meta property="og:description" content="Desarrollador Full-Stack especializado en tecnologías modernas">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tu-dominio.com">
+    <meta property="og:image" content="./assets/images/profile/og-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="./assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="./assets/images/apple-touch-icon.png">
+    
+    <!-- Preload Critical Assets -->
+    <link rel="preload" href="./assets/css/main.css" as="style">
+    <link rel="preload" href="./assets/fonts/inter/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="./assets/css/main.css">
+    
+    <!-- Title -->
+    <title>Mi Portafolio - Full-Stack Developer</title>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Tu Nombre",
+        "jobTitle": "Full-Stack Developer",
+        "url": "https://tu-dominio.com",
+        "sameAs": [
+            "https://github.com/tu-usuario",
+            "https://linkedin.com/in/tu-usuario",
+            "https://twitter.com/tu-usuario"
+        ]
+    }
+    </script>
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link sr-only">Saltar al contenido principal</a>
+    
+    <!-- Reading Progress Bar -->
+    <!-- Will be created dynamically by ProgressIndicators -->
+    
+    <!-- Navigation -->
+    <nav id="navbar-container">
+        <!-- Will be loaded dynamically from components/navbar.html -->
+    </nav>
+    
+    <!-- Section Progress Indicators -->
+    <!-- Will be created dynamically by ProgressIndicators -->
+    
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section id="hero" class="hero-section parallax-container" data-section="hero">
+            <!-- Parallax Background Layers -->
+            <div class="parallax-layer parallax-background" data-parallax="0.1" data-parallax-layer="far-background">
+                <div class="animated-background">
+                    <div class="background-particles"></div>
+                    <div class="geometric-background"></div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Testimonials Section -->
-    <div class="testimonials-preview">
-      <h3 class="testimonials-title">
-        <i class="icon" data-lucide="quote"></i>
-        Testimonials
-      </h3>
-      <div class="testimonials-grid" id="testimonials-container">
-        <!-- Testimonials will be injected here -->
-      </div>
-    </div>
-
-    <!-- Achievement Summary -->
-    <div class="achievements-summary">
-      <h3 class="achievements-title">
-        <i class="icon" data-lucide="trophy"></i>
-        Logros Destacados
-      </h3>
-      <div class="achievements-grid">
-        <div class="achievement-item" data-animate="counter">
-          <div class="achievement-icon">
-            <i data-lucide="calendar"></i>
-          </div>
-          <div class="achievement-content">
-            <span class="achievement-number" data-target="0">0</span>
-            <span class="achievement-label">Años de Experiencia</span>
-          </div>
-        </div>
-        <div class="achievement-item" data-animate="counter">
-          <div class="achievement-icon">
-            <i data-lucide="building"></i>
-          </div>
-          <div class="achievement-content">
-            <span class="achievement-number" data-target="0">0</span>
-            <span class="achievement-label">Empresas</span>
-          </div>
-        </div>
-        <div class="achievement-item" data-animate="counter">
-          <div class="achievement-icon">
-            <i data-lucide="users"></i>
-          </div>
-          <div class="achievement-content">
-            <span class="achievement-number" data-target="0">0</span>
-            <span class="achievement-label">Proyectos en Equipo</span>
-          </div>
-        </div>
-        <div class="achievement-item" data-animate="counter">
-          <div class="achievement-icon">
-            <i data-lucide="award"></i>
-          </div>
-          <div class="achievement-content">
-            <span class="achievement-number" data-target="0">0</span>
-            <span class="achievement-label">Certificaciones</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+            
+            <div class="parallax-layer parallax-midground" data-parallax="0.3" data-parallax-layer="background">
+                <div class="hero-bg-overlay"></div>
+            </div>
+            
+            <div class="hero-content parallax-layer parallax-foreground" data-parallax="0.1" data-parallax-layer="foreground">
+                <div class="container">
+                    <div class="hero-grid">
+                        <!-- Text Content -->
+                        <div class="hero-text" data-reveal="slideUp" data-reveal-delay="200">
+                            <div class="hero-greeting" data-text-effect="typewriter" data-speed="80">
+                                ¡Hola! Soy
+                            </div>
+                            
+                            <h1 class="hero-name" data-reveal="scale" data-reveal-delay="400">
+                                <span class="text-gradient">Tu Nombre</span>
+                            </h1>
+                            
+                            <div class="hero-role">
+                                <span>Soy </span>
+                                <span class="typing-text" data-text-effect="scramble" data-speed="40" data-original-text="Full-Stack Developer">
+                                    Full-Stack Developer
+                                </span>
+                            </div>
+                            
+                            <p class="hero-description" data-reveal="fadeUp" data-reveal-delay="800" data-text-effect="reveal">
+                                Creo experiencias web excepcionales combinando diseño moderno con código limpio. 
+                                Especializado en React, Node.js y tecnologías de vanguardia.
+                            </p>
+                            
+                            <!-- CTA Buttons -->
+                            <div class="hero-actions" data-reveal="fadeUp" data-reveal-delay="1000">
+                                <a href="#projects" class="btn btn-primary morph-button" data-morph="scale">
+                                    <span>Ver Proyectos</span>
+                                    <i class="icon-arrow-right"></i>
+                                </a>
+                                <a href="#contact" class="btn btn-outline morph-button" data-morph="scale">
+                                    <span>Contactar</span>
+                                    <i class="icon-mail"></i>
+                                </a>
+                            </div>
+                            
+                            <!-- Social Links -->
+                            <div class="hero-social" data-reveal="fadeUp" data-reveal-delay="1200">
+                                <a href="https://github.com/tu-usuario" target="_blank" rel="noopener" 
+                                   class="social-link" data-morph="rotate" aria-label="GitHub">
+                                    <i class="icon-github"></i>
+                                </a>
+                                <a href="https://linkedin.com/in/tu-usuario" target="_blank" rel="noopener" 
+                                   class="social-link" data-morph="rotate" aria-label="LinkedIn">
+                                    <i class="icon-linkedin"></i>
+                                </a>
+                                <a href="https://twitter.com/tu-usuario" target="_blank" rel="noopener" 
+                                   class="social-link" data-morph="rotate" aria-label="Twitter">
+                                    <i class="icon-twitter"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Hero Image -->
+                        <div class="hero-image" data-reveal="scale" data-reveal-delay="600">
+                            <div class="image-container morph-image" data-morph="scale">
+                                <img src="./assets/images/profile/hero-avatar.jpg" 
+                                     alt="Tu Nombre - Full-Stack Developer" 
+                                     class="profile-image"
+                                     loading="eager">
+                                <div class="image-decoration"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Scroll Indicator -->
+                <div class="scroll-indicator" data-reveal="bounce" data-reveal-delay="1400">
+                    <div class="scroll-arrow">
+                        <i class="icon-chevron-down"></i>
+                    </div>
+                    <span class="scroll-text" data-text-effect="wave">Scroll para explorar</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section id="about" class="about-section" data-section="about">
+            <div class="container">
+                <!-- Section Header -->
+                <header class="section-header" data-reveal="fadeUp">
+                    <span class="section-number" data-text-effect="typewriter">01</span>
+                    <h2 class="section-title">
+                        <span data-text-effect="scramble">Sobre</span> 
+                        <span class="text-gradient" data-text-effect="reveal">Mí</span>
+                    </h2>
+                    <div class="section-line"></div>
+                </header>
+                
+                <div class="about-content">
+                    <div class="about-grid">
+                        <!-- Text Content -->
+                        <div class="about-text" data-stagger="sequential" data-stagger-delay="100">
+                            <div data-reveal="slideUp">
+                                <p class="about-intro" data-text-effect="reveal">
+                                    Soy un desarrollador apasionado por crear soluciones web innovadoras 
+                                    que combinan funcionalidad excepcional con diseño atractivo.
+                                </p>
+                            </div>
+                            
+                            <div data-reveal="slideUp">
+                                <p data-text-effect="reveal">
+                                    Con más de 3 años de experiencia en desarrollo full-stack, 
+                                    me especializo en tecnologías modernas como React, Node.js, 
+                                    Python y bases de datos NoSQL.
+                                </p>
+                            </div>
+                            
+                            <!-- Highlights -->
+                            <div class="about-highlights" data-reveal="slideUp">
+                                <ul class="highlights-list" data-stagger="sequential">
+                                    <li data-reveal="slideLeft">
+                                        <i class="icon-check text-accent"></i>
+                                        <span data-text-effect="reveal">Desarrollo Full-Stack con tecnologías modernas</span>
+                                    </li>
+                                    <li data-reveal="slideLeft">
+                                        <i class="icon-check text-accent"></i>
+                                        <span data-text-effect="reveal">Diseño UX/UI centrado en el usuario</span>
+                                    </li>
+                                    <li data-reveal="slideLeft">
+                                        <i class="icon-check text-accent"></i>
+                                        <span data-text-effect="reveal">Optimización de performance y SEO</span>
+                                    </li>
+                                    <li data-reveal="slideLeft">
+                                        <i class="icon-check text-accent"></i>
+                                        <span data-text-effect="reveal">Metodologías ágiles y buenas prácticas</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Technologies -->
+                            <div class="about-tech" data-reveal="fadeUp" data-reveal-delay="400">
+                                <h3 data-text-effect="scramble">Tecnologías que uso:</h3>
+                                <div class="tech-grid" data-stagger="random" data-stagger-delay="50">
+                                    <span class="tech-item" data-reveal="scale" data-morph="scale">React</span>
+                                    <span class="tech-item" data-reveal="scale" data-morph="scale">Node.js</span>
+                                    <span class="tech-item" data-reveal="scale" data-morph="scale">Python</span>
+                                    <span class="tech-item" data-reveal="scale" data-morph="scale">TypeScript</span>
+                                    <span class="tech-item" data-reveal="scale" data-morph="scale">MongoDB</span>
+                                    <span class="tech-item" data-reveal="scale" data-morph="scale">PostgreSQL</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Image and Stats -->
+                        <div class="about-visual">
+                            <!-- About Image -->
+                            <div class="about-image" data-reveal="scale" data-reveal-delay="200">
+                                <div class="image-container morph-image" data-morph="blur">
+                                    <img src="./assets/images/profile/about-me.jpg" 
+                                         alt="Trabajando en proyectos de desarrollo"
+                                         loading="lazy">
+                                    <div class="image-overlay"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Statistics -->
+                            <div class="about-stats" data-stagger="sequential" data-stagger-delay="150">
+                                <div class="stat-item" data-reveal="scale">
+                                    <div class="stat-number" data-text-effect="counter" data-end-value="50">0</div>
+                                    <div class="stat-label" data-text-effect="reveal">Proyectos Completados</div>
+                                </div>
+                                <div class="stat-item" data-reveal="scale">
+                                    <div class="stat-number" data-text-effect="counter" data-end-value="3">0</div>
+                                    <div class="stat-label" data-text-effect="reveal">Años de Experiencia</div>
+                                </div>
+                                <div class="stat-item" data-reveal="scale">
+                                    <div class="stat-number" data-text-effect="counter" data-end-value="25">0</div>
+                                    <div class="stat-label" data-text-effect="reveal">Clientes Satisfechos</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Skills Section -->
+        <section id="skills" class="skills-section" data-section="skills">
+            <div class="container">
+                <!-- Section Header -->
+                <header class="section-header" data-reveal="fadeUp">
+                    <span class="section-number" data-text-effect="typewriter">02</span>
+                    <h2 class="section-title">
+                        <span data-text-effect="scramble">Habilidades</span> 
+                        <span class="text-gradient" data-text-effect="reveal">Técnicas</span>
+                    </h2>
+                </header>
+                
+                <!-- Skills content will be loaded from existing implementation -->
+                <div class="skills-content" data-reveal="fadeUp" data-reveal-delay="200">
+                    <!-- Existing skills implementation with scroll animations -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Projects Section -->
+        <section id="projects" class="projects-section parallax-container" data-section="projects">
+            <!-- Parallax Background -->
+            <div class="parallax-layer parallax-background" data-parallax="0.2" data-parallax-layer="background">
+                <div class="section-bg"></div>
+            </div>
+            
+            <div class="container">
+                <!-- Section Header -->
+                <header class="section-header" data-reveal="fadeUp">
+                    <span class="section-number" data-text-effect="typewriter">03</span>
+                    <h2 class="section-title">
+                        <span data-text-effect="scramble">Mis</span> 
+                        <span class="text-gradient" data-text-effect="reveal">Proyectos</span>
+                    </h2>
+                </header>
+                
+                <!-- Projects content will be loaded from existing implementation -->
+                <div class="projects-content" data-reveal="fadeUp" data-reveal-delay="200">
+                    <!-- Existing projects implementation with scroll animations -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="contact-section" data-section="contact">
+            <div class="container">
+                <!-- Section Header -->
+                <header class="section-header" data-reveal="fadeUp">
+                    <span class="section-number" data-text-effect="typewriter">04</span>
+                    <h2 class="section-title">
+                        <span data-text-effect="scramble">Trabajemos</span> 
+                        <span class="text-gradient" data-text-effect="reveal">Juntos</span>
+                    </h2>
+                </header>
+                
+                <!-- Contact content will be loaded from existing implementation -->
+                <div class="contact-content" data-reveal="fadeUp" data-reveal-delay="200">
+                    <!-- Existing contact implementation with scroll animations -->
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer id="footer-container" data-section="footer">
+        <!-- Will be loaded dynamically from components/footer.html -->
+    </footer>
+    
+    <!-- Custom Cursor (Desktop only) -->
+    <div class="custom-cursor"></div>
+    
+    <!-- Cursor Trail Elements -->
+    <div class="cursor-trail"></div>
+    <div class="cursor-trail"></div>
+    <div class="cursor-trail"></div>
+    <div class="cursor-trail"></div>
+    <div class="cursor-trail"></div>
+    
+    <!-- Scripts -->
+    <script type="module" src="./assets/js/app.js"></script>
+    
+    <!-- Analytics (replace with your tracking code) -->
+    <script>
+        // Google Analytics or your preferred analytics solution
+        // gtag('config', 'GA_TRACKING_ID');
+    </script>
+    
+    <!-- Performance monitoring -->
+    <script>
+        // Monitor Core Web Vitals
+        function measureWebVitals() {
+            if ('web-vital' in window) {
+                // Measure and report web vitals
+                console.log('Web Vitals monitoring active');
+            }
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', measureWebVitals);
+        } else {
+            measureWebVitals();
+        }
+    </script>
+</body>
+</html>
