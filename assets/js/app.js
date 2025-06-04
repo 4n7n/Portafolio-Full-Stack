@@ -1,587 +1,993 @@
-// Import configurations
-import PortfolioConfig from './config/portfolio-config.js';
-import ScrollConfig from './config/scroll-config.js';
+// Import configuration
+import { portfolioConfig } from './config/portfolio-config.js';
 
 // Import existing components
-import ThemeSwitcher from './components/theme-switcher.js';
-import HeroBanner from './components/hero-banner.js';
-import TypingEffect from './components/typing-effect.js';
-import SkillsChart from './components/skills-chart.js';
-import ProjectGallery from './components/project-gallery.js';
-import ProjectFilter from './components/project-filter.js';
-import ContactForm from './components/contact-form.js';
-
-// Import Feature 8: Advanced Scroll Animations
-import AdvancedScrollManager from './components/advanced-scroll-manager.js';
-import ParallaxEngine from './components/parallax-engine.js';
-import RevealAnimations from './components/reveal-animations.js';
-import TextEffectsEngine from './components/text-effects-engine.js';
-import ProgressIndicators from './components/progress-indicators.js';
+import { HeroBanner } from './components/hero-banner.js';
+import { TypingEffect } from './components/typing-effect.js';
+import { SkillsChart } from './components/skills-chart.js';
+import { ProjectGallery } from './components/project-gallery.js';
+import { ProjectFilter } from './components/project-filter.js';
+import { ContactForm } from './components/contact-form.js';
+import { ThemeSwitcher } from './components/theme-switcher.js';
+import { ScrollAnimations } from './components/scroll-animations.js';
 
 // Import utilities
-import DOMHelpers from './utils/dom-helpers.js';
-import LazyLoading from './utils/lazy-loading.js';
-import FormValidator from './utils/form-validator.js';
-import Notifications from './utils/notifications.js';
+import { DOMHelpers } from './utils/dom-helpers.js';
+import { LazyLoading } from './utils/lazy-loading.js';
+import { Performance } from './utils/performance.js';
+
+// Import services
+import { EmailService } from './services/email-service.js';
+import { Analytics } from './services/analytics.js';
 
 class PortfolioApp {
-    constructor() {
-        this.config = PortfolioConfig;
-        this.scrollConfig = ScrollConfig;
-        this.components = new Map();
-        this.isInitialized = false;
-        this.performanceMetrics = {
-            startTime: performance.now(),
-            componentsLoaded: 0,
-            totalComponents: 0
+  constructor() {
+    this.config = portfolioConfig;
+    this.components = new Map();
+    this.isInitialized = false;
+    this.deviceInfo = null;
+    this.performanceProfile = null;
+    this.networkInfo = null;
+    this.batteryInfo = null;
+    
+    // Responsive optimization flags
+    this.responsiveFeatures = {
+      touchOptimization: false,
+      adaptiveQuality: false,
+      batteryOptimization: false,
+      networkAwareness: false,
+      orientationHandling: false
+    };
+    
+    // Performance monitoring
+    this.performanceObserver = null;
+    this.resizeObserver = null;
+    this.orientationHandler = null;
+    
+    this.init();
+  }
+
+  /**
+   * Initialize the application
+   */
+  async init() {
+    try {
+      console.log('🚀 Initializing Portfolio App with Responsive Optimization...');
+      
+      // Device detection and capability assessment
+      await this.detectDeviceCapabilities();
+      
+      // Performance profiling
+      await this.profilePerformance();
+      
+      // Network awareness setup
+      await this.setupNetworkAwareness();
+      
+      // Battery monitoring (if available)
+      await this.setupBatteryMonitoring();
+      
+      // DOM ready check
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.initializeApp());
+      } else {
+        await this.initializeApp();
+      }
+      
+    } catch (error) {
+      console.error('❌ Error initializing app:', error);
+      this.handleInitializationError(error);
+    }
+  }
+
+  async detectDeviceCapabilities() {
+    this.deviceInfo = {
+      // Device type detection
+      isMobile: DOMHelpers.isMobile(),
+      isTablet: DOMHelpers.isTablet(),
+      isDesktop: DOMHelpers.isDesktop(),
+      
+      // Touch capabilities
+      hasTouch: DOMHelpers.hasTouch(),
+      maxTouchPoints: navigator.maxTouchPoints || 0,
+      
+      // Screen information
+      screenWidth: window.screen.width,
+      screenHeight: window.screen.height,
+      pixelRatio: window.devicePixelRatio || 1,
+      
+      // Viewport information
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      orientation: DOMHelpers.getOrientation(),
+      
+      // Hardware capabilities
+      hardwareConcurrency: navigator.hardwareConcurrency || 4,
+      deviceMemory: navigator.deviceMemory || 4,
+      
+      // Browser capabilities
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      language: navigator.language,
+      
+      // Modern features support
+      supportsPWA: 'serviceWorker' in navigator,
+      supportsWebP: await this.checkWebPSupport(),
+      supportsAVIF: await this.checkAVIFSupport(),
+      supportsContainerQueries: CSS.supports('container-type: inline-size'),
+      supportsViewportUnits: CSS.supports('height: 100dvh'),
+      
+      // Accessibility
+      prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      prefersColorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+      prefersContrast: window.matchMedia('(prefers-contrast: high)').matches ? 'high' : 'normal'
+    };
+    
+    console.log('📱 Device Capabilities:', this.deviceInfo);
+  }
+
+  /**
+   * Profile device performance for adaptive behavior
+   */
+  async profilePerformance() {
+    const startTime = performance.now();
+    
+    // Basic performance assessment
+    const performanceScore = Performance.getPerformanceProfile();
+    const memoryInfo = Performance.getMemoryInfo();
+    const connectionInfo = Performance.getConnectionInfo();
+    
+    this.performanceProfile = {
+      profile: performanceScore, // 'low', 'medium', 'high'
+      memory: memoryInfo,
+      connection: connectionInfo,
+      benchmarkTime: performance.now() - startTime,
+      
+      // Adaptive settings based on performance
+      maxAnimations: this.getMaxAnimations(performanceScore),
+      imageQuality: this.getImageQuality(performanceScore, connectionInfo),
+      enableParallax: performanceScore !== 'low',
+      enableComplexAnimations: performanceScore === 'high',
+      enableAutoplay: performanceScore !== 'low' && !this.deviceInfo.isMobile
+    };
+    
+    console.log('⚡ Performance Profile:', this.performanceProfile);
+  }
+
+  /**
+   * Setup network awareness for adaptive loading
+   */
+  async setupNetworkAwareness() {
+    if ('connection' in navigator) {
+      this.networkInfo = {
+        effectiveType: navigator.connection.effectiveType,
+        downlink: navigator.connection.downlink,
+        rtt: navigator.connection.rtt,
+        saveData: navigator.connection.saveData
+      };
+      
+      // Listen for connection changes
+      navigator.connection.addEventListener('change', () => {
+        this.handleNetworkChange();
+      });
+      
+      this.responsiveFeatures.networkAwareness = true;
+    }
+    
+    // Online/offline detection
+    window.addEventListener('online', () => this.handleOnlineStatus(true));
+    window.addEventListener('offline', () => this.handleOnlineStatus(false));
+  }
+
+  /**
+   * Setup battery monitoring for power-aware optimization
+   */
+  async setupBatteryMonitoring() {
+    if ('getBattery' in navigator) {
+      try {
+        const battery = await navigator.getBattery();
+        
+        this.batteryInfo = {
+          level: battery.level,
+          charging: battery.charging,
+          chargingTime: battery.chargingTime,
+          dischargingTime: battery.dischargingTime
         };
-
-        this.init();
-    }
-
-    async init() {
-        try {
-            console.log('🚀 Initializing Portfolio App...');
-            
-            // Detect device capabilities and set performance mode
-            this.detectCapabilities();
-            
-            // Load critical components first
-            await this.loadCriticalComponents();
-            
-            // Initialize scroll animations system (Feature 8)
-            await this.initializeScrollAnimations();
-            
-            // Load remaining components
-            await this.loadSecondaryComponents();
-            
-            // Bind global events
-            this.bindGlobalEvents();
-            
-            // Initialize performance monitoring
-            this.initializePerformanceMonitoring();
-            
-            this.isInitialized = true;
-            
-            const loadTime = performance.now() - this.performanceMetrics.startTime;
-            console.log(`✅ Portfolio App initialized in ${loadTime.toFixed(2)}ms`);
-            
-            // Dispatch ready event
-            window.dispatchEvent(new CustomEvent('portfolioReady', {
-                detail: { loadTime, components: this.components.size }
-            }));
-            
-        } catch (error) {
-            console.error('❌ Error initializing Portfolio App:', error);
-            this.handleInitializationError(error);
-        }
-    }
-
-    detectCapabilities() {
-        const capabilities = {
-            mobile: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
-            touchDevice: 'ontouchstart' in window,
-            reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-            gpu: this.detectGPU(),
-            connection: this.detectConnection(),
-            memory: navigator.deviceMemory || 4,
-            cores: navigator.hardwareConcurrency || 4
-        };
-
-        // Auto-adjust scroll config based on capabilities
-        if (capabilities.reducedMotion) {
-            this.scrollConfig.currentPreset = 'minimal';
-            this.scrollConfig.currentPerformance = 'minimal';
-        } else if (capabilities.mobile || capabilities.memory < 4) {
-            this.scrollConfig.currentPerformance = 'medium';
-        } else if (capabilities.gpu && capabilities.cores >= 4) {
-            this.scrollConfig.currentPerformance = 'high';
-        }
-
-        this.deviceCapabilities = capabilities;
-        console.log('📱 Device capabilities detected:', capabilities);
-    }
-
-    detectGPU() {
-        try {
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            return !!gl;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    detectConnection() {
-        if ('connection' in navigator) {
-            const conn = navigator.connection;
-            return {
-                effectiveType: conn.effectiveType,
-                downlink: conn.downlink,
-                saveData: conn.saveData
-            };
-        }
-        return { effectiveType: '4g', downlink: 10, saveData: false };
-    }
-
-    async loadCriticalComponents() {
-        console.log('⚡ Loading critical components...');
         
-        try {
-            // Load HTML components first
-            await this.loadHTMLComponents();
-            
-            // Initialize theme system
-            const themeSwitcher = new ThemeSwitcher(this.config.theme);
-            this.components.set('themeSwitcher', themeSwitcher);
-            
-            // Initialize DOM helpers
-            const domHelpers = new DOMHelpers();
-            this.components.set('domHelpers', domHelpers);
-            
-            // Initialize notifications
-            const notifications = new Notifications();
-            this.components.set('notifications', notifications);
-            
-            this.performanceMetrics.componentsLoaded += 3;
-            console.log('✅ Critical components loaded');
-            
-        } catch (error) {
-            console.error('❌ Error loading critical components:', error);
-            throw error;
-        }
-    }
-
-    async initializeScrollAnimations() {
-        console.log('🎬 Initializing Advanced Scroll Animations...');
+        // Listen for battery changes
+        battery.addEventListener('levelchange', () => this.handleBatteryChange(battery));
+        battery.addEventListener('chargingchange', () => this.handleBatteryChange(battery));
         
-        try {
-            // Get optimal settings based on device
-            const scrollSettings = this.scrollConfig.getOptimalSettings();
-            
-            // Initialize core scroll manager
-            const scrollManager = new AdvancedScrollManager({
-                ...scrollSettings,
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
-            this.components.set('scrollManager', scrollManager);
-            
-            // Initialize parallax engine if enabled
-            if (scrollSettings.parallaxEnabled && !scrollSettings.mobile) {
-                const parallaxEngine = new ParallaxEngine({
-                    mouseEnabled: scrollSettings.desktop,
-                    performance: scrollSettings.performanceMode
-                });
-                this.components.set('parallaxEngine', parallaxEngine);
-            }
-            
-            // Initialize reveal animations
-            if (scrollSettings.revealEnabled) {
-                const revealAnimations = new RevealAnimations({
-                    threshold: 0.1,
-                    staggerDelay: scrollSettings.mobile ? 50 : 100,
-                    defaultDuration: scrollSettings.mobile ? 400 : 600
-                });
-                this.components.set('revealAnimations', revealAnimations);
-            }
-            
-            // Initialize text effects
-            if (scrollSettings.textEffectsEnabled) {
-                const textEffects = new TextEffectsEngine({
-                    typewriterSpeed: scrollSettings.mobile ? 80 : 50,
-                    scrambleSpeed: scrollSettings.mobile ? 50 : 30
-                });
-                this.components.set('textEffects', textEffects);
-            }
-            
-            // Initialize progress indicators
-            const progressIndicators = new ProgressIndicators({
-                readingProgress: {
-                    enabled: true,
-                    position: 'top',
-                    height: scrollSettings.mobile ? 3 : 4
-                },
-                sectionProgress: {
-                    enabled: !scrollSettings.mobile,
-                    position: 'right'
-                },
-                smoothScroll: {
-                    enabled: true,
-                    duration: scrollSettings.mobile ? 800 : 1000
-                }
-            });
-            this.components.set('progressIndicators', progressIndicators);
-            
-            // Setup keyboard navigation for progress indicators
-            if (!scrollSettings.mobile) {
-                progressIndicators.setupKeyboardNavigation();
-            }
-            
-            this.performanceMetrics.componentsLoaded += scrollSettings.parallaxEnabled ? 5 : 4;
-            console.log('✅ Advanced Scroll Animations initialized');
-            
-        } catch (error) {
-            console.error('❌ Error initializing scroll animations:', error);
-            // Continue with basic functionality if scroll animations fail
-            console.warn('⚠️ Continuing with basic scroll functionality');
-        }
-    }
-
-    async loadSecondaryComponents() {
-        console.log('🔧 Loading secondary components...');
+        this.responsiveFeatures.batteryOptimization = true;
         
-        try {
-            const componentsToLoad = [];
-            
-            // Hero section components
-            if (document.querySelector('#hero')) {
-                componentsToLoad.push(this.initializeHeroComponents());
-            }
-            
-            // Skills section
-            if (document.querySelector('#skills')) {
-                componentsToLoad.push(this.initializeSkillsComponents());
-            }
-            
-            // Projects section
-            if (document.querySelector('#projects')) {
-                componentsToLoad.push(this.initializeProjectsComponents());
-            }
-            
-            // Contact section
-            if (document.querySelector('#contact')) {
-                componentsToLoad.push(this.initializeContactComponents());
-            }
-            
-            // Initialize lazy loading
-            componentsToLoad.push(this.initializeLazyLoading());
-            
-            // Load all components in parallel
-            await Promise.all(componentsToLoad);
-            
-            console.log('✅ Secondary components loaded');
-            
-        } catch (error) {
-            console.error('❌ Error loading secondary components:', error);
-        }
+        console.log('🔋 Battery Monitoring Enabled:', this.batteryInfo);
+      } catch (error) {
+        console.warn('⚠️ Battery API not available:', error);
+      }
     }
+  }
 
-    async initializeHeroComponents() {
-        try {
-            // Initialize hero banner
-            const heroBanner = new HeroBanner(this.config.hero);
-            this.components.set('heroBanner', heroBanner);
-            
-            // Initialize typing effect for hero
-            const typingElement = document.querySelector('.typing-text');
-            if (typingElement) {
-                const typingEffect = new TypingEffect(typingElement, {
-                    strings: this.config.hero.typingStrings || [
-                        'Full-Stack Developer',
-                        'React Specialist',
-                        'Node.js Developer',
-                        'UI/UX Enthusiast'
-                    ],
-                    typeSpeed: 80,
-                    backSpeed: 40,
-                    loop: true
-                });
-                this.components.set('typingEffect', typingEffect);
-            }
-            
-            this.performanceMetrics.componentsLoaded += 2;
-            
-        } catch (error) {
-            console.error('❌ Error initializing hero components:', error);
-        }
+  /**
+   * Initialize all application components
+   */
+  async initializeApp() {
+    try {
+      console.log('🎯 Initializing components with responsive optimization...');
+      
+      // Setup responsive event listeners
+      this.setupResponsiveListeners();
+      
+      // Apply responsive optimizations
+      this.applyResponsiveOptimizations();
+      
+      // Initialize lazy loading with responsive settings
+      await this.initializeLazyLoading();
+      
+      // Initialize theme system with responsive awareness
+      await this.initializeThemeSystem();
+      
+      // Initialize components with responsive config
+      await this.initializeComponents();
+      
+      // Initialize services with mobile optimization
+      await this.initializeServices();
+      
+      // Setup performance monitoring
+      this.setupPerformanceMonitoring();
+      
+      // Mark as initialized
+      this.isInitialized = true;
+      
+      console.log('✅ Portfolio App initialized successfully!');
+      
+      // Dispatch custom initialization event
+      this.dispatchEvent('app:initialized', {
+        deviceInfo: this.deviceInfo,
+        performanceProfile: this.performanceProfile,
+        responsiveFeatures: this.responsiveFeatures
+      });
+      
+    } catch (error) {
+      console.error('❌ Error during app initialization:', error);
+      this.handleInitializationError(error);
     }
+  }
 
-    async initializeSkillsComponents() {
-        try {
-            const skillsChart = new SkillsChart(this.config.skills);
-            this.components.set('skillsChart', skillsChart);
-            
-            this.performanceMetrics.componentsLoaded += 1;
-            
-        } catch (error) {
-            console.error('❌ Error initializing skills components:', error);
-        }
+  /**
+   * Setup responsive event listeners
+   */
+  setupResponsiveListeners() {
+    // Viewport resize handler with throttling
+    this.resizeObserver = new ResizeObserver(
+      DOMHelpers.throttle((entries) => {
+        this.handleViewportResize(entries);
+      }, 100)
+    );
+    
+    if (document.documentElement) {
+      this.resizeObserver.observe(document.documentElement);
     }
-
-    async initializeProjectsComponents() {
-        try {
-            const projectGallery = new ProjectGallery(this.config.projects);
-            const projectFilter = new ProjectFilter();
-            
-            this.components.set('projectGallery', projectGallery);
-            this.components.set('projectFilter', projectFilter);
-            
-            this.performanceMetrics.componentsLoaded += 2;
-            
-        } catch (error) {
-            console.error('❌ Error initializing projects components:', error);
-        }
-    }
-
-    async initializeContactComponents() {
-        try {
-            const formValidator = new FormValidator();
-            const contactForm = new ContactForm(this.config.contact, formValidator);
-            
-            this.components.set('formValidator', formValidator);
-            this.components.set('contactForm', contactForm);
-            
-            this.performanceMetrics.componentsLoaded += 2;
-            
-        } catch (error) {
-            console.error('❌ Error initializing contact components:', error);
-        }
-    }
-
-    async initializeLazyLoading() {
-        try {
-            const lazyLoading = new LazyLoading({
-                threshold: 0.1,
-                rootMargin: '50px'
-            });
-            this.components.set('lazyLoading', lazyLoading);
-            
-            this.performanceMetrics.componentsLoaded += 1;
-            
-        } catch (error) {
-            console.error('❌ Error initializing lazy loading:', error);
-        }
-    }
-
-    async loadHTMLComponents() {
-        const domHelpers = this.components.get('domHelpers') || new DOMHelpers();
-        
-        try {
-            // Load navbar
-            await domHelpers.loadComponent('navbar', './components/navbar.html');
-            
-            // Load footer
-            await domHelpers.loadComponent('footer', './components/footer.html');
-            
-            console.log('✅ HTML components loaded');
-            
-        } catch (error) {
-            console.error('❌ Error loading HTML components:', error);
-        }
-    }
-
-    bindGlobalEvents() {
-        // Handle reduced motion preference changes
-        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        mediaQuery.addListener((e) => {
-            if (e.matches) {
-                this.disableAnimations();
-            } else {
-                this.enableAnimations();
-            }
-        });
-
-        // Handle visibility change (tab switching)
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                this.pauseAnimations();
-            } else {
-                this.resumeAnimations();
-            }
-        });
-
-        // Handle page unload
-        window.addEventListener('beforeunload', () => {
-            this.cleanup();
-        });
-
-        // Handle resize with debouncing
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                this.handleResize();
-            }, 250);
-        });
-
-        // Global error handler
-        window.addEventListener('error', (event) => {
-            console.error('Global error:', event.error);
-            this.handleError(event.error);
-        });
-
-        // Handle theme changes
-        window.addEventListener('themeChange', (event) => {
-            this.handleThemeChange(event.detail);
-        });
-
-        console.log('✅ Global events bound');
-    }
-
-    initializePerformanceMonitoring() {
-        if ('PerformanceObserver' in window) {
-            // Monitor Largest Contentful Paint
-            const lcpObserver = new PerformanceObserver((list) => {
-                const entries = list.getEntries();
-                const lastEntry = entries[entries.length - 1];
-                console.log('📊 LCP:', lastEntry.startTime.toFixed(2), 'ms');
-            });
-            lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
-
-            // Monitor First Input Delay
-            const fidObserver = new PerformanceObserver((list) => {
-                const entries = list.getEntries();
-                entries.forEach(entry => {
-                    console.log('📊 FID:', entry.processingStart - entry.startTime, 'ms');
-                });
-            });
-            fidObserver.observe({ entryTypes: ['first-input'] });
-
-            // Monitor Cumulative Layout Shift
-            const clsObserver = new PerformanceObserver((list) => {
-                let cls = 0;
-                list.getEntries().forEach(entry => {
-                    if (!entry.hadRecentInput) {
-                        cls += entry.value;
-                    }
-                });
-                console.log('📊 CLS:', cls.toFixed(4));
-            });
-            clsObserver.observe({ entryTypes: ['layout-shift'] });
-        }
-    }
-
-    // Event handlers
-    handleResize() {
-        this.components.forEach(component => {
-            if (component.onResize) {
-                component.onResize();
-            }
-        });
-    }
-
-    handleThemeChange(themeData) {
-        // Update scroll animations colors if needed
-        const scrollManager = this.components.get('scrollManager');
-        if (scrollManager && scrollManager.updateTheme) {
-            scrollManager.updateTheme(themeData);
-        }
-    }
-
-    handleError(error) {
-        const notifications = this.components.get('notifications');
-        if (notifications) {
-            notifications.show('Ha ocurrido un error. Por favor, recarga la página.', 'error');
-        }
-    }
-
-    handleInitializationError(error) {
-        console.error('Critical initialization error:', error);
-        
-        // Show fallback content
-        document.body.innerHTML = `
-            <div style="
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                min-height: 100vh; 
-                font-family: system-ui; 
-                text-align: center;
-                padding: 2rem;
-            ">
-                <div>
-                    <h1>Oops! Something went wrong</h1>
-                    <p>Please refresh the page or try again later.</p>
-                    <button onclick="window.location.reload()" style="
-                        padding: 12px 24px; 
-                        background: #2563eb; 
-                        color: white; 
-                        border: none; 
-                        border-radius: 8px; 
-                        cursor: pointer;
-                        margin-top: 1rem;
-                    ">
-                        Refresh Page
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
-    // Control methods
-    disableAnimations() {
-        this.components.forEach(component => {
-            if (component.disableAnimations) {
-                component.disableAnimations();
-            }
-        });
-        document.body.classList.add('reduced-motion');
-    }
-
-    enableAnimations() {
-        this.components.forEach(component => {
-            if (component.enableAnimations) {
-                component.enableAnimations();
-            }
-        });
-        document.body.classList.remove('reduced-motion');
-    }
-
-    pauseAnimations() {
-        this.components.forEach(component => {
-            if (component.pause) {
-                component.pause();
-            }
-        });
-    }
-
-    resumeAnimations() {
-        this.components.forEach(component => {
-            if (component.resume) {
-                component.resume();
-            }
-        });
-    }
-
-    // Public API
-    getComponent(name) {
-        return this.components.get(name);
-    }
-
-    addComponent(name, component) {
-        this.components.set(name, component);
-    }
-
-    removeComponent(name) {
-        const component = this.components.get(name);
-        if (component && component.destroy) {
-            component.destroy();
-        }
-        this.components.delete(name);
-    }
-
-    // Cleanup
-    cleanup() {
-        console.log('🧹 Cleaning up Portfolio App...');
-        
-        this.components.forEach((component, name) => {
-            if (component.destroy) {
-                component.destroy();
-            }
-        });
-        
-        this.components.clear();
-    }
-}
-
-// Initialize app when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        window.portfolioApp = new PortfolioApp();
+    
+    // Orientation change handler
+    this.orientationHandler = DOMHelpers.throttle(() => {
+      this.handleOrientationChange();
+    }, 200);
+    
+    window.addEventListener('orientationchange', this.orientationHandler);
+    
+    // Visibility change for performance optimization
+    document.addEventListener('visibilitychange', () => {
+      this.handleVisibilityChange();
     });
-} else {
-    window.portfolioApp = new PortfolioApp();
+    
+    // Focus/blur for mobile optimization
+    window.addEventListener('focus', () => this.handleWindowFocus(true));
+    window.addEventListener('blur', () => this.handleWindowFocus(false));
+    
+    this.responsiveFeatures.orientationHandling = true;
+  }
+
+  /**
+   * Apply responsive optimizations based on device capabilities
+   */
+  applyResponsiveOptimizations() {
+    const { isMobile, isTablet, hasTouch, prefersReducedMotion } = this.deviceInfo;
+    const { profile } = this.performanceProfile;
+    
+    // Add device classes to body
+    document.body.classList.add(
+      isMobile ? 'device-mobile' : isTablet ? 'device-tablet' : 'device-desktop',
+      hasTouch ? 'has-touch' : 'no-touch',
+      `performance-${profile}`
+    );
+    
+    // Apply reduced motion if preferred
+    if (prefersReducedMotion) {
+      document.body.classList.add('reduce-motion');
+    }
+    
+    // Touch optimization
+    if (hasTouch) {
+      this.enableTouchOptimizations();
+    }
+    
+    // Mobile-specific optimizations
+    if (isMobile) {
+      this.applyMobileOptimizations();
+    }
+    
+    // Performance-based optimizations
+    this.applyPerformanceOptimizations(profile);
+  }
+
+  /**
+   * Enable touch-specific optimizations
+   */
+  enableTouchOptimizations() {
+    // Add touch-friendly classes
+    document.body.classList.add('touch-optimized');
+    
+    // Disable hover effects on touch devices
+    const style = document.createElement('style');
+    style.textContent = `
+      @media (hover: none) {
+        .hover\\:scale-105:hover { transform: none; }
+        .hover\\:shadow-lg:hover { box-shadow: none; }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Enable touch feedback
+    this.enableTouchFeedback();
+    
+    this.responsiveFeatures.touchOptimization = true;
+    console.log('👆 Touch optimizations enabled');
+  }
+
+  /**
+   * Apply mobile-specific optimizations
+   */
+  applyMobileOptimizations() {
+    // Viewport meta optimization
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      viewport.setAttribute('content', 
+        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+      );
+    }
+    
+    // Disable text size adjust
+    document.body.style.webkitTextSizeAdjust = '100%';
+    document.body.style.textSizeAdjust = '100%';
+    
+    // Add mobile-specific classes
+    document.body.classList.add('mobile-optimized');
+    
+    console.log('📱 Mobile optimizations applied');
+  }
+
+  /**
+   * Apply performance-based optimizations
+   */
+  applyPerformanceOptimizations(profile) {
+    const optimizations = {
+      low: {
+        animations: false,
+        parallax: false,
+        heavyEffects: false,
+        autoplay: false,
+        lazyThreshold: '50px'
+      },
+      medium: {
+        animations: true,
+        parallax: false,
+        heavyEffects: false,
+        autoplay: false,
+        lazyThreshold: '100px'
+      },
+      high: {
+        animations: true,
+        parallax: true,
+        heavyEffects: true,
+        autoplay: true,
+        lazyThreshold: '200px'
+      }
+    };
+    
+    const config = optimizations[profile];
+    document.body.classList.add(`perf-${profile}`);
+    
+    // Store optimization config for components
+    this.config.responsive.performanceOptimizations = config;
+    
+    console.log(`⚡ Performance optimizations applied for ${profile} profile`);
+  }
+
+  /**
+   * Initialize lazy loading with responsive settings
+   */
+  async initializeLazyLoading() {
+    const lazyConfig = {
+      threshold: this.performanceProfile.profile === 'low' ? '50px' : '200px',
+      enablePlaceholders: true,
+      adaptiveQuality: this.responsiveFeatures.networkAwareness,
+      preferWebP: this.deviceInfo.supportsWebP,
+      preferAVIF: this.deviceInfo.supportsAVIF
+    };
+    
+    const lazyLoading = new LazyLoading(lazyConfig);
+    await lazyLoading.init();
+    
+    this.components.set('lazyLoading', lazyLoading);
+    console.log('🖼️ Responsive lazy loading initialized');
+  }
+
+  /**
+   * Initialize theme system with responsive awareness
+   */
+  async initializeThemeSystem() {
+    const themeConfig = {
+      respectMotionPreference: this.deviceInfo.prefersReducedMotion,
+      adaptiveTransitions: this.deviceInfo.isMobile,
+      batteryAware: this.responsiveFeatures.batteryOptimization,
+      performanceMode: this.performanceProfile.profile
+    };
+    
+    const themeSwitcher = new ThemeSwitcher(themeConfig);
+    await themeSwitcher.init();
+    
+    this.components.set('themeSwitcher', themeSwitcher);
+    console.log('🎨 Responsive theme system initialized');
+  }
+
+  /**
+   * Initialize all components with responsive configuration
+   */
+  async initializeComponents() {
+    const componentInitializers = [
+      { name: 'heroBanner', class: HeroBanner, selector: '#hero' },
+      { name: 'typingEffect', class: TypingEffect, selector: '.typing-text' },
+      { name: 'skillsChart', class: SkillsChart, selector: '#skills' },
+      { name: 'projectGallery', class: ProjectGallery, selector: '#projects' },
+      { name: 'projectFilter', class: ProjectFilter, selector: '.project-filters' },
+      { name: 'contactForm', class: ContactForm, selector: '#contact-form' },
+      { name: 'scrollAnimations', class: ScrollAnimations, selector: 'body' }
+    ];
+    
+    for (const { name, class: ComponentClass, selector } of componentInitializers) {
+      try {
+        const element = document.querySelector(selector);
+        if (element) {
+          const config = this.getComponentConfig(name);
+          const component = new ComponentClass(element, config);
+          await component.init();
+          this.components.set(name, component);
+          console.log(`✅ ${name} component initialized`);
+        }
+      } catch (error) {
+        console.warn(`⚠️ Failed to initialize ${name}:`, error);
+      }
+    }
+  }
+
+  /**
+   * Initialize services with mobile optimization
+   */
+  async initializeServices() {
+    try {
+      // Email service with mobile optimization
+      const emailConfig = {
+        networkAware: this.responsiveFeatures.networkAwareness,
+        mobileOptimized: this.deviceInfo.isMobile,
+        retryStrategy: this.getRetryStrategy()
+      };
+      
+      const emailService = new EmailService(emailConfig);
+      await emailService.init();
+      this.components.set('emailService', emailService);
+      
+      // Analytics with device information
+      const analyticsConfig = {
+        deviceInfo: this.deviceInfo,
+        performanceProfile: this.performanceProfile,
+        responsiveFeatures: this.responsiveFeatures
+      };
+      
+      const analytics = new Analytics(analyticsConfig);
+      await analytics.init();
+      this.components.set('analytics', analytics);
+      
+      console.log('📊 Services initialized with responsive optimization');
+      
+    } catch (error) {
+      console.warn('⚠️ Error initializing services:', error);
+    }
+  }
+
+  /**
+   * Setup performance monitoring
+   */
+  setupPerformanceMonitoring() {
+    if ('PerformanceObserver' in window) {
+      this.performanceObserver = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          this.handlePerformanceEntry(entry);
+        }
+      });
+      
+      // Observe various performance metrics
+      try {
+        this.performanceObserver.observe({ 
+          entryTypes: ['measure', 'navigation', 'paint', 'largest-contentful-paint'] 
+        });
+      } catch (error) {
+        console.warn('⚠️ Performance Observer not fully supported:', error);
+      }
+    }
+    
+    // Memory monitoring for mobile devices
+    if (this.deviceInfo.isMobile && Performance.supportsMemoryAPI()) {
+      setInterval(() => {
+        this.monitorMemoryUsage();
+      }, 30000); // Check every 30 seconds
+    }
+  }
+
+  /**
+   * Get component-specific configuration with responsive optimizations
+   */
+  getComponentConfig(componentName) {
+    const baseConfig = this.config[componentName] || {};
+    const responsiveConfig = {
+      deviceInfo: this.deviceInfo,
+      performanceProfile: this.performanceProfile,
+      adaptiveQuality: this.responsiveFeatures.adaptiveQuality,
+      touchOptimized: this.responsiveFeatures.touchOptimization,
+      networkAware: this.responsiveFeatures.networkAwareness
+    };
+    
+    return { ...baseConfig, responsive: responsiveConfig };
+  }
+
+  /**
+   * Enable touch feedback for interactive elements
+   */
+  enableTouchFeedback() {
+    const touchElements = document.querySelectorAll(
+      'button, .btn, .card, .touch-feedback, a[href], [role="button"]'
+    );
+    
+    touchElements.forEach(element => {
+      element.addEventListener('touchstart', () => {
+        element.classList.add('touch-active');
+      }, { passive: true });
+      
+      element.addEventListener('touchend', () => {
+        setTimeout(() => {
+          element.classList.remove('touch-active');
+        }, 150);
+      }, { passive: true });
+    });
+  }
+
+  /**
+   * Handle viewport resize events
+   */
+  handleViewportResize(entries) {
+    const { width, height } = entries[0].contentRect;
+    
+    // Update device info
+    this.deviceInfo.viewportWidth = width;
+    this.deviceInfo.viewportHeight = height;
+    
+    // Check for device type changes (tablet rotation, etc.)
+    const newDeviceType = DOMHelpers.getDeviceType();
+    if (newDeviceType !== this.getDeviceType()) {
+      this.handleDeviceTypeChange(newDeviceType);
+    }
+    
+    // Notify components of resize
+    this.components.forEach(component => {
+      if (component.handleResize) {
+        component.handleResize(width, height);
+      }
+    });
+    
+    // Dispatch resize event
+    this.dispatchEvent('app:resize', { width, height });
+  }
+
+  /**
+   * Handle orientation change events
+   */
+  handleOrientationChange() {
+    const newOrientation = DOMHelpers.getOrientation();
+    
+    if (newOrientation !== this.deviceInfo.orientation) {
+      this.deviceInfo.orientation = newOrientation;
+      
+      // Add orientation class to body
+      document.body.classList.remove('orientation-portrait', 'orientation-landscape');
+      document.body.classList.add(`orientation-${newOrientation}`);
+      
+      // Notify components
+      this.components.forEach(component => {
+        if (component.handleOrientationChange) {
+          component.handleOrientationChange(newOrientation);
+        }
+      });
+      
+      // Dispatch orientation change event
+      this.dispatchEvent('app:orientationchange', { orientation: newOrientation });
+      
+      console.log(`📱 Orientation changed to: ${newOrientation}`);
+    }
+  }
+
+  /**
+   * Handle network condition changes
+   */
+  handleNetworkChange() {
+    if (this.networkInfo && 'connection' in navigator) {
+      const connection = navigator.connection;
+      const oldEffectiveType = this.networkInfo.effectiveType;
+      
+      this.networkInfo = {
+        effectiveType: connection.effectiveType,
+        downlink: connection.downlink,
+        rtt: connection.rtt,
+        saveData: connection.saveData
+      };
+      
+      // Adjust quality based on connection
+      if (oldEffectiveType !== connection.effectiveType) {
+        this.adaptToNetworkConditions();
+      }
+      
+      console.log('🌐 Network conditions changed:', this.networkInfo);
+    }
+  }
+
+  /**
+   * Handle battery level changes
+   */
+  handleBatteryChange(battery) {
+    this.batteryInfo = {
+      level: battery.level,
+      charging: battery.charging,
+      chargingTime: battery.chargingTime,
+      dischargingTime: battery.dischargingTime
+    };
+    
+    // Apply battery optimizations
+    if (battery.level < 0.2 && !battery.charging) {
+      this.enableBatterySaveMode();
+    } else if (battery.level > 0.5 || battery.charging) {
+      this.disableBatterySaveMode();
+    }
+    
+    console.log('🔋 Battery status changed:', this.batteryInfo);
+  }
+
+  /**
+   * Handle online/offline status changes
+   */
+  handleOnlineStatus(isOnline) {
+    document.body.classList.toggle('offline', !isOnline);
+    
+    this.components.forEach(component => {
+      if (component.handleConnectionChange) {
+        component.handleConnectionChange(isOnline);
+      }
+    });
+    
+    this.dispatchEvent('app:connectionchange', { isOnline });
+    console.log(`🌐 Connection status: ${isOnline ? 'online' : 'offline'}`);
+  }
+
+  /**
+   * Handle visibility change for performance optimization
+   */
+  handleVisibilityChange() {
+    const isVisible = !document.hidden;
+    
+    this.components.forEach(component => {
+      if (component.handleVisibilityChange) {
+        component.handleVisibilityChange(isVisible);
+      }
+    });
+    
+    // Pause/resume animations based on visibility
+    if (!isVisible) {
+      document.body.classList.add('page-hidden');
+    } else {
+      document.body.classList.remove('page-hidden');
+    }
+  }
+
+  /**
+   * Handle window focus/blur for mobile optimization
+   */
+  handleWindowFocus(hasFocus) {
+    document.body.classList.toggle('window-blurred', !hasFocus);
+    
+    // Optimize performance when window loses focus
+    if (!hasFocus && this.deviceInfo.isMobile) {
+      this.pauseNonEssentialAnimations();
+    } else if (hasFocus) {
+      this.resumeAnimations();
+    }
+  }
+
+  /**
+   * Enable battery save mode optimizations
+   */
+  enableBatterySaveMode() {
+    document.body.classList.add('battery-save-mode');
+    
+    // Reduce animations and effects
+    this.components.forEach(component => {
+      if (component.enableBatterySaveMode) {
+        component.enableBatterySaveMode();
+      }
+    });
+    
+    console.log('🔋 Battery save mode enabled');
+  }
+
+  /**
+   * Disable battery save mode
+   */
+  disableBatterySaveMode() {
+    document.body.classList.remove('battery-save-mode');
+    
+    this.components.forEach(component => {
+      if (component.disableBatterySaveMode) {
+        component.disableBatterySaveMode();
+      }
+    });
+    
+    console.log('🔋 Battery save mode disabled');
+  }
+
+  /**
+   * Adapt to network conditions
+   */
+  adaptToNetworkConditions() {
+    const { effectiveType, saveData } = this.networkInfo;
+    const isSlowConnection = effectiveType === 'slow-2g' || effectiveType === '2g' || saveData;
+    
+    if (isSlowConnection) {
+      document.body.classList.add('slow-connection');
+      // Reduce image quality, disable autoplay, etc.
+      this.applyLowBandwidthOptimizations();
+    } else {
+      document.body.classList.remove('slow-connection');
+      this.removeLowBandwidthOptimizations();
+    }
+  }
+
+  /**
+   * Apply low bandwidth optimizations
+   */
+  applyLowBandwidthOptimizations() {
+    this.components.forEach(component => {
+      if (component.enableDataSaveMode) {
+        component.enableDataSaveMode();
+      }
+    });
+    console.log('📶 Low bandwidth optimizations applied');
+  }
+
+  /**
+   * Remove low bandwidth optimizations
+   */
+  removeLowBandwidthOptimizations() {
+    this.components.forEach(component => {
+      if (component.disableDataSaveMode) {
+        component.disableDataSaveMode();
+      }
+    });
+    console.log('📶 Low bandwidth optimizations removed');
+  }
+
+  /**
+   * Utility methods for device and performance detection
+   */
+  getDeviceType() {
+    if (this.deviceInfo.isMobile) return 'mobile';
+    if (this.deviceInfo.isTablet) return 'tablet';
+    return 'desktop';
+  }
+
+  getMaxAnimations(profile) {
+    const limits = { low: 3, medium: 5, high: 10 };
+    return limits[profile] || 5;
+  }
+
+  getImageQuality(profile, connection) {
+    if (connection && (connection.saveData || connection.effectiveType === '2g')) {
+      return 'low';
+    }
+    return profile === 'low' ? 'medium' : 'high';
+  }
+
+  getRetryStrategy() {
+    return this.deviceInfo.isMobile ? 'exponential' : 'linear';
+  }
+
+  /**
+   * Check image format support
+   */
+  async checkWebPSupport() {
+    return new Promise(resolve => {
+      const webP = new Image();
+      webP.onload = webP.onerror = () => resolve(webP.height === 2);
+      webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+    });
+  }
+
+  async checkAVIFSupport() {
+    return new Promise(resolve => {
+      const avif = new Image();
+      avif.onload = avif.onerror = () => resolve(avif.height === 2);
+      avif.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgABogQEAwgMg8f8D///8WfhwB8+ErK42A=';
+    });
+  }
+
+  /**
+   * Performance entry handler
+   */
+  handlePerformanceEntry(entry) {
+    if (entry.entryType === 'largest-contentful-paint') {
+      if (entry.startTime > 2500) {
+        console.warn('⚠️ LCP is slower than recommended:', entry.startTime);
+        this.applyPerformanceOptimizations('low');
+      }
+    }
+    
+    if (entry.entryType === 'navigation') {
+      console.log('📊 Navigation timing:', {
+        domContentLoaded: entry.domContentLoadedEventEnd - entry.domContentLoadedEventStart,
+        loadComplete: entry.loadEventEnd - entry.loadEventStart
+      });
+    }
+  }
+
+  /**
+   * Monitor memory usage on mobile devices
+   */
+  monitorMemoryUsage() {
+    if (performance.memory) {
+      const memoryUsage = {
+        used: performance.memory.usedJSHeapSize,
+        total: performance.memory.totalJSHeapSize,
+        limit: performance.memory.jsHeapSizeLimit
+      };
+      
+      const usagePercentage = (memoryUsage.used / memoryUsage.limit) * 100;
+      
+      if (usagePercentage > 75) {
+        console.warn('⚠️ High memory usage detected:', usagePercentage.toFixed(2) + '%');
+        this.triggerMemoryCleanup();
+      }
+    }
+  }
+
+  /**
+   * Trigger memory cleanup
+   */
+  triggerMemoryCleanup() {
+    this.components.forEach(component => {
+      if (component.cleanup) {
+        component.cleanup();
+      }
+    });
+    
+    // Force garbage collection if available
+    if (window.gc) {
+      window.gc();
+    }
+  }
+
+  /**
+   * Pause non-essential animations
+   */
+  pauseNonEssentialAnimations() {
+    document.body.classList.add('animations-paused');
+    
+    this.components.forEach(component => {
+      if (component.pauseAnimations) {
+        component.pauseAnimations();
+      }
+    });
+  }
+
+  /**
+   * Resume animations
+   */
+  resumeAnimations() {
+    document.body.classList.remove('animations-paused');
+    
+    this.components.forEach(component => {
+      if (component.resumeAnimations) {
+        component.resumeAnimations();
+      }
+    });
+  }
+
+  /**
+   * Handle initialization errors
+   */
+  handleInitializationError(error) {
+    console.error('❌ Portfolio initialization failed:', error);
+    
+    // Show user-friendly error message
+    const errorElement = document.createElement('div');
+    errorElement.className = 'initialization-error';
+    errorElement.innerHTML = `
+      <div class="error-content">
+        <h2>Loading Error</h2>
+        <p>There was a problem loading the portfolio. Please refresh the page.</p>
+        <button onclick="window.location.reload()">Refresh Page</button>
+      </div>
+    `;
+    
+    document.body.appendChild(errorElement);
+    
+    // Track error
+    if (this.components.has('analytics')) {
+      this.components.get('analytics').trackError('initialization_failed', error);
+    }
+  }
+
+  /**
+   * Dispatch custom events
+   */
+  dispatchEvent(eventName, detail = {}) {
+    const event = new CustomEvent(eventName, { detail });
+    window.dispatchEvent(event);
+  }
+
+  /**
+   * Cleanup method for proper disposal
+   */
+  destroy() {
+    // Remove event listeners
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+    
+    if (this.performanceObserver) {
+      this.performanceObserver.disconnect();
+    }
+    
+    if (this.orientationHandler) {
+      window.removeEventListener('orientationchange', this.orientationHandler);
+    }
+    
+    // Cleanup components
+    this.components.forEach(component => {
+      if (component.destroy) {
+        component.destroy();
+      }
+    });
+    
+    this.components.clear();
+    this.isInitialized = false;
+    
+    console.log('🧹 Portfolio app cleaned up');
+  }
 }
 
-export default PortfolioApp;
+// Initialize the application
+const portfolioApp = new PortfolioApp();
+
+// Export for global access
+window.PortfolioApp = portfolioApp;
+
+// Handle page unload
+window.addEventListener('beforeunload', () => {
+  portfolioApp.destroy();
+});
+
+export default portfolioApp;
