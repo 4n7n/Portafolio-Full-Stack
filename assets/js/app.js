@@ -1,48 +1,75 @@
-// App.js - Portfolio App with Contact Integration and Experience Timeline
-// Complete integration of contact functionality and experience timeline
+// Import configurations
+import PortfolioConfig from './config/portfolio-config.js';
+import ScrollConfig from './config/scroll-config.js';
 
+// Import existing components
+import ThemeSwitcher from './components/theme-switcher.js';
+import HeroBanner from './components/hero-banner.js';
+import TypingEffect from './components/typing-effect.js';
+import SkillsChart from './components/skills-chart.js';
+import ProjectGallery from './components/project-gallery.js';
+import ProjectFilter from './components/project-filter.js';
 import ContactForm from './components/contact-form.js';
-import ExperienceTimeline from './components/experience-timeline.js';
-import { createEmailService } from './services/email-service.js';
-import { showNotification } from './utils/notifications.js';
-import { contactConfig } from './config/portfolio-config.js';
 
-// Main PortfolioApp class with both contact and experience functionality
+// Import Feature 8: Advanced Scroll Animations
+import AdvancedScrollManager from './components/advanced-scroll-manager.js';
+import ParallaxEngine from './components/parallax-engine.js';
+import RevealAnimations from './components/reveal-animations.js';
+import TextEffectsEngine from './components/text-effects-engine.js';
+import ProgressIndicators from './components/progress-indicators.js';
+
+// Import utilities
+import DOMHelpers from './utils/dom-helpers.js';
+import LazyLoading from './utils/lazy-loading.js';
+import FormValidator from './utils/form-validator.js';
+import Notifications from './utils/notifications.js';
+
 class PortfolioApp {
     constructor() {
-        // Existing properties
+        this.config = PortfolioConfig;
+        this.scrollConfig = ScrollConfig;
         this.components = new Map();
         this.isInitialized = false;
-        
-        // Contact-specific properties
-        this.contactForm = null;
-        this.emailService = null;
-        this.isContactInitialized = false;
-        this.contactVisibilityObserver = null;
-        
-        // Experience-specific properties
-        this.experienceTimeline = null;
-        this.isExperienceInitialized = false;
+        this.performanceMetrics = {
+            startTime: performance.now(),
+            componentsLoaded: 0,
+            totalComponents: 0
+        };
+
+        this.init();
     }
 
     async init() {
         try {
             console.log('🚀 Initializing Portfolio App...');
             
-            // Initialize core components first
-            await this.initializeCore();
+            // Detect device capabilities and set performance mode
+            this.detectCapabilities();
             
-            // Initialize contact components
-            await this.initializeContact();
+            // Load critical components first
+            await this.loadCriticalComponents();
             
-            // Initialize experience timeline
-            await this.initializeExperience();
+            // Initialize scroll animations system (Feature 8)
+            await this.initializeScrollAnimations();
             
-            // Initialize other existing components
-            await this.initializeOtherComponents();
+            // Load remaining components
+            await this.loadSecondaryComponents();
+            
+            // Bind global events
+            this.bindGlobalEvents();
+            
+            // Initialize performance monitoring
+            this.initializePerformanceMonitoring();
             
             this.isInitialized = true;
-            console.log('✅ Portfolio App initialized successfully');
+            
+            const loadTime = performance.now() - this.performanceMetrics.startTime;
+            console.log(`✅ Portfolio App initialized in ${loadTime.toFixed(2)}ms`);
+            
+            // Dispatch ready event
+            window.dispatchEvent(new CustomEvent('portfolioReady', {
+                detail: { loadTime, components: this.components.size }
+            }));
             
         } catch (error) {
             console.error('❌ Error initializing Portfolio App:', error);
@@ -50,711 +77,511 @@ class PortfolioApp {
         }
     }
 
-    async initializeCore() {
+    detectCapabilities() {
+        const capabilities = {
+            mobile: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
+            touchDevice: 'ontouchstart' in window,
+            reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+            gpu: this.detectGPU(),
+            connection: this.detectConnection(),
+            memory: navigator.deviceMemory || 4,
+            cores: navigator.hardwareConcurrency || 4
+        };
+
+        // Auto-adjust scroll config based on capabilities
+        if (capabilities.reducedMotion) {
+            this.scrollConfig.currentPreset = 'minimal';
+            this.scrollConfig.currentPerformance = 'minimal';
+        } else if (capabilities.mobile || capabilities.memory < 4) {
+            this.scrollConfig.currentPerformance = 'medium';
+        } else if (capabilities.gpu && capabilities.cores >= 4) {
+            this.scrollConfig.currentPerformance = 'high';
+        }
+
+        this.deviceCapabilities = capabilities;
+        console.log('📱 Device capabilities detected:', capabilities);
+    }
+
+    detectGPU() {
         try {
-            console.log('🔧 Initializing core components...');
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            return !!gl;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    detectConnection() {
+        if ('connection' in navigator) {
+            const conn = navigator.connection;
+            return {
+                effectiveType: conn.effectiveType,
+                downlink: conn.downlink,
+                saveData: conn.saveData
+            };
+        }
+        return { effectiveType: '4g', downlink: 10, saveData: false };
+    }
+
+    async loadCriticalComponents() {
+        console.log('⚡ Loading critical components...');
+        
+        try {
+            // Load HTML components first
+            await this.loadHTMLComponents();
             
-            // Initialize any existing core functionality here
-            // (theme management, navigation, etc.)
+            // Initialize theme system
+            const themeSwitcher = new ThemeSwitcher(this.config.theme);
+            this.components.set('themeSwitcher', themeSwitcher);
             
-            console.log('✅ Core components initialized');
+            // Initialize DOM helpers
+            const domHelpers = new DOMHelpers();
+            this.components.set('domHelpers', domHelpers);
+            
+            // Initialize notifications
+            const notifications = new Notifications();
+            this.components.set('notifications', notifications);
+            
+            this.performanceMetrics.componentsLoaded += 3;
+            console.log('✅ Critical components loaded');
+            
         } catch (error) {
-            console.error('❌ Error initializing core:', error);
+            console.error('❌ Error loading critical components:', error);
             throw error;
         }
     }
 
-    async initializeContact() {
+    async initializeScrollAnimations() {
+        console.log('🎬 Initializing Advanced Scroll Animations...');
+        
         try {
-            console.log('📧 Initializing Contact components...');
+            // Get optimal settings based on device
+            const scrollSettings = this.scrollConfig.getOptimalSettings();
             
-            // Initialize email service first
-            await this.initializeEmailService();
+            // Initialize core scroll manager
+            const scrollManager = new AdvancedScrollManager({
+                ...scrollSettings,
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            this.components.set('scrollManager', scrollManager);
             
-            // Initialize contact form
-            await this.initializeContactForm();
-            
-            // Setup contact events
-            this.setupContactEvents();
-            
-            // Setup contact section visibility tracking
-            this.setupContactVisibilityTracking();
-            
-            // Setup availability status
-            this.setupAvailabilityStatus();
-            
-            this.isContactInitialized = true;
-            console.log('✅ Contact components initialized');
-            
-        } catch (error) {
-            console.error('❌ Error initializing contact:', error);
-            // Don't throw here - contact is optional
-        }
-    }
-
-    async initializeExperience() {
-        try {
-            console.log('💼 Initializing Experience Timeline...');
-            
-            // Check if experience section exists
-            const experienceSection = document.querySelector('#experience');
-            if (!experienceSection) {
-                console.log('ℹ️ Experience section not found, skipping timeline initialization');
-                return;
+            // Initialize parallax engine if enabled
+            if (scrollSettings.parallaxEnabled && !scrollSettings.mobile) {
+                const parallaxEngine = new ParallaxEngine({
+                    mouseEnabled: scrollSettings.desktop,
+                    performance: scrollSettings.performanceMode
+                });
+                this.components.set('parallaxEngine', parallaxEngine);
             }
-
-            // Initialize Experience Timeline
-            this.experienceTimeline = new ExperienceTimeline({
-                container: '#experience-timeline',
-                filtersContainer: '.experience-filters',
-                achievementsContainer: '.achievements-summary',
-                testimonialsContainer: '#testimonials-container',
-                animationDelay: 150,
-                scrollOffset: 100
-            });
-
-            this.isExperienceInitialized = true;
-            console.log('✅ Experience Timeline initialized');
             
-        } catch (error) {
-            console.error('❌ Error initializing experience timeline:', error);
-            // Don't throw here - experience timeline is optional
-        }
-    }
-
-    async initializeOtherComponents() {
-        try {
-            console.log('🔗 Initializing other components...');
+            // Initialize reveal animations
+            if (scrollSettings.revealEnabled) {
+                const revealAnimations = new RevealAnimations({
+                    threshold: 0.1,
+                    staggerDelay: scrollSettings.mobile ? 50 : 100,
+                    defaultDuration: scrollSettings.mobile ? 400 : 600
+                });
+                this.components.set('revealAnimations', revealAnimations);
+            }
             
-            // Add initialization for any other existing components
-            // (portfolio gallery, skills charts, etc.)
+            // Initialize text effects
+            if (scrollSettings.textEffectsEnabled) {
+                const textEffects = new TextEffectsEngine({
+                    typewriterSpeed: scrollSettings.mobile ? 80 : 50,
+                    scrambleSpeed: scrollSettings.mobile ? 50 : 30
+                });
+                this.components.set('textEffects', textEffects);
+            }
             
-            console.log('✅ Other components initialized');
-        } catch (error) {
-            console.error('❌ Error initializing other components:', error);
-            // Continue with initialization
-        }
-    }
-
-    // Contact-specific initialization methods
-    async initializeEmailService() {
-        try {
-            this.emailService = createEmailService({
-                primaryProvider: contactConfig.email.provider,
-                fallbackProviders: contactConfig.email.fallbackProviders,
-                enableAutoResponse: contactConfig.email.enableAutoResponse,
-                enableAnalytics: contactConfig.email.enableAnalytics,
-                timeout: contactConfig.email.timeout,
-                retryAttempts: contactConfig.email.retryAttempts,
-                
-                // Provider-specific configurations
-                emailjs: contactConfig.email.emailjs,
-                formspree: contactConfig.email.formspree,
-                netlify: contactConfig.email.netlify
-            });
-            
-            console.log('✅ Email service initialized');
-        } catch (error) {
-            console.error('❌ Error initializing email service:', error);
-            // Continue without email service
-        }
-    }
-
-    async initializeContactForm() {
-        try {
-            // Wait for contact section to be visible or DOM ready
-            await this.waitForElement('#contact-form');
-            
-            this.contactForm = new ContactForm();
-            
-            console.log('✅ ContactForm initialized');
-        } catch (error) {
-            console.error('❌ Error initializing ContactForm:', error);
-            // Continue without contact form
-        }
-    }
-
-    setupContactEvents() {
-        // Listen for form submission events
-        document.addEventListener('contactFormSubmitted', (event) => {
-            this.handleContactFormSubmitted(event.detail);
-        });
-
-        // Listen for form validation events
-        document.addEventListener('contactFormValidated', (event) => {
-            this.handleContactFormValidated(event.detail);
-        });
-
-        // Listen for email service events
-        document.addEventListener('emailServiceStatusChanged', (event) => {
-            this.handleEmailServiceStatusChanged(event.detail);
-        });
-
-        // Setup social media link tracking
-        this.setupSocialMediaTracking();
-        
-        // Setup download tracking
-        this.setupDownloadTracking();
-        
-        // Setup CTA button tracking
-        this.setupCTATracking();
-    }
-
-    setupContactVisibilityTracking() {
-        const contactSection = document.getElementById('contact');
-        if (!contactSection) return;
-
-        const options = {
-            threshold: 0.3,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        this.contactVisibilityObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    this.trackContactSectionView();
-                    this.contactVisibilityObserver.unobserve(entry.target);
+            // Initialize progress indicators
+            const progressIndicators = new ProgressIndicators({
+                readingProgress: {
+                    enabled: true,
+                    position: 'top',
+                    height: scrollSettings.mobile ? 3 : 4
+                },
+                sectionProgress: {
+                    enabled: !scrollSettings.mobile,
+                    position: 'right'
+                },
+                smoothScroll: {
+                    enabled: true,
+                    duration: scrollSettings.mobile ? 800 : 1000
                 }
             });
-        }, options);
-
-        this.contactVisibilityObserver.observe(contactSection);
-    }
-
-    setupAvailabilityStatus() {
-        const statusElement = document.querySelector('.availability-status');
-        if (!statusElement) return;
-
-        const availability = contactConfig.personal.availability;
-        const indicator = statusElement.querySelector('.status-indicator');
-        const text = statusElement.querySelector('span');
-
-        if (indicator && text) {
-            indicator.className = `status-indicator ${availability}`;
+            this.components.set('progressIndicators', progressIndicators);
             
-            const statusTexts = {
-                available: 'Disponible para nuevos proyectos',
-                busy: 'Ocupado actualmente',
-                unavailable: 'No disponible'
-            };
-            
-            text.textContent = statusTexts[availability] || statusTexts.available;
-        }
-
-        // Update working hours if enabled
-        if (contactConfig.ui.enableWorkingHours) {
-            this.updateWorkingHoursDisplay();
-        }
-    }
-
-    updateWorkingHoursDisplay() {
-        const workingHours = contactConfig.personal.workingHours;
-        const timezone = contactConfig.personal.timezone;
-        const now = new Date();
-        const currentDay = now.toLocaleLowerCase().slice(0, 3) + 'day';
-        
-        const todayHours = workingHours[currentDay];
-        
-        if (todayHours) {
-            const isWorkingTime = this.isCurrentlyWorkingHours(todayHours);
-            
-            // Update status based on working hours
-            const statusElement = document.querySelector('.availability-status');
-            if (statusElement && contactConfig.personal.availability === 'available') {
-                const indicator = statusElement.querySelector('.status-indicator');
-                const text = statusElement.querySelector('span');
-                
-                if (isWorkingTime) {
-                    indicator.classList.add('online');
-                    text.textContent = 'En línea ahora';
-                } else {
-                    indicator.classList.remove('online');
-                    text.textContent = `Disponible mañana a las ${todayHours.start}`;
-                }
+            // Setup keyboard navigation for progress indicators
+            if (!scrollSettings.mobile) {
+                progressIndicators.setupKeyboardNavigation();
             }
+            
+            this.performanceMetrics.componentsLoaded += scrollSettings.parallaxEnabled ? 5 : 4;
+            console.log('✅ Advanced Scroll Animations initialized');
+            
+        } catch (error) {
+            console.error('❌ Error initializing scroll animations:', error);
+            // Continue with basic functionality if scroll animations fail
+            console.warn('⚠️ Continuing with basic scroll functionality');
         }
     }
 
-    isCurrentlyWorkingHours(dayHours) {
-        const now = new Date();
-        const currentTime = now.getHours() * 60 + now.getMinutes();
+    async loadSecondaryComponents() {
+        console.log('🔧 Loading secondary components...');
         
-        const [startHour, startMin] = dayHours.start.split(':').map(Number);
-        const [endHour, endMin] = dayHours.end.split(':').map(Number);
-        
-        const startTime = startHour * 60 + startMin;
-        const endTime = endHour * 60 + endMin;
-        
-        return currentTime >= startTime && currentTime <= endTime;
+        try {
+            const componentsToLoad = [];
+            
+            // Hero section components
+            if (document.querySelector('#hero')) {
+                componentsToLoad.push(this.initializeHeroComponents());
+            }
+            
+            // Skills section
+            if (document.querySelector('#skills')) {
+                componentsToLoad.push(this.initializeSkillsComponents());
+            }
+            
+            // Projects section
+            if (document.querySelector('#projects')) {
+                componentsToLoad.push(this.initializeProjectsComponents());
+            }
+            
+            // Contact section
+            if (document.querySelector('#contact')) {
+                componentsToLoad.push(this.initializeContactComponents());
+            }
+            
+            // Initialize lazy loading
+            componentsToLoad.push(this.initializeLazyLoading());
+            
+            // Load all components in parallel
+            await Promise.all(componentsToLoad);
+            
+            console.log('✅ Secondary components loaded');
+            
+        } catch (error) {
+            console.error('❌ Error loading secondary components:', error);
+        }
     }
 
-    setupSocialMediaTracking() {
-        const socialLinks = document.querySelectorAll('.social-link');
-        socialLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                const platform = this.getSocialPlatform(link.href);
-                this.trackSocialClick(platform, link.href);
+    async initializeHeroComponents() {
+        try {
+            // Initialize hero banner
+            const heroBanner = new HeroBanner(this.config.hero);
+            this.components.set('heroBanner', heroBanner);
+            
+            // Initialize typing effect for hero
+            const typingElement = document.querySelector('.typing-text');
+            if (typingElement) {
+                const typingEffect = new TypingEffect(typingElement, {
+                    strings: this.config.hero.typingStrings || [
+                        'Full-Stack Developer',
+                        'React Specialist',
+                        'Node.js Developer',
+                        'UI/UX Enthusiast'
+                    ],
+                    typeSpeed: 80,
+                    backSpeed: 40,
+                    loop: true
+                });
+                this.components.set('typingEffect', typingEffect);
+            }
+            
+            this.performanceMetrics.componentsLoaded += 2;
+            
+        } catch (error) {
+            console.error('❌ Error initializing hero components:', error);
+        }
+    }
+
+    async initializeSkillsComponents() {
+        try {
+            const skillsChart = new SkillsChart(this.config.skills);
+            this.components.set('skillsChart', skillsChart);
+            
+            this.performanceMetrics.componentsLoaded += 1;
+            
+        } catch (error) {
+            console.error('❌ Error initializing skills components:', error);
+        }
+    }
+
+    async initializeProjectsComponents() {
+        try {
+            const projectGallery = new ProjectGallery(this.config.projects);
+            const projectFilter = new ProjectFilter();
+            
+            this.components.set('projectGallery', projectGallery);
+            this.components.set('projectFilter', projectFilter);
+            
+            this.performanceMetrics.componentsLoaded += 2;
+            
+        } catch (error) {
+            console.error('❌ Error initializing projects components:', error);
+        }
+    }
+
+    async initializeContactComponents() {
+        try {
+            const formValidator = new FormValidator();
+            const contactForm = new ContactForm(this.config.contact, formValidator);
+            
+            this.components.set('formValidator', formValidator);
+            this.components.set('contactForm', contactForm);
+            
+            this.performanceMetrics.componentsLoaded += 2;
+            
+        } catch (error) {
+            console.error('❌ Error initializing contact components:', error);
+        }
+    }
+
+    async initializeLazyLoading() {
+        try {
+            const lazyLoading = new LazyLoading({
+                threshold: 0.1,
+                rootMargin: '50px'
             });
-        });
-    }
-
-    setupDownloadTracking() {
-        const downloadLinks = document.querySelectorAll('a[download], a[href*=".pdf"]');
-        downloadLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                const fileName = link.download || link.href.split('/').pop();
-                this.trackDownload(fileName, link.href);
-            });
-        });
-    }
-
-    setupCTATracking() {
-        const ctaButtons = document.querySelectorAll('.cta-buttons .btn');
-        ctaButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const action = button.textContent.trim();
-                this.trackCTAClick(action, button.href || '#');
-            });
-        });
-    }
-
-    getSocialPlatform(url) {
-        const platforms = {
-            'linkedin.com': 'LinkedIn',
-            'github.com': 'GitHub',
-            'twitter.com': 'Twitter',
-            'instagram.com': 'Instagram',
-            'wa.me': 'WhatsApp',
-            't.me': 'Telegram',
-            'discord': 'Discord',
-            'mailto:': 'Email'
-        };
-
-        for (const [domain, platform] of Object.entries(platforms)) {
-            if (url.includes(domain)) {
-                return platform;
-            }
-        }
-        
-        return 'Unknown';
-    }
-
-    // Contact event handlers
-    handleContactFormSubmitted(detail) {
-        const { success, data, error } = detail;
-        
-        if (success) {
-            // Show success notification
-            showNotification(
-                contactConfig.success?.contact?.emailSent || 
-                '¡Mensaje enviado exitosamente! Te responderé pronto.',
-                'success',
-                { duration: 6000 }
-            );
+            this.components.set('lazyLoading', lazyLoading);
             
-            // Track successful submission
-            this.trackFormSubmission(true, data);
+            this.performanceMetrics.componentsLoaded += 1;
             
-            // Update UI state
-            this.updateContactUIAfterSuccess();
+        } catch (error) {
+            console.error('❌ Error initializing lazy loading:', error);
+        }
+    }
+
+    async loadHTMLComponents() {
+        const domHelpers = this.components.get('domHelpers') || new DOMHelpers();
+        
+        try {
+            // Load navbar
+            await domHelpers.loadComponent('navbar', './components/navbar.html');
             
-        } else {
-            // Show error notification
-            showNotification(
-                error || contactConfig.errors?.contact?.submitFailed || 
-                'Error al enviar el mensaje. Por favor, inténtalo de nuevo.',
-                'error',
-                { duration: 8000 }
-            );
+            // Load footer
+            await domHelpers.loadComponent('footer', './components/footer.html');
             
-            // Track failed submission
-            this.trackFormSubmission(false, null, error);
+            console.log('✅ HTML components loaded');
+            
+        } catch (error) {
+            console.error('❌ Error loading HTML components:', error);
         }
     }
 
-    handleContactFormValidated(detail) {
-        const { isValid, errors, fieldName } = detail;
-        
-        // Track validation events for analytics
-        if (contactConfig.analytics.trackFormErrors && !isValid) {
-            this.trackFormValidationError(fieldName, errors);
-        }
-    }
-
-    handleEmailServiceStatusChanged(detail) {
-        const { status, provider, error } = detail;
-        
-        console.log(`Email service status changed: ${status} (${provider})`);
-        
-        if (status === 'failed') {
-            console.warn(`Email provider ${provider} failed:`, error);
-        }
-    }
-
-    updateContactUIAfterSuccess() {
-        // Update availability status if needed
-        const availability = contactConfig.personal.availability;
-        if (availability === 'busy') {
-            const statusElement = document.querySelector('.availability-status');
-            if (statusElement) {
-                const text = statusElement.querySelector('span');
-                if (text) {
-                    text.textContent = 'Ocupado actualmente - responderé pronto';
-                }
-            }
-        }
-        
-        // Show auto-response notification if enabled
-        if (contactConfig.email.enableAutoResponse) {
-            setTimeout(() => {
-                showNotification(
-                    contactConfig.success?.contact?.autoResponse ||
-                    'Recibirás una confirmación en tu email en breve.',
-                    'info',
-                    { duration: 4000 }
-                );
-            }, 2000);
-        }
-    }
-
-    // Analytics methods
-    trackContactSectionView() {
-        if (!contactConfig.analytics.trackFormInteractions || !window.gtag) return;
-        
-        window.gtag('event', 'page_view', {
-            page_title: 'Contact Section',
-            page_location: window.location.href + '#contact'
-        });
-    }
-
-    trackFormSubmission(success, data = null, error = null) {
-        if (!contactConfig.analytics.trackFormSubmission || !window.gtag) return;
-        
-        window.gtag('event', 'form_submit', {
-            event_category: 'Contact Form',
-            event_label: success ? 'success' : 'error',
-            value: success ? 1 : 0,
-            custom_parameters: {
-                subject: data?.subject || '',
-                has_phone: !!(data?.phone),
-                has_budget: !!(data?.budget),
-                message_length: data?.message?.length || 0,
-                error_message: error
+    bindGlobalEvents() {
+        // Handle reduced motion preference changes
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        mediaQuery.addListener((e) => {
+            if (e.matches) {
+                this.disableAnimations();
+            } else {
+                this.enableAnimations();
             }
         });
-        
-        // Track conversion if successful
-        if (success) {
-            window.gtag('event', 'conversion', {
-                send_to: 'AW-CONVERSION_ID/CONVERSION_LABEL' // Replace with actual conversion ID
+
+        // Handle visibility change (tab switching)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.pauseAnimations();
+            } else {
+                this.resumeAnimations();
+            }
+        });
+
+        // Handle page unload
+        window.addEventListener('beforeunload', () => {
+            this.cleanup();
+        });
+
+        // Handle resize with debouncing
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                this.handleResize();
+            }, 250);
+        });
+
+        // Global error handler
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+            this.handleError(event.error);
+        });
+
+        // Handle theme changes
+        window.addEventListener('themeChange', (event) => {
+            this.handleThemeChange(event.detail);
+        });
+
+        console.log('✅ Global events bound');
+    }
+
+    initializePerformanceMonitoring() {
+        if ('PerformanceObserver' in window) {
+            // Monitor Largest Contentful Paint
+            const lcpObserver = new PerformanceObserver((list) => {
+                const entries = list.getEntries();
+                const lastEntry = entries[entries.length - 1];
+                console.log('📊 LCP:', lastEntry.startTime.toFixed(2), 'ms');
             });
-        }
-    }
+            lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
-    trackFormValidationError(fieldName, errors) {
-        if (!window.gtag) return;
-        
-        window.gtag('event', 'form_error', {
-            event_category: 'Contact Form',
-            event_label: fieldName,
-            custom_parameters: {
-                error_message: errors.join(', ')
-            }
-        });
-    }
-
-    trackSocialClick(platform, url) {
-        if (!contactConfig.analytics.trackSocialClicks || !window.gtag) return;
-        
-        window.gtag('event', 'social_click', {
-            event_category: 'Social Media',
-            event_label: platform,
-            custom_parameters: {
-                url: url
-            }
-        });
-    }
-
-    trackDownload(fileName, url) {
-        if (!contactConfig.analytics.trackDownloads || !window.gtag) return;
-        
-        window.gtag('event', 'file_download', {
-            event_category: 'Downloads',
-            event_label: fileName,
-            custom_parameters: {
-                url: url
-            }
-        });
-    }
-
-    trackCTAClick(action, url) {
-        if (!contactConfig.analytics.trackButtonClicks || !window.gtag) return;
-        
-        window.gtag('event', 'cta_click', {
-            event_category: 'Contact CTA',
-            event_label: action,
-            custom_parameters: {
-                url: url
-            }
-        });
-    }
-
-    // Utility methods
-    async waitForElement(selector, timeout = 5000) {
-        return new Promise((resolve, reject) => {
-            const element = document.querySelector(selector);
-            if (element) {
-                resolve(element);
-                return;
-            }
-
-            const observer = new MutationObserver((mutations, obs) => {
-                const element = document.querySelector(selector);
-                if (element) {
-                    obs.disconnect();
-                    resolve(element);
-                }
+            // Monitor First Input Delay
+            const fidObserver = new PerformanceObserver((list) => {
+                const entries = list.getEntries();
+                entries.forEach(entry => {
+                    console.log('📊 FID:', entry.processingStart - entry.startTime, 'ms');
+                });
             });
+            fidObserver.observe({ entryTypes: ['first-input'] });
 
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
+            // Monitor Cumulative Layout Shift
+            const clsObserver = new PerformanceObserver((list) => {
+                let cls = 0;
+                list.getEntries().forEach(entry => {
+                    if (!entry.hadRecentInput) {
+                        cls += entry.value;
+                    }
+                });
+                console.log('📊 CLS:', cls.toFixed(4));
             });
+            clsObserver.observe({ entryTypes: ['layout-shift'] });
+        }
+    }
 
-            setTimeout(() => {
-                observer.disconnect();
-                reject(new Error(`Element ${selector} not found within ${timeout}ms`));
-            }, timeout);
+    // Event handlers
+    handleResize() {
+        this.components.forEach(component => {
+            if (component.onResize) {
+                component.onResize();
+            }
         });
     }
 
-    // Contact-specific utility methods
-    getContactFormData() {
-        if (this.contactForm) {
-            return this.contactForm.getFormData();
-        }
-        return null;
-    }
-
-    isContactFormValid() {
-        if (this.contactForm) {
-            return this.contactForm.isValid();
-        }
-        return false;
-    }
-
-    resetContactForm() {
-        if (this.contactForm) {
-            this.contactForm.reset();
+    handleThemeChange(themeData) {
+        // Update scroll animations colors if needed
+        const scrollManager = this.components.get('scrollManager');
+        if (scrollManager && scrollManager.updateTheme) {
+            scrollManager.updateTheme(themeData);
         }
     }
 
-    testEmailService() {
-        if (this.emailService) {
-            return this.emailService.testConnection();
-        }
-        return Promise.resolve({ error: 'Email service not initialized' });
-    }
-
-    // Experience-specific utility methods
-    getExperienceTimeline() {
-        return this.experienceTimeline;
-    }
-
-    refreshExperienceTimeline() {
-        if (this.experienceTimeline) {
-            this.experienceTimeline.refresh();
+    handleError(error) {
+        const notifications = this.components.get('notifications');
+        if (notifications) {
+            notifications.show('Ha ocurrido un error. Por favor, recarga la página.', 'error');
         }
     }
 
-    // Error handling
     handleInitializationError(error) {
-        console.error('Portfolio app initialization failed:', error);
+        console.error('Critical initialization error:', error);
         
-        // Show user-friendly error message
-        if (typeof showNotification === 'function') {
-            showNotification(
-                'Ha ocurrido un error al cargar la aplicación. Por favor, recarga la página.',
-                'error',
-                { duration: 10000 }
-            );
-        }
+        // Show fallback content
+        document.body.innerHTML = `
+            <div style="
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                min-height: 100vh; 
+                font-family: system-ui; 
+                text-align: center;
+                padding: 2rem;
+            ">
+                <div>
+                    <h1>Oops! Something went wrong</h1>
+                    <p>Please refresh the page or try again later.</p>
+                    <button onclick="window.location.reload()" style="
+                        padding: 12px 24px; 
+                        background: #2563eb; 
+                        color: white; 
+                        border: none; 
+                        border-radius: 8px; 
+                        cursor: pointer;
+                        margin-top: 1rem;
+                    ">
+                        Refresh Page
+                    </button>
+                </div>
+            </div>
+        `;
     }
 
-    handleContactError(error, context = 'contact') {
-        console.error(`Contact error in ${context}:`, error);
-        
-        // Show user-friendly error message
-        const errorMessage = contactConfig.errors?.contact?.[context] || 
-                           'Ha ocurrido un error en la sección de contacto.';
-        
-        showNotification(errorMessage, 'error');
-        
-        // Track error for analytics
-        if (window.gtag) {
-            window.gtag('event', 'exception', {
-                description: `Contact error: ${error.message}`,
-                fatal: false
-            });
-        }
+    // Control methods
+    disableAnimations() {
+        this.components.forEach(component => {
+            if (component.disableAnimations) {
+                component.disableAnimations();
+            }
+        });
+        document.body.classList.add('reduced-motion');
     }
 
-    // Public API methods
-    getContactForm() {
-        return this.contactForm;
+    enableAnimations() {
+        this.components.forEach(component => {
+            if (component.enableAnimations) {
+                component.enableAnimations();
+            }
+        });
+        document.body.classList.remove('reduced-motion');
     }
 
-    getEmailService() {
-        return this.emailService;
+    pauseAnimations() {
+        this.components.forEach(component => {
+            if (component.pause) {
+                component.pause();
+            }
+        });
     }
 
+    resumeAnimations() {
+        this.components.forEach(component => {
+            if (component.resume) {
+                component.resume();
+            }
+        });
+    }
+
+    // Public API
     getComponent(name) {
         return this.components.get(name);
     }
 
-    // Health check methods
-    getContactHealthStatus() {
-        return {
-            contactFormInitialized: !!this.contactForm,
-            emailServiceInitialized: !!this.emailService,
-            isContactInitialized: this.isContactInitialized,
-            contactSectionVisible: !!document.getElementById('contact'),
-            emailServiceStatus: this.emailService?.getStatus() || null
-        };
+    addComponent(name, component) {
+        this.components.set(name, component);
     }
 
-    getExperienceHealthStatus() {
-        return {
-            experienceTimelineInitialized: !!this.experienceTimeline,
-            isExperienceInitialized: this.isExperienceInitialized,
-            experienceSectionVisible: !!document.getElementById('experience')
-        };
-    }
-
-    getOverallHealthStatus() {
-        return {
-            isInitialized: this.isInitialized,
-            contact: this.getContactHealthStatus(),
-            experience: this.getExperienceHealthStatus(),
-            componentsCount: this.components.size
-        };
-    }
-
-    // Cleanup methods
-    destroyContact() {
-        if (this.contactForm) {
-            this.contactForm.destroy();
-            this.contactForm = null;
+    removeComponent(name) {
+        const component = this.components.get(name);
+        if (component && component.destroy) {
+            component.destroy();
         }
-        
-        if (this.contactVisibilityObserver) {
-            this.contactVisibilityObserver.disconnect();
-            this.contactVisibilityObserver = null;
-        }
-        
-        this.isContactInitialized = false;
+        this.components.delete(name);
     }
 
-    destroyExperience() {
-        if (this.experienceTimeline) {
-            this.experienceTimeline.destroy();
-            this.experienceTimeline = null;
-        }
+    // Cleanup
+    cleanup() {
+        console.log('🧹 Cleaning up Portfolio App...');
         
-        this.isExperienceInitialized = false;
-    }
-
-    destroy() {
-        // Cleanup contact components
-        this.destroyContact();
-        
-        // Cleanup experience components
-        this.destroyExperience();
-        
-        // Cleanup other components
-        this.components.forEach(component => {
-            if (component && typeof component.destroy === 'function') {
+        this.components.forEach((component, name) => {
+            if (component.destroy) {
                 component.destroy();
             }
         });
-        this.components.clear();
         
-        this.isInitialized = false;
-    }
-
-    // Custom event emitter
-    emitEvent(eventName, data) {
-        const event = new CustomEvent(eventName, { detail: data });
-        document.dispatchEvent(event);
+        this.components.clear();
     }
 }
 
 // Initialize app when DOM is ready
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        console.log('🎯 Starting Portfolio App initialization...');
-        
-        const app = new PortfolioApp();
-        await app.init();
-        
-        // Make app globally available for debugging
-        window.portfolioApp = app;
-        
-        // Create global debug objects
-        window.portfolioComponents = {
-            experienceTimeline: app.getExperienceTimeline(),
-            contactForm: app.getContactForm(),
-            emailService: app.getEmailService()
-        };
-        
-        // Add comprehensive debug methods
-        window.debugPortfolio = {
-            // Contact debugging
-            getContactData: () => app.getContactFormData(),
-            isContactValid: () => app.isContactFormValid(),
-            resetContactForm: () => app.resetContactForm(),
-            testEmail: () => app.testEmailService(),
-            
-            // Experience debugging
-            getExperienceTimeline: () => app.getExperienceTimeline(),
-            refreshExperience: () => app.refreshExperienceTimeline(),
-            
-            // General debugging
-            getHealthStatus: () => app.getOverallHealthStatus(),
-            getContactHealth: () => app.getContactHealthStatus(),
-            getExperienceHealth: () => app.getExperienceHealthStatus(),
-            
-            // Component access
-            getApp: () => app,
-            getComponents: () => window.portfolioComponents
-        };
-        
-        console.log('🎉 Portfolio App fully initialized and ready!');
-        
-    } catch (error) {
-        console.error('❌ Failed to initialize portfolio app:', error);
-        
-        // Fallback initialization for critical components
-        try {
-            console.log('🔄 Attempting fallback initialization...');
-            
-            // Try to initialize experience timeline independently
-            if (document.querySelector('#experience')) {
-                const experienceTimeline = new ExperienceTimeline({
-                    container: '#experience-timeline',
-                    filtersContainer: '.experience-filters',
-                    achievementsContainer: '.achievements-summary',
-                    testimonialsContainer: '#testimonials-container',
-                    animationDelay: 150,
-                    scrollOffset: 100
-                });
-                
-                window.portfolioComponents = { experienceTimeline };
-                console.log('✅ Experience Timeline initialized as fallback');
-            }
-            
-        } catch (fallbackError) {
-            console.error('❌ Fallback initialization also failed:', fallbackError);
-        }
-    }
-});
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.portfolioApp = new PortfolioApp();
+    });
+} else {
+    window.portfolioApp = new PortfolioApp();
+}
+
+export default PortfolioApp;
