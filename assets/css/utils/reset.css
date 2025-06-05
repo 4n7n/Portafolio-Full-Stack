@@ -589,6 +589,7 @@ sup {
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   input[type="search"] {
     -webkit-appearance: textfield;
+    appearance: textfield;
   }
   
   input[type="search"]::-webkit-search-cancel-button,
