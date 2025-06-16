@@ -1,725 +1,655 @@
-class ProgressIndicators {
-    constructor(options = {}) {
-        this.options = {
-            readingProgress: {
-                enabled: true,
-                position: 'top',
-                height: 4,
-                color: 'gradient'
-            },
-            sectionProgress: {
-                enabled: true,
-                position: 'right',
-                showLabels: false,
-                autoHide: false
-            },
-            circularProgress: {
-                enabled: true,
-                size: 80,
-                strokeWidth: 3,
-                animationDuration: 800
-            },
-            smoothScroll: {
-                enabled: true,
-                duration: 1000,
-                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-            },
-            ...options
-        };
 
-        this.elements = {
-            readingProgress: null,
-            sectionIndicators: [],
-            circularProgress: []
-        };
+import { DOMHelpers } from '../utils/dom-helpers.js';
+import { NAVIGATION_CONFIG } from '../config/navigation-config.js';
 
-        this.scrollProgress = 0;
-        this.sections = [];
-        this.currentSection = 0;
-        this.isScrolling = false;
+export class ProgressIndicators {
+  constructor(options = {}) {
+    this.options = {
+      showScrollProgress: true,
+      showSectionProgress: true,
+      showReadingProgress: false,
+      position: 'top', // top, bottom, side
+      style: 'bar', // bar, circle, dots
+      ...options
+    };
 
-        this.init();
+    this.scrollProgress = null;
+    this.sectionIndicators = [];
+    this.currentSection = null;
+    this.sections = [];
+    this.ticking = false;
+
+    this.init();
+  }
+
+  /**
+   * Inicializa el componente
+   */
+  init() {
+    this.createProgressElements();
+    this.setupSections();
+    this.setupEventListeners();
+    this.updateProgress();
+  }
+
+  /**
+   * Crea los elementos de progreso
+   */
+  createProgressElements() {
+    // Crear barra de progreso de scroll
+    if (this.options.showScrollProgress) {
+      this.createScrollProgress();
     }
 
-    init() {
-        this.createReadingProgress();
-        this.createSectionIndicators();
-        this.setupSections();
-        this.bindEvents();
-        this.setupIntersectionObserver();
-        
-        console.log('📊 Progress Indicators initialized');
+    // Crear indicadores de sección
+    if (this.options.showSectionProgress) {
+      this.createSectionIndicators();
     }
 
-    createReadingProgress() {
-        if (!this.options.readingProgress.enabled) return;
+    // Crear indicador de lectura
+    if (this.options.showReadingProgress) {
+      this.createReadingProgress();
+    }
+  }
 
-        const progressContainer = document.createElement('div');
-        progressContainer.className = 'scroll-progress';
-        progressContainer.style.cssText = `
-            position: fixed;
-            ${this.options.readingProgress.position}: 0;
-            left: 0;
-            width: 100%;
-            height: ${this.options.readingProgress.height}px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            transition: opacity 0.3s ease;
-        `;
+  /**
+   * Crea la barra de progreso de scroll
+   */
+  createScrollProgress() {
+    this.scrollProgress = DOMHelpers.createElement('div', {
+      className: `scroll-progress scroll-progress-${this.options.position}`,
+      innerHTML: '<div class="scroll-progress-fill"></div>'
+    });
 
-        const progressBar = document.createElement('div');
-        progressBar.className = 'scroll-progress-bar';
-        progressBar.style.cssText = `
-            height: 100%;
-            width: 0%;
-            transition: width 0.1s ease-out;
-            transform-origin: left;
-        `;
+    // Añadir estilos inline si no están en CSS
+    this.injectScrollProgressStyles();
 
-        if (this.options.readingProgress.color === 'gradient') {
-            progressBar.style.background = `
-                linear-gradient(90deg, 
-                    var(--color-primary, #2563eb),
-                    var(--color-accent, #f59e0b),
-                    var(--color-primary, #2563eb)
-                )
-            `;
-            progressBar.style.backgroundSize = '200% 100%';
-            progressBar.style.animation = 'gradient-shift 3s ease infinite';
-        } else {
-            progressBar.style.background = 'var(--color-primary, #2563eb)';
+    document.body.appendChild(this.scrollProgress);
+  }
+
+  /**
+   * Crea indicadores de sección
+   */
+  createSectionIndicators() {
+    const container = DOMHelpers.createElement('nav', {
+      className: 'section-indicators',
+      setAttribute: {
+        'aria-label': 'Navegación de secciones',
+        'role': 'navigation'
+      }
+    });
+
+    // Crear indicador para cada sección de navegación
+    NAVIGATION_CONFIG.mainNav.forEach((navItem, index) => {
+      const indicator = DOMHelpers.createElement('button', {
+        className: 'section-indicator',
+        innerHTML: `
+          <span class="indicator-dot"></span>
+          <span class="indicator-label">${navItem.label}</span>
+          <span class="indicator-progress">
+            <span class="indicator-fill"></span>
+          </span>
+        `,
+        setAttribute: {
+          'data-section': navItem.href.substring(1), // Remove #
+          'aria-label': `Ir a ${navItem.label}`,
+          'title': navItem.label
         }
+      });
 
-        progressContainer.appendChild(progressBar);
-        document.body.appendChild(progressContainer);
-
-        this.elements.readingProgress = {
-            container: progressContainer,
-            bar: progressBar
-        };
-
-        // Add gradient animation keyframes
-        if (!document.querySelector('#progress-styles')) {
-            const style = document.createElement('style');
-            style.id = 'progress-styles';
-            style.textContent = `
-                @keyframes gradient-shift {
-                    0%, 100% { background-position: 0% 50%; }
-                    50% { background-position: 100% 50%; }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-    }
-
-    createSectionIndicators() {
-        if (!this.options.sectionProgress.enabled) return;
-
-        const indicatorsContainer = document.createElement('div');
-        indicatorsContainer.className = 'section-progress-indicators';
-        indicatorsContainer.style.cssText = `
-            position: fixed;
-            ${this.options.sectionProgress.position}: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            transition: opacity 0.3s ease;
-        `;
-
-        // Auto-hide on mobile
-        if (window.innerWidth <= 768) {
-            indicatorsContainer.style.display = 'none';
-        }
-
-        document.body.appendChild(indicatorsContainer);
-        this.elements.sectionIndicatorsContainer = indicatorsContainer;
-    }
-
-    setupSections() {
-        const sectionSelectors = [
-            'section',
-            '[data-section]',
-            '.section',
-            'main > div',
-            'header',
-            'footer'
-        ];
-
-        let sections = [];
-        
-        sectionSelectors.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-                if (!sections.includes(el) && el.offsetHeight > 100) {
-                    sections.push(el);
-                }
-            });
+      // Event listener para navegación
+      indicator.addEventListener('click', () => {
+        DOMHelpers.scrollTo(navItem.href, { 
+          offset: NAVIGATION_CONFIG.scroll.offset 
         });
+      });
 
-        // Sort sections by their position in the document
-        this.sections = sections.sort((a, b) => {
-            return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
-        });
+      container.appendChild(indicator);
+      this.sectionIndicators.push({
+        element: indicator,
+        section: navItem.href.substring(1),
+        progress: 0,
+        active: false
+      });
+    });
 
-        // Create indicators for each section
-        this.createIndicatorsForSections();
-    }
+    this.injectSectionIndicatorStyles();
+    document.body.appendChild(container);
+  }
 
-    createIndicatorsForSections() {
-        if (!this.options.sectionProgress.enabled || !this.elements.sectionIndicatorsContainer) return;
+  /**
+   * Crea indicador de progreso de lectura
+   */
+  createReadingProgress() {
+    const readingProgress = DOMHelpers.createElement('div', {
+      className: 'reading-progress',
+      innerHTML: `
+        <div class="reading-circle">
+          <svg class="reading-svg" width="60" height="60">
+            <circle cx="30" cy="30" r="25" 
+                    stroke="rgba(255,255,255,0.2)" 
+                    stroke-width="2" 
+                    fill="transparent"/>
+            <circle cx="30" cy="30" r="25" 
+                    stroke="var(--primary-color)" 
+                    stroke-width="2" 
+                    fill="transparent"
+                    class="reading-progress-circle"
+                    stroke-dasharray="157.08"
+                    stroke-dashoffset="157.08"/>
+          </svg>
+          <span class="reading-percentage">0%</span>
+        </div>
+      `
+    });
 
-        this.sections.forEach((section, index) => {
-            const indicator = document.createElement('div');
-            indicator.className = 'section-indicator';
-            indicator.dataset.section = index;
-            indicator.style.cssText = `
-                width: 12px;
-                height: 12px;
-                border: 2px solid var(--color-text-secondary, #64748b);
-                border-radius: 50%;
-                cursor: pointer;
-                transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                position: relative;
-            `;
+    this.injectReadingProgressStyles();
+    document.body.appendChild(readingProgress);
+    this.readingProgress = readingProgress;
+  }
 
-            // Add inner circle
-            const innerCircle = document.createElement('div');
-            innerCircle.style.cssText = `
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) scale(0);
-                width: 6px;
-                height: 6px;
-                background: var(--color-primary, #2563eb);
-                border-radius: 50%;
-                transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            `;
-            indicator.appendChild(innerCircle);
+  /**
+   * Configura las secciones a trackear
+   */
+  setupSections() {
+    this.sections = NAVIGATION_CONFIG.mainNav.map(navItem => {
+      const element = DOMHelpers.select(navItem.href);
+      return {
+        id: navItem.href.substring(1),
+        element,
+        label: navItem.label,
+        start: 0,
+        end: 0,
+        progress: 0,
+        visible: false
+      };
+    }).filter(section => section.element);
 
-            // Add label if enabled
-            if (this.options.sectionProgress.showLabels) {
-                const label = document.createElement('span');
-                label.textContent = section.dataset.sectionName || 
-                                  section.querySelector('h1, h2, h3')?.textContent?.slice(0, 20) || 
-                                  `Section ${index + 1}`;
-                label.style.cssText = `
-                    position: absolute;
-                    ${this.options.sectionProgress.position === 'left' ? 'right' : 'left'}: 2rem;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    background: var(--color-surface, #ffffff);
-                    padding: 0.5rem 1rem;
-                    border-radius: 0.5rem;
-                    font-size: 0.875rem;
-                    white-space: nowrap;
-                    opacity: 0;
-                    pointer-events: none;
-                    transition: opacity 0.3s ease;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                `;
-                indicator.appendChild(label);
+    this.calculateSectionPositions();
+  }
 
-                // Show label on hover
-                indicator.addEventListener('mouseenter', () => {
-                    label.style.opacity = '1';
-                });
-                indicator.addEventListener('mouseleave', () => {
-                    label.style.opacity = '0';
-                });
-            }
-
-            // Click handler for smooth scroll
-            indicator.addEventListener('click', () => {
-                this.scrollToSection(index);
-            });
-
-            this.elements.sectionIndicatorsContainer.appendChild(indicator);
-            this.elements.sectionIndicators.push({
-                element: indicator,
-                section: section,
-                innerCircle: innerCircle,
-                index: index
-            });
-        });
-    }
-
-    setupIntersectionObserver() {
-        this.sectionObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const sectionIndex = this.sections.indexOf(entry.target);
-                if (sectionIndex !== -1 && entry.isIntersecting) {
-                    this.setActiveSection(sectionIndex);
-                }
-            });
-        }, {
-            threshold: 0.3,
-            rootMargin: '-20% 0px -20% 0px'
-        });
-
-        this.sections.forEach(section => {
-            this.sectionObserver.observe(section);
-        });
-    }
-
-    bindEvents() {
-        // Throttled scroll event for reading progress
-        let scrollTicking = false;
-        window.addEventListener('scroll', () => {
-            if (!scrollTicking) {
-                requestAnimationFrame(() => {
-                    this.updateReadingProgress();
-                    this.updateSectionProgress();
-                    scrollTicking = false;
-                });
-                scrollTicking = true;
-            }
-        }, { passive: true });
-
-        // Resize event
-        window.addEventListener('resize', () => {
-            this.handleResize();
-        }, { passive: true });
-
-        // Hide indicators when scrolling stops
-        let scrollTimeout;
-        window.addEventListener('scroll', () => {
-            this.showIndicators();
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                if (this.options.sectionProgress.autoHide) {
-                    this.hideIndicators();
-                }
-            }, 2000);
-        }, { passive: true });
-    }
-
-    updateReadingProgress() {
-        if (!this.elements.readingProgress) return;
-
+  /**
+   * Calcula las posiciones de las secciones
+   */
+  calculateSectionPositions() {
+    this.sections.forEach(section => {
+      if (section.element) {
+        const rect = section.element.getBoundingClientRect();
         const scrollTop = window.pageYOffset;
-        const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollProgress = Math.min(scrollTop / documentHeight, 1);
+        
+        section.start = scrollTop + rect.top - 100; // Offset para activación temprana
+        section.end = section.start + rect.height;
+      }
+    });
+  }
 
-        this.scrollProgress = scrollProgress;
-        this.elements.readingProgress.bar.style.width = `${scrollProgress * 100}%`;
-
-        // Hide progress bar at top and show at bottom
-        if (scrollTop < 100) {
-            this.elements.readingProgress.container.style.opacity = '0';
-        } else {
-            this.elements.readingProgress.container.style.opacity = '1';
-        }
-    }
-
-    updateSectionProgress() {
-        // Calculate which section is currently most visible
-        let maxVisibleArea = 0;
-        let mostVisibleSection = 0;
-
-        this.sections.forEach((section, index) => {
-            const rect = section.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
-            
-            // Calculate visible area
-            const visibleTop = Math.max(0, Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0));
-            const visibleArea = visibleTop / rect.height;
-            
-            if (visibleArea > maxVisibleArea) {
-                maxVisibleArea = visibleArea;
-                mostVisibleSection = index;
-            }
+  /**
+   * Configura event listeners
+   */
+  setupEventListeners() {
+    // Scroll con throttling para performance
+    window.addEventListener('scroll', () => {
+      if (!this.ticking) {
+        requestAnimationFrame(() => {
+          this.updateProgress();
+          this.ticking = false;
         });
+        this.ticking = true;
+      }
+    });
 
-        if (mostVisibleSection !== this.currentSection) {
-            this.setActiveSection(mostVisibleSection);
-        }
-    }
+    // Resize para recalcular posiciones
+    window.addEventListener('resize', DOMHelpers.debounce(() => {
+      this.calculateSectionPositions();
+      this.updateProgress();
+    }, 250));
 
-    setActiveSection(index) {
-        if (index === this.currentSection) return;
+    // Intersection Observer para mejor detección de secciones
+    this.setupIntersectionObserver();
+  }
 
-        // Remove active state from previous section
-        if (this.elements.sectionIndicators[this.currentSection]) {
-            const prevIndicator = this.elements.sectionIndicators[this.currentSection];
-            prevIndicator.element.style.borderColor = 'var(--color-text-secondary, #64748b)';
-            prevIndicator.element.style.transform = 'scale(1)';
-            prevIndicator.innerCircle.style.transform = 'translate(-50%, -50%) scale(0)';
-        }
-
-        // Set active state for current section
-        this.currentSection = index;
-        if (this.elements.sectionIndicators[index]) {
-            const indicator = this.elements.sectionIndicators[index];
-            indicator.element.style.borderColor = 'var(--color-primary, #2563eb)';
-            indicator.element.style.transform = 'scale(1.2)';
-            indicator.innerCircle.style.transform = 'translate(-50%, -50%) scale(1)';
-        }
-
-        // Emit custom event
-        window.dispatchEvent(new CustomEvent('sectionChange', {
-            detail: { 
-                index, 
-                section: this.sections[index],
-                progress: this.scrollProgress 
-            }
-        }));
-    }
-
-    scrollToSection(index) {
-        if (index < 0 || index >= this.sections.length) return;
-
-        const section = this.sections[index];
-        const offsetTop = section.offsetTop;
-        const navbarHeight = document.querySelector('.navbar')?.offsetHeight || 0;
-        const targetPosition = offsetTop - navbarHeight - 20;
-
-        this.smoothScrollTo(targetPosition);
-    }
-
-    smoothScrollTo(targetPosition) {
-        if (!this.options.smoothScroll.enabled) {
-            window.scrollTo(0, targetPosition);
-            return;
-        }
-
-        const startPosition = window.pageYOffset;
-        const distance = targetPosition - startPosition;
-        const duration = this.options.smoothScroll.duration;
-        let startTime = null;
-
-        const animateScroll = (currentTime) => {
-            if (startTime === null) startTime = currentTime;
-            const timeElapsed = currentTime - startTime;
-            const progress = Math.min(timeElapsed / duration, 1);
-
-            // Easing function
-            const easeProgress = this.easeInOutCubic(progress);
-            const currentPosition = startPosition + (distance * easeProgress);
-
-            window.scrollTo(0, currentPosition);
-
-            if (timeElapsed < duration) {
-                requestAnimationFrame(animateScroll);
-            }
-        };
-
-        this.isScrolling = true;
-        requestAnimationFrame(animateScroll);
+  /**
+   * Configura Intersection Observer
+   */
+  setupIntersectionObserver() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const sectionId = entry.target.id;
+        const section = this.sections.find(s => s.id === sectionId);
         
-        setTimeout(() => {
-            this.isScrolling = false;
-        }, duration);
-    }
-
-    easeInOutCubic(t) {
-        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-    }
-
-    // Circular progress indicators
-    createCircularProgress(element, options = {}) {
-        const config = {
-            size: this.options.circularProgress.size,
-            strokeWidth: this.options.circularProgress.strokeWidth,
-            animationDuration: this.options.circularProgress.animationDuration,
-            color: 'var(--color-primary, #2563eb)',
-            backgroundColor: 'var(--color-text-secondary, #64748b)',
-            showPercentage: true,
-            ...options
-        };
-
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.classList.add('circular-progress');
-        svg.style.cssText = `
-            width: ${config.size}px;
-            height: ${config.size}px;
-            transform: rotate(-90deg);
-        `;
-
-        const radius = (config.size - config.strokeWidth) / 2;
-        const circumference = 2 * Math.PI * radius;
-
-        // Background circle
-        const backgroundCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        backgroundCircle.style.cssText = `
-            cx: ${config.size / 2};
-            cy: ${config.size / 2};
-            r: ${radius};
-            fill: none;
-            stroke: ${config.backgroundColor};
-            stroke-width: ${config.strokeWidth};
-        `;
-
-        // Progress circle
-        const progressCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        progressCircle.classList.add('progress-circle');
-        progressCircle.style.cssText = `
-            cx: ${config.size / 2};
-            cy: ${config.size / 2};
-            r: ${radius};
-            fill: none;
-            stroke: ${config.color};
-            stroke-width: ${config.strokeWidth};
-            stroke-linecap: round;
-            stroke-dasharray: ${circumference};
-            stroke-dashoffset: ${circumference};
-            transition: stroke-dashoffset ${config.animationDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        `;
-
-        svg.appendChild(backgroundCircle);
-        svg.appendChild(progressCircle);
-
-        // Percentage text
-        let percentageText = null;
-        if (config.showPercentage) {
-            percentageText = document.createElement('div');
-            percentageText.classList.add('progress-text');
-            percentageText.style.cssText = `
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) rotate(90deg);
-                font-size: ${config.size * 0.15}px;
-                font-weight: 600;
-                color: var(--color-text-primary, #1e293b);
-                text-align: center;
-            `;
-            percentageText.textContent = '0%';
+        if (section) {
+          section.visible = entry.isIntersecting;
+          
+          if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+            this.setActiveSection(sectionId);
+          }
         }
+      });
+    }, {
+      threshold: [0, 0.3, 0.7, 1],
+      rootMargin: '-10% 0px -10% 0px'
+    });
 
-        // Container
-        const container = document.createElement('div');
-        container.style.cssText = `
-            position: relative;
-            display: inline-block;
-            width: ${config.size}px;
-            height: ${config.size}px;
-        `;
-        container.appendChild(svg);
-        if (percentageText) {
-            container.appendChild(percentageText);
-        }
+    this.sections.forEach(section => {
+      if (section.element) {
+        observer.observe(section.element);
+      }
+    });
+  }
 
-        element.appendChild(container);
+  /**
+   * Actualiza todos los indicadores de progreso
+   */
+  updateProgress() {
+    const scrollTop = window.pageYOffset;
+    const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+    
+    // Progreso general de scroll
+    const scrollProgress = Math.min(scrollTop / documentHeight, 1);
+    this.updateScrollProgress(scrollProgress);
 
-        // Store reference for updates
-        const progressData = {
-            element: container,
-            circle: progressCircle,
-            text: percentageText,
-            circumference,
-            config
-        };
+    // Progreso de secciones
+    this.updateSectionProgress(scrollTop);
 
-        this.elements.circularProgress.push(progressData);
+    // Progreso de lectura
+    if (this.options.showReadingProgress) {
+      this.updateReadingProgress(scrollProgress);
+    }
+  }
 
-        return {
-            setProgress: (progress) => this.updateCircularProgress(progressData, progress),
-            destroy: () => this.destroyCircularProgress(progressData)
-        };
+  /**
+   * Actualiza barra de progreso de scroll
+   */
+  updateScrollProgress(progress) {
+    if (!this.scrollProgress) return;
+
+    const fill = this.scrollProgress.querySelector('.scroll-progress-fill');
+    if (fill) {
+      fill.style.transform = `scaleX(${progress})`;
+    }
+  }
+
+  /**
+   * Actualiza progreso de secciones
+   */
+  updateSectionProgress(scrollTop) {
+    this.sections.forEach((section, index) => {
+      if (!section.element) return;
+
+      const indicator = this.sectionIndicators[index];
+      if (!indicator) return;
+
+      // Calcular progreso de la sección
+      let progress = 0;
+      if (scrollTop >= section.start && scrollTop <= section.end) {
+        progress = (scrollTop - section.start) / (section.end - section.start);
+        progress = Math.max(0, Math.min(1, progress));
+      } else if (scrollTop > section.end) {
+        progress = 1;
+      }
+
+      section.progress = progress;
+
+      // Actualizar indicador visual
+      const fill = indicator.element.querySelector('.indicator-fill');
+      if (fill) {
+        fill.style.transform = `scaleY(${progress})`;
+      }
+
+      // Actualizar estado activo
+      const isActive = section.visible && progress > 0;
+      indicator.element.classList.toggle('active', isActive);
+      
+      if (isActive && this.currentSection !== section.id) {
+        this.setActiveSection(section.id);
+      }
+    });
+  }
+
+  /**
+   * Actualiza progreso de lectura circular
+   */
+  updateReadingProgress(progress) {
+    if (!this.readingProgress) return;
+
+    const circle = this.readingProgress.querySelector('.reading-progress-circle');
+    const percentage = this.readingProgress.querySelector('.reading-percentage');
+    
+    if (circle && percentage) {
+      const circumference = 157.08; // 2 * π * r (r=25)
+      const offset = circumference - (progress * circumference);
+      
+      circle.style.strokeDashoffset = offset;
+      percentage.textContent = Math.round(progress * 100) + '%';
     }
 
-    updateCircularProgress(progressData, progress) {
-        const { circle, text, circumference } = progressData;
-        const offset = circumference * (1 - Math.max(0, Math.min(1, progress)));
+    // Mostrar/ocultar basado en scroll
+    this.readingProgress.classList.toggle('visible', progress > 0.05);
+  }
+
+  /**
+   * Establece la sección activa
+   */
+  setActiveSection(sectionId) {
+    if (this.currentSection === sectionId) return;
+
+    this.currentSection = sectionId;
+
+    // Actualizar indicadores
+    this.sectionIndicators.forEach(indicator => {
+      const isActive = indicator.section === sectionId;
+      indicator.element.classList.toggle('current', isActive);
+      indicator.active = isActive;
+    });
+
+    // Disparar evento personalizado
+    window.dispatchEvent(new CustomEvent('sectionChange', {
+      detail: { sectionId, section: this.sections.find(s => s.id === sectionId) }
+    }));
+  }
+
+  /**
+   * Navega a una sección específica
+   */
+  navigateToSection(sectionId) {
+    const section = this.sections.find(s => s.id === sectionId);
+    if (section && section.element) {
+      DOMHelpers.scrollTo(section.element, { 
+        offset: NAVIGATION_CONFIG.scroll.offset 
+      });
+    }
+  }
+
+  /**
+   * Obtiene estadísticas de progreso
+   */
+  getProgressStats() {
+    const totalSections = this.sections.length;
+    const completedSections = this.sections.filter(s => s.progress >= 0.8).length;
+    const currentProgress = this.sections.find(s => s.id === this.currentSection);
+
+    return {
+      totalSections,
+      completedSections,
+      completionPercentage: (completedSections / totalSections) * 100,
+      currentSection: this.currentSection,
+      currentSectionProgress: currentProgress ? currentProgress.progress : 0
+    };
+  }
+
+  /**
+   * Inyecta estilos para la barra de scroll
+   */
+  injectScrollProgressStyles() {
+    if (document.getElementById('scroll-progress-styles')) return;
+
+    const styles = document.createElement('style');
+    styles.id = 'scroll-progress-styles';
+    styles.textContent = `
+      .scroll-progress {
+        position: fixed;
+        z-index: 9998;
+        background: rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+      
+      .scroll-progress-top {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+      }
+      
+      .scroll-progress-bottom {
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+      }
+      
+      .scroll-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        transform-origin: left;
+        transform: scaleX(0);
+        transition: transform 0.1s ease-out;
+      }
+    `;
+    document.head.appendChild(styles);
+  }
+
+  /**
+   * Inyecta estilos para indicadores de sección
+   */
+  injectSectionIndicatorStyles() {
+    if (document.getElementById('section-indicators-styles')) return;
+
+    const styles = document.createElement('style');
+    styles.id = 'section-indicators-styles';
+    styles.textContent = `
+      .section-indicators {
+        position: fixed;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 9997;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .section-indicator {
+        position: relative;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+      
+      .indicator-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+      }
+      
+      .section-indicator.active .indicator-dot {
+        background: var(--primary-color);
+        transform: scale(1.2);
+      }
+      
+      .section-indicator.current .indicator-dot {
+        background: var(--accent-color);
+        transform: scale(1.5);
+        box-shadow: 0 0 15px var(--accent-color);
+      }
+      
+      .indicator-label {
+        position: absolute;
+        right: 50px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      
+      .section-indicator:hover .indicator-label {
+        opacity: 1;
+      }
+      
+      .indicator-progress {
+        position: absolute;
+        left: -2px;
+        top: -2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        overflow: hidden;
+      }
+      
+      .indicator-fill {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 0%;
+        background: var(--primary-color);
+        transition: height 0.3s ease;
+        transform-origin: bottom;
+      }
+      
+      @media (max-width: 768px) {
+        .section-indicators {
+          display: none;
+        }
+      }
+    `;
+    document.head.appendChild(styles);
+  }
+
+  /**
+   * Inyecta estilos para progreso de lectura
+   */
+  injectReadingProgressStyles() {
+    if (document.getElementById('reading-progress-styles')) return;
+
+    const styles = document.createElement('style');
+    styles.id = 'reading-progress-styles';
+    styles.textContent = `
+      .reading-progress {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9997;
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.3s ease;
+        pointer-events: none;
+      }
+      
+      .reading-progress.visible {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+      }
+      
+      .reading-circle {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+      }
+      
+      .reading-svg {
+        transform: rotate(-90deg);
+      }
+      
+      .reading-progress-circle {
+        transition: stroke-dashoffset 0.3s ease;
+      }
+      
+      .reading-percentage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 10px;
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+      
+      @media (max-width: 768px) {
+        .reading-progress {
+          bottom: 20px;
+          right: 20px;
+          transform: scale(0.7);
+        }
         
-        circle.style.strokeDashoffset = offset;
-        
-        if (text) {
-            text.textContent = `${Math.round(progress * 100)}%`;
+        .reading-progress.visible {
+          transform: scale(0.8);
         }
+      }
+    `;
+    document.head.appendChild(styles);
+  }
+
+  /**
+   * Habilita/deshabilita indicadores
+   */
+  toggle(enabled = null) {
+    const isEnabled = enabled !== null ? enabled : 
+      !this.scrollProgress.classList.contains('hidden');
+
+    [this.scrollProgress, ...this.sectionIndicators.map(i => i.element.parentNode)]
+      .filter(Boolean)
+      .forEach(element => {
+        element.classList.toggle('hidden', !isEnabled);
+      });
+  }
+
+  /**
+   * Actualiza configuración
+   */
+  updateConfig(newOptions) {
+    Object.assign(this.options, newOptions);
+    
+    // Recrear elementos si es necesario
+    this.destroy();
+    this.init();
+  }
+
+  /**
+   * Destructor
+   */
+  destroy() {
+    // Remover elementos del DOM
+    if (this.scrollProgress) {
+      this.scrollProgress.remove();
+    }
+    
+    const sectionIndicators = document.querySelector('.section-indicators');
+    if (sectionIndicators) {
+      sectionIndicators.remove();
+    }
+    
+    if (this.readingProgress) {
+      this.readingProgress.remove();
     }
 
-    destroyCircularProgress(progressData) {
-        const index = this.elements.circularProgress.indexOf(progressData);
-        if (index > -1) {
-            this.elements.circularProgress.splice(index, 1);
-            progressData.element.remove();
-        }
-    }
-
-    // Utility methods
-    showIndicators() {
-        if (this.elements.sectionIndicatorsContainer) {
-            this.elements.sectionIndicatorsContainer.style.opacity = '1';
-        }
-        if (this.elements.readingProgress) {
-            this.elements.readingProgress.container.style.opacity = '1';
-        }
-    }
-
-    hideIndicators() {
-        if (this.elements.sectionIndicatorsContainer) {
-            this.elements.sectionIndicatorsContainer.style.opacity = '0.3';
-        }
-    }
-
-    handleResize() {
-        // Hide section indicators on mobile
-        if (window.innerWidth <= 768) {
-            if (this.elements.sectionIndicatorsContainer) {
-                this.elements.sectionIndicatorsContainer.style.display = 'none';
-            }
-        } else {
-            if (this.elements.sectionIndicatorsContainer) {
-                this.elements.sectionIndicatorsContainer.style.display = 'flex';
-            }
-        }
-
-        // Recalculate section positions
-        setTimeout(() => {
-            this.updateSectionProgress();
-        }, 100);
-    }
-
-    // Public API
-    goToSection(index) {
-        this.scrollToSection(index);
-    }
-
-    goToNext() {
-        const nextIndex = Math.min(this.currentSection + 1, this.sections.length - 1);
-        this.scrollToSection(nextIndex);
-    }
-
-    goToPrevious() {
-        const prevIndex = Math.max(this.currentSection - 1, 0);
-        this.scrollToSection(prevIndex);
-    }
-
-    getCurrentSection() {
-        return {
-            index: this.currentSection,
-            element: this.sections[this.currentSection],
-            progress: this.scrollProgress
-        };
-    }
-
-    getScrollProgress() {
-        return this.scrollProgress;
-    }
-
-    addSection(element, name = '') {
-        this.sections.push(element);
-        element.dataset.sectionName = name;
-        
-        // Recreate indicators
-        this.elements.sectionIndicatorsContainer.innerHTML = '';
-        this.elements.sectionIndicators = [];
-        this.createIndicatorsForSections();
-        
-        // Re-observe sections
-        this.sectionObserver.observe(element);
-    }
-
-    removeSection(element) {
-        const index = this.sections.indexOf(element);
-        if (index > -1) {
-            this.sections.splice(index, 1);
-            this.sectionObserver.unobserve(element);
-            
-            // Recreate indicators
-            this.elements.sectionIndicatorsContainer.innerHTML = '';
-            this.elements.sectionIndicators = [];
-            this.createIndicatorsForSections();
-        }
-    }
-
-    // Keyboard navigation
-    setupKeyboardNavigation() {
-        document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-            
-            switch (e.key) {
-                case 'ArrowUp':
-                case 'PageUp':
-                    e.preventDefault();
-                    this.goToPrevious();
-                    break;
-                case 'ArrowDown':
-                case 'PageDown':
-                    e.preventDefault();
-                    this.goToNext();
-                    break;
-                case 'Home':
-                    e.preventDefault();
-                    this.scrollToSection(0);
-                    break;
-                case 'End':
-                    e.preventDefault();
-                    this.scrollToSection(this.sections.length - 1);
-                    break;
-            }
-        });
-    }
-
-    // Enable/disable features
-    enableReadingProgress() {
-        this.options.readingProgress.enabled = true;
-        if (!this.elements.readingProgress) {
-            this.createReadingProgress();
-        }
-    }
-
-    disableReadingProgress() {
-        this.options.readingProgress.enabled = false;
-        if (this.elements.readingProgress) {
-            this.elements.readingProgress.container.remove();
-            this.elements.readingProgress = null;
-        }
-    }
-
-    enableSectionProgress() {
-        this.options.sectionProgress.enabled = true;
-        if (!this.elements.sectionIndicatorsContainer) {
-            this.createSectionIndicators();
-            this.createIndicatorsForSections();
-        }
-    }
-
-    disableSectionProgress() {
-        this.options.sectionProgress.enabled = false;
-        if (this.elements.sectionIndicatorsContainer) {
-            this.elements.sectionIndicatorsContainer.remove();
-            this.elements.sectionIndicatorsContainer = null;
-            this.elements.sectionIndicators = [];
-        }
-    }
-
-    // Cleanup
-    destroy() {
-        // Remove DOM elements
-        if (this.elements.readingProgress) {
-            this.elements.readingProgress.container.remove();
-        }
-        if (this.elements.sectionIndicatorsContainer) {
-            this.elements.sectionIndicatorsContainer.remove();
-        }
-        
-        // Remove circular progress indicators
-        this.elements.circularProgress.forEach(progress => {
-            progress.element.remove();
-        });
-
-        // Disconnect observers
-        if (this.sectionObserver) {
-            this.sectionObserver.disconnect();
-        }
-
-        // Clear references
-        this.elements = {
-            readingProgress: null,
-            sectionIndicators: [],
-            circularProgress: []
-        };
-        this.sections = [];
-
-        console.log('🧹 Progress Indicators destroyed');
-    }
+    // Remover event listeners
+    window.removeEventListener('scroll', this.updateProgress);
+    window.removeEventListener('resize', this.calculateSectionPositions);
+  }
 }
 
-export default ProgressIndicators;
+// Auto-inicialización
+DOMHelpers.ready(() => {
+  // Solo inicializar si está habilitado en la configuración
+  if (NAVIGATION_CONFIG.progressIndicators?.enabled) {
+    window.progressIndicatorsInstance = new ProgressIndicators({
+      showScrollProgress: true,
+      showSectionProgress: true,
+      showReadingProgress: false,
+      position: NAVIGATION_CONFIG.progressIndicators.position || 'top',
+      style: NAVIGATION_CONFIG.progressIndicators.style || 'bar'
+    });
+  }
+});

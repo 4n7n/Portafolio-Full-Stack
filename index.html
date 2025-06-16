@@ -1,486 +1,388 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portafolio profesional de desarrollador fullstack - Proyectos, habilidades y experiencia">
-    <meta name="keywords" content="desarrollador, fullstack, portfolio, proyectos, web development">
-    <meta name="author" content="Tu Nombre">
+    <meta name="description" content="Portafolio Full Stack Developer - Desarrollador especializado en tecnologías web modernas">
+    <meta name="keywords" content="full stack, developer, portfolio, web development, javascript, html, css">
+    <meta name="author" content="Full Stack Developer">
     
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tu-dominio.com/">
-    <meta property="og:title" content="Mi Portafolio Fullstack">
-    <meta property="og:description" content="Desarrollador fullstack especializado en tecnologías modernas">
-    <meta property="og:image" content="./assets/images/profile/hero-bg.jpg">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://tu-dominio.com/">
-    <meta property="twitter:title" content="Mi Portafolio Fullstack">
-    <meta property="twitter:description" content="Desarrollador fullstack especializado en tecnologías modernas">
-    <meta property="twitter:image" content="./assets/images/profile/hero-bg.jpg">
-
-    <title>Mi Portafolio Fullstack | Desarrollador Web</title>
+    <title>Portfolio Full Stack Developer</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="./assets/images/icons/ui/favicon.ico">
+    <!-- Fonts will load via CSS @font-face -->
     
-    <!-- Preload critical resources -->
-    <link rel="preload" href="./assets/fonts/inter/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="./assets/fonts/fira-code/FiraCode-Regular.woff2" as="font" type="font/woff2" crossorigin>
-    
-    <!-- CSS Styles - Orden jerárquico según estructura -->
-    <!-- Utilidades base -->
-    <link rel="stylesheet" href="./assets/css/utils/variables.css">
-    <link rel="stylesheet" href="./assets/css/utils/themes.css">
-    <link rel="stylesheet" href="./assets/css/utils/animations.css">
-    
-    <!-- Estilos principales -->
+    <!-- CSS principal (contiene TODOS los estilos via @import) -->
     <link rel="stylesheet" href="./assets/css/main.css">
-    
-    <!-- Componentes específicos -->
-    <link rel="stylesheet" href="./assets/css/components/navbar.css">
-    <link rel="stylesheet" href="./assets/css/components/hero.css">
-    <link rel="stylesheet" href="./assets/css/components/about.css">
-    <link rel="stylesheet" href="./assets/css/components/skills.css">
-    <link rel="stylesheet" href="./assets/css/components/projects.css">
-    <link rel="stylesheet" href="./assets/css/components/experience.css">
-    <link rel="stylesheet" href="./assets/css/components/contact.css">
-    <link rel="stylesheet" href="./assets/css/components/footer.css">
-    <link rel="stylesheet" href="./assets/css/components/modal.css">
-    
-    <!-- Responsive -->
-    <link rel="stylesheet" href="./assets/css/utils/responsive.css">
+
 </head>
 
-<body class="theme-light">
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
-        <div class="loader"></div>
-        <p>Cargando portafolio...</p>
-    </div>
-
-    <!-- Navigation -->
-    <nav id="navbar" class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="#home">
-                    <img src="./assets/images/profile/avatar.jpg" alt="Logo" class="logo-img">
-                    <span class="logo-text">Mi Portfolio</span>
-                </a>
-            </div>
-            
-            <ul class="nav-menu" id="nav-menu">
-                <li><a href="#home" class="nav-link active" data-section="home">Inicio</a></li>
-                <li><a href="#about" class="nav-link" data-section="about">Sobre Mí</a></li>
-                <li><a href="#skills" class="nav-link" data-section="skills">Habilidades</a></li>
-                <li><a href="#projects" class="nav-link" data-section="projects">Proyectos</a></li>
-                <li><a href="#experience" class="nav-link" data-section="experience">Experiencia</a></li>
-                <li><a href="#contact" class="nav-link" data-section="contact">Contacto</a></li>
-            </ul>
-            
-            <div class="nav-controls">
-                <button id="theme-switcher" class="theme-btn" aria-label="Cambiar tema">
-                    <span class="theme-icon">🌙</span>
-                </button>
-                <div class="language-selector">
-                    <select id="language-select">
-                        <option value="es">ES</option>
-                        <option value="en">EN</option>
-                    </select>
-                </div>
-                <div class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main id="main-content">
-        <!-- Hero Section -->
-        <section id="home" class="hero-section">
-            <div class="hero-background">
-                <img src="./assets/images/profile/hero-bg.jpg" alt="Background" class="hero-bg-img">
-                <div class="hero-overlay"></div>
-            </div>
-            
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1 class="hero-title">
-                        <span class="greeting">Hola, soy</span>
-                        <span class="name">Tu Nombre</span>
-                    </h1>
-                    <div class="hero-subtitle">
-                        <span class="typing-text" id="typing-text"></span>
-                        <span class="cursor">|</span>
-                    </div>
-                    <p class="hero-description">
-                        Desarrollador fullstack apasionado por crear experiencias digitales 
-                        excepcionales con tecnologías modernas y mejores prácticas.
-                    </p>
-                    <div class="hero-buttons">
-                        <a href="#projects" class="btn btn-primary">Ver Proyectos</a>
-                        <a href="./assets/documents/cv-es.pdf" class="btn btn-secondary" download>
-                            Descargar CV
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="hero-image">
-                    <div class="image-container">
-                        <img src="./assets/images/profile/avatar.jpg" alt="Mi foto" class="profile-img">
-                        <div class="image-decoration"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="scroll-indicator">
-                <div class="scroll-arrow"></div>
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="about-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Sobre Mí</h2>
-                    <p class="section-subtitle">Conoce más sobre mi trayectoria</p>
-                </div>
-                
-                <div class="about-content">
-                    <div class="about-text">
-                        <p class="about-intro">
-                            Soy un desarrollador fullstack con más de X años de experiencia 
-                            creando aplicaciones web modernas y escalables.
-                        </p>
-                        <p>
-                            Mi enfoque se centra en escribir código limpio, implementar las mejores 
-                            prácticas y mantenerme actualizado con las últimas tecnologías del sector.
+<body data-gaming-theme="blue" class="font-loading">
+    <!-- Indicador de progreso de scroll -->
+    <div class="scroll-progress"></div>
+    
+    <!-- Contenido principal -->
+    <main>
+        <!-- Sección Hero - ACTUALIZADA -->
+        <section id="home" class="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <!-- Texto Hero -->
+                    <div class="hero-text">
+                        <p class="hero-greeting">¡Hola! Soy</p>
+                        <h1 class="hero-title">
+                            <span class="hero-name">ANTHONY BONILLA</span>
+                            Developer Full Stack
+                        </h1>
+                        <p class="hero-role">Creando experiencias digitales excepcionales</p>
+                        <p class="hero-description">
+                            Especializado en crear experiencias web excepcionales con 
+                            <span class="code-highlight">React</span>, 
+                            <span class="code-highlight">Node.js</span> y 
+                            <span class="code-highlight">MongoDB</span>. 
+                            Transformo ideas en soluciones digitales innovadoras.
                         </p>
                         
+                        <!-- Botones Hero -->
+                        <div class="hero-buttons">
+                            <a href="#projects" class="hero-btn hero-btn-primary">Ver Proyectos</a>
+                            <a href="#contact" class="hero-btn hero-btn-secondary">Contactar</a>
+                        </div>
+                        
+                        <!-- Estadísticas -->
+                        <div class="hero-stats">
+                            <div class="hero-stat">
+                                <span class="hero-stat-number" data-count="50">50+</span>
+                                <span class="hero-stat-label">Proyectos</span>
+                            </div>
+                            <div class="hero-stat">
+                                <span class="hero-stat-number" data-count="3">3+</span>
+                                <span class="hero-stat-label">Años</span>
+                            </div>
+                            <div class="hero-stat">
+                                <span class="hero-stat-number" data-count="20">20+</span>
+                                <span class="hero-stat-label">Tecnologías</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Imagen Hero -->
+                    <div class="hero-image">
+                        <img src="./assets/images/profile/anthony-bonilla.jpg" alt="Anthony Bonilla - Developer Full Stack" loading="lazy">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="hero-scroll">
+                <div class="scroll-indicator"></div>
+            </div>
+        </section>
+        
+        <!-- Sección Sobre mí -->
+        <section id="about" class="section-padding">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title font-heading">Sobre Mí</h2>
+                    <p class="section-subtitle">Conoce mi historia y experiencia</p>
+                </div>
+                <div class="about-content">
+                    <div>
+                        <p class="font-body">
+                            Soy un desarrollador Full Stack apasionado por crear soluciones 
+                            digitales innovadoras. Con experiencia en desarrollo frontend y 
+                            backend, me especializo en construir aplicaciones web escalables 
+                            y de alto rendimiento.
+                        </p>
+                        <p class="font-body">
+                            Mi enfoque se centra en la calidad del código, la experiencia 
+                            del usuario y las mejores prácticas de desarrollo. Siempre 
+                            estoy aprendiendo nuevas tecnologías y metodologías para 
+                            mantenerme actualizado en este campo en constante evolución.
+                        </p>
                         <div class="about-stats">
                             <div class="stat-item">
-                                <span class="stat-number" data-target="50">0</span>
-                                <span class="stat-label">Proyectos</span>
+                                <span class="stat-number font-heading" data-count="50">0</span>
+                                <span class="stat-label">Proyectos Completados</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-number" data-target="3">0</span>
-                                <span class="stat-label">Años Exp.</span>
+                                <span class="stat-number font-heading" data-count="3">0</span>
+                                <span class="stat-label">Años de Experiencia</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-number" data-target="100">0</span>
-                                <span class="stat-label">Clientes</span>
+                                <span class="stat-number font-heading" data-count="100">0</span>
+                                <span class="stat-label">Clientes Satisfechos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sección Habilidades -->
+        <section id="skills" class="section-padding">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title font-heading">Habilidades Técnicas</h2>
+                    <p class="section-subtitle">Tecnologías y herramientas que domino</p>
+                </div>
+                <div class="skills-container">
+                    <div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name font-code">JavaScript</span>
+                                <span class="skill-percentage font-heading">90%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 90%"></div>
                             </div>
                         </div>
                         
-                        <a href="./pages/about.html" class="btn btn-outline">Más Detalles</a>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name font-code">React</span>
+                                <span class="skill-percentage font-heading">85%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name font-code">Node.js</span>
+                                <span class="skill-percentage font-heading">80%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name font-code">CSS/SASS</span>
+                                <span class="skill-percentage font-heading">95%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name font-code">MongoDB</span>
+                                <span class="skill-percentage font-heading">75%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 75%"></div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="about-image">
-                        <img src="./assets/images/profile/about-me.jpg" alt="Sobre mí" class="about-img">
+                    <div class="skills-chart-wrapper">
+                        <canvas id="skillsChart"></canvas>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- Skills Section -->
-        <section id="skills" class="skills-section">
+        
+        <!-- Sección Experiencia -->
+        <section id="experience" class="section-padding">
             <div class="container">
                 <div class="section-header">
-                    <h2 class="section-title">Habilidades Técnicas</h2>
-                    <p class="section-subtitle">Tecnologías que domino</p>
+                    <h2 class="section-title font-heading">Experiencia Profesional</h2>
+                    <p class="section-subtitle">Mi trayectoria en el desarrollo web</p>
                 </div>
-                
-                <div class="skills-container">
-                    <div class="skills-category">
-                        <h3 class="category-title">Frontend</h3>
-                        <div class="skills-grid" id="frontend-skills">
-                            <!-- Skills will be loaded dynamically -->
+                <div class="experience-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <h3 class="timeline-title font-heading">Senior Full Stack Developer</h3>
+                        <div>
+                            <span class="timeline-company">Tech Company</span>
+                            <span class="timeline-period">2022 - Presente</span>
                         </div>
+                        <p class="timeline-description font-body">
+                            Lidero el desarrollo de aplicaciones web escalables utilizando React, Node.js y MongoDB. 
+                            Responsable de la arquitectura técnica y mentoría del equipo junior.
+                        </p>
                     </div>
                     
-                    <div class="skills-category">
-                        <h3 class="category-title">Backend</h3>
-                        <div class="skills-grid" id="backend-skills">
-                            <!-- Skills will be loaded dynamically -->
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <h3 class="timeline-title font-heading">Full Stack Developer</h3>
+                        <div>
+                            <span class="timeline-company">Digital Agency</span>
+                            <span class="timeline-period">2020 - 2022</span>
                         </div>
+                        <p class="timeline-description font-body">
+                            Desarrollé múltiples proyectos web para clientes diversos, desde landing pages 
+                            hasta aplicaciones complejas con integración de APIs y sistemas de pago.
+                        </p>
                     </div>
                     
-                    <div class="skills-category">
-                        <h3 class="category-title">Base de Datos</h3>
-                        <div class="skills-grid" id="database-skills">
-                            <!-- Skills will be loaded dynamically -->
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <h3 class="timeline-title font-heading">Frontend Developer</h3>
+                        <div>
+                            <span class="timeline-company">Startup</span>
+                            <span class="timeline-period">2019 - 2020</span>
                         </div>
+                        <p class="timeline-description font-body">
+                            Comencé mi carrera profesional desarrollando interfaces de usuario modernas 
+                            y responsivas, trabajando estrechamente con diseñadores UX/UI.
+                        </p>
                     </div>
-                </div>
-                
-                <div class="skills-chart-container">
-                    <canvas id="skills-chart"></canvas>
                 </div>
             </div>
         </section>
-
-        <!-- Projects Section -->
-        <section id="projects" class="projects-section">
+        
+        <!-- Sección Proyectos -->
+        <section id="projects" class="section-padding">
             <div class="container">
                 <div class="section-header">
-                    <h2 class="section-title">Mis Proyectos</h2>
-                    <p class="section-subtitle">Algunos de mis trabajos destacados</p>
+                    <h2 class="section-title font-heading">Proyectos Destacados</h2>
+                    <p class="section-subtitle">Algunos de mis trabajos más recientes</p>
                 </div>
-                
                 <div class="project-filters">
                     <button class="filter-btn active" data-filter="all">Todos</button>
                     <button class="filter-btn" data-filter="frontend">Frontend</button>
                     <button class="filter-btn" data-filter="backend">Backend</button>
-                    <button class="filter-btn" data-filter="fullstack">Fullstack</button>
+                    <button class="filter-btn" data-filter="fullstack">Full Stack</button>
                 </div>
-                
-                <div class="projects-grid" id="projects-grid">
-                    <!-- Projects will be loaded dynamically -->
-                </div>
-                
-                <div class="projects-navigation">
-                    <a href="./pages/projects.html" class="btn btn-primary">Ver Todos los Proyectos</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Experience Section -->
-        <section id="experience" class="experience-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Experiencia Profesional</h2>
-                    <p class="section-subtitle">Mi trayectoria laboral</p>
-                </div>
-                
-                <div class="timeline" id="experience-timeline">
-                    <!-- Experience items will be loaded dynamically -->
-                </div>
-                
-                <div class="experience-navigation">
-                    <a href="./pages/experience.html" class="btn btn-outline">Ver Experiencia Completa</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonials Section -->
-        <section id="testimonials" class="testimonials-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Testimonios</h2>
-                    <p class="section-subtitle">Lo que dicen mis clientes</p>
-                </div>
-                
-                <div class="testimonials-carousel" id="testimonials-carousel">
-                    <!-- Testimonials will be loaded dynamically -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="contact-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Contacto</h2>
-                    <p class="section-subtitle">¡Hablemos de tu próximo proyecto!</p>
-                </div>
-                
-                <div class="contact-content">
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <img src="./assets/images/icons/contact/email.svg" alt="Email" class="contact-icon">
-                            <div class="contact-details">
-                                <h3>Email</h3>
-                                <a href="mailto:tu-email@ejemplo.com">tu-email@ejemplo.com</a>
+                <div class="projects-grid">
+                    <div class="project-card" data-category="fullstack">
+                        <div class="project-image">
+                            💻
+                            <div class="project-overlay">
+                                <div class="project-actions">
+                                    <a href="#" class="btn btn-small">Ver Demo</a>
+                                    <a href="#" class="btn btn-small btn-secondary">Código</a>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="contact-item">
-                            <img src="./assets/images/icons/contact/phone.svg" alt="Teléfono" class="contact-icon">
-                            <div class="contact-details">
-                                <h3>Teléfono</h3>
-                                <a href="tel:+1234567890">+123 456 7890</a>
+                        <div class="project-content">
+                            <h3 class="project-title font-heading">E-commerce Platform</h3>
+                            <p class="project-description font-body">
+                                Plataforma completa de comercio electrónico con panel de administración, 
+                                sistema de pagos y gestión de inventario.
+                            </p>
+                            <div class="project-technologies">
+                                <span class="tech-tag font-code">React</span>
+                                <span class="tech-tag font-code">Node.js</span>
+                                <span class="tech-tag font-code">MongoDB</span>
+                                <span class="tech-tag font-code">Stripe</span>
                             </div>
-                        </div>
-                        
-                        <div class="contact-item">
-                            <img src="./assets/images/icons/contact/location.svg" alt="Ubicación" class="contact-icon">
-                            <div class="contact-details">
-                                <h3>Ubicación</h3>
-                                <span>Tu Ciudad, País</span>
-                            </div>
-                        </div>
-                        
-                        <div class="social-links">
-                            <a href="#" class="social-link" aria-label="LinkedIn">
-                                <img src="./assets/images/icons/social/linkedin.svg" alt="LinkedIn">
-                            </a>
-                            <a href="#" class="social-link" aria-label="GitHub">
-                                <img src="./assets/images/icons/social/github.svg" alt="GitHub">
-                            </a>
-                            <a href="#" class="social-link" aria-label="Twitter">
-                                <img src="./assets/images/icons/social/twitter.svg" alt="Twitter">
-                            </a>
                         </div>
                     </div>
                     
-                    <form id="contact-form" class="contact-form">
-                        <div class="form-group">
-                            <label for="name">Nombre *</label>
-                            <input type="text" id="name" name="name" required>
-                            <span class="error-message" id="name-error"></span>
+                    <div class="project-card" data-category="frontend">
+                        <div class="project-image">
+                            🎨
+                            <div class="project-overlay">
+                                <div class="project-actions">
+                                    <a href="#" class="btn btn-small">Ver Demo</a>
+                                    <a href="#" class="btn btn-small btn-secondary">Código</a>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="email">Email *</label>
-                            <input type="email" id="email" name="email" required>
-                            <span class="error-message" id="email-error"></span>
+                        <div class="project-content">
+                            <h3 class="project-title font-heading">Portfolio Interactivo</h3>
+                            <p class="project-description font-body">
+                                Sitio web personal con animaciones avanzadas y diseño responsivo 
+                                para mostrar proyectos y habilidades.
+                            </p>
+                            <div class="project-technologies">
+                                <span class="tech-tag font-code">HTML5</span>
+                                <span class="tech-tag font-code">CSS3</span>
+                                <span class="tech-tag font-code">JavaScript</span>
+                                <span class="tech-tag font-code">GSAP</span>
+                            </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="subject">Asunto *</label>
-                            <input type="text" id="subject" name="subject" required>
-                            <span class="error-message" id="subject-error"></span>
+                    </div>
+                    
+                    <div class="project-card" data-category="backend">
+                        <div class="project-image">
+                            ⚡
+                            <div class="project-overlay">
+                                <div class="project-actions">
+                                    <a href="#" class="btn btn-small">Ver Demo</a>
+                                    <a href="#" class="btn btn-small btn-secondary">Código</a>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Mensaje *</label>
-                            <textarea id="message" name="message" rows="5" required></textarea>
-                            <span class="error-message" id="message-error"></span>
+                        <div class="project-content">
+                            <h3 class="project-title font-heading">API RESTful</h3>
+                            <p class="project-description font-body">
+                                API robusta para gestión de usuarios con autenticación JWT, 
+                                documentación completa y tests automatizados.
+                            </p>
+                            <div class="project-technologies">
+                                <span class="tech-tag font-code">Node.js</span>
+                                <span class="tech-tag font-code">Express</span>
+                                <span class="tech-tag font-code">JWT</span>
+                                <span class="tech-tag font-code">Jest</span>
+                            </div>
                         </div>
-                        
-                        <button type="submit" class="btn btn-primary">
-                            <span class="btn-text">Enviar Mensaje</span>
-                            <span class="btn-loading">Enviando...</span>
+                    </div>
+                </div>
+                <div class="projects-cta">
+                    <a href="#" class="btn btn-outline">Ver Más Proyectos</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sección Contacto -->
+        <section id="contact" class="section-padding">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title font-heading">Hablemos</h2>
+                    <p class="section-subtitle">¿Tienes un proyecto en mente?</p>
+                </div>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h3 class="font-heading">¡Conectemos!</h3>
+                        <p class="font-body">
+                            Estoy siempre abierto a discutir nuevos proyectos, 
+                            oportunidades creativas o partnerships potenciales.
+                        </p>
+                        <div style="margin-top: 2rem;" class="font-body">
+                            <p>📧 <span class="font-code">anthonybonillaparedes7@gmail.com</span></p>
+                            <p>📱 <span class="font-code">+34 624 42 56 67</span></p>
+                            <p>📍 España</p>
+                        </div> 
+                    </div>
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-group">
+                            <label for="name" class="font-primary">Nombre</label>
+                            <input type="text" id="name" name="name" class="font-primary" required>
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="font-primary">Email</label>
+                            <input type="email" id="email" name="email" class="font-primary" required>
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject" class="font-primary">Asunto</label>
+                            <input type="text" id="subject" name="subject" class="font-primary" required>
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="font-primary">Mensaje</label>
+                            <textarea id="message" name="message" rows="5" class="font-primary" required></textarea>
+                            <span class="form-error"></span>
+                        </div>
+                        <button type="submit" class="btn btn-full">
+                            Enviar Mensaje
                         </button>
                     </form>
-                </div>
-                
-                <div class="contact-navigation">
-                    <a href="./pages/contact.html" class="btn btn-outline">Más Opciones de Contacto</a>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer id="footer" class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Mi Portfolio</h3>
-                    <p>Desarrollador fullstack especializado en crear soluciones web innovadoras.</p>
-                    <div class="footer-social">
-                        <a href="#" class="social-link" aria-label="LinkedIn">
-                            <img src="./assets/images/icons/social/linkedin.svg" alt="LinkedIn">
-                        </a>
-                        <a href="#" class="social-link" aria-label="GitHub">
-                            <img src="./assets/images/icons/social/github.svg" alt="GitHub">
-                        </a>
-                        <a href="#" class="social-link" aria-label="Twitter">
-                            <img src="./assets/images/icons/social/twitter.svg" alt="Twitter">
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Enlaces Rápidos</h4>
-                    <ul class="footer-links">
-                        <li><a href="#about">Sobre Mí</a></li>
-                        <li><a href="#projects">Proyectos</a></li>
-                        <li><a href="#experience">Experiencia</a></li>
-                        <li><a href="#contact">Contacto</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Recursos</h4>
-                    <ul class="footer-links">
-                        <li><a href="./assets/documents/cv-es.pdf" download>CV Español</a></li>
-                        <li><a href="./assets/documents/cv-en.pdf" download>CV English</a></li>
-                        <li><a href="./assets/documents/portfolio.pdf" download>Portfolio PDF</a></li>
-                        <li><a href="./pages/blog.html">Blog</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Contacto</h4>
-                    <div class="footer-contact">
-                        <p>📧 tu-email@ejemplo.com</p>
-                        <p>📱 +123 456 7890</p>
-                        <p>📍 Tu Ciudad, País</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 Mi Portfolio. Todos los derechos reservados.</p>
-                <div class="footer-credits">
-                    <span>Desarrollado con ❤️ por Tu Nombre</span>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <!-- JavaScript principal (contiene TODAS las importaciones) -->
+    <script type="module" src="./assets/js/app.js"></script>
 
-    <!-- Modals -->
-    <div id="project-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <div id="modal-body">
-                <!-- Modal content will be loaded dynamically -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Back to Top Button -->
-    <button id="back-to-top" class="back-to-top" aria-label="Volver arriba">
-        ↑
-    </button>
-
-    <!-- JavaScript Files - Orden según estructura del proyecto -->
-    
-    <!-- Configuración -->
-    <script src="./assets/js/config/portfolio-config.js"></script>
-    <script src="./assets/js/config/api-endpoints.js"></script>
-    <script src="./assets/js/config/animations-config.js"></script>
-    
-    <!-- Datos -->
-    <script src="./assets/js/data/projects.js"></script>
-    <script src="./assets/js/data/skills.js"></script>
-    <script src="./assets/js/data/experience.js"></script>
-    <script src="./assets/js/data/testimonials.js"></script>
-    
-    <!-- Utilidades -->
-    <script src="./assets/js/utils/dom-helpers.js"></script>
-    <script src="./assets/js/utils/form-validator.js"></script>
-    <script src="./assets/js/utils/lazy-loading.js"></script>
-    <script src="./assets/js/utils/performance.js"></script>
-    <script src="./assets/js/utils/seo-helpers.js"></script>
-    
-    <!-- Servicios -->
-    <script src="./assets/js/services/github-api.js"></script>
-    <script src="./assets/js/services/email-service.js"></script>
-    <script src="./assets/js/services/analytics.js"></script>
-    <script src="./assets/js/services/social-media.js"></script>
-    
-    <!-- Componentes -->
-    <script src="./assets/js/components/hero-banner.js"></script>
-    <script src="./assets/js/components/typing-effect.js"></script>
-    <script src="./assets/js/components/skills-chart.js"></script>
-    <script src="./assets/js/components/project-gallery.js"></script>
-    <script src="./assets/js/components/project-filter.js"></script>
-    <script src="./assets/js/components/contact-form.js"></script>
-    <script src="./assets/js/components/theme-switcher.js"></script>
-    <script src="./assets/js/components/scroll-animations.js"></script>
-    
-    <!-- Aplicación principal -->
-    <script src="./assets/js/app.js"></script>
-    
-    <!-- Google Analytics (opcional) -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script> -->
 </body>
+
 </html>

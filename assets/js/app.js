@@ -1,993 +1,615 @@
-// Import configuration
-import { portfolioConfig } from './config/portfolio-config.js';
+// ===== IMPORTACIONES DE CONFIGURACIÓN =====
+import { NAVIGATION_CONFIG } from './config/navigation-config.js';
+import { PORTFOLIO_CONFIG } from './config/portfolio-config.js';
 
-// Import existing components
-import { HeroBanner } from './components/hero-banner.js';
-import { TypingEffect } from './components/typing-effect.js';
-import { SkillsChart } from './components/skills-chart.js';
-import { ProjectGallery } from './components/project-gallery.js';
-import { ProjectFilter } from './components/project-filter.js';
-import { ContactForm } from './components/contact-form.js';
-import { ThemeSwitcher } from './components/theme-switcher.js';
-import { ScrollAnimations } from './components/scroll-animations.js';
+// ===== IMPORTACIONES DE DATOS =====
+import { EXPERIENCE_DATA } from './data/experience.js';
+import { PROJECTS_DATA } from './data/projects.js';
+import { SKILLS_DATA } from './data/skills.js';
+import { TESTIMONIALS_DATA } from './data/testimonials.js';
 
-// Import utilities
+// ===== IMPORTACIONES DE UTILIDADES =====
 import { DOMHelpers } from './utils/dom-helpers.js';
-import { LazyLoading } from './utils/lazy-loading.js';
-import { Performance } from './utils/performance.js';
+import { FormValidator, ValidationRules, initContactFormValidator } from './utils/form-validator.js';
+import { NotificationSystem } from './utils/notifications.js';
 
-// Import services
+// ===== IMPORTACIONES DE SERVICIOS =====
 import { EmailService } from './services/email-service.js';
-import { Analytics } from './services/analytics.js';
+import { GitHubAPI } from './services/github-api.js';
 
+// ===== IMPORTACIONES DE COMPONENTES PRINCIPALES =====
+import { ThemeSwitcher } from './components/theme-switcher.js';
+
+// ===== IMPORTACIONES DE COMPONENTES DE CONTENIDO =====
+import { SkillsChart } from './components/skills-chart.js';
+import { ExperienceTimeline } from './components/experience-timeline.js';
+import { ContactForm } from './components/contact-form.js';
+
+// ===== IMPORTACIONES DE EFECTOS Y ANIMACIONES =====
+import { ScrollAnimations } from './components/scroll-animations.js';
+import { ProgressIndicators } from './components/progress-indicators.js';
+import { TypingEffect } from './components/typing-effect.js';
+
+/**
+ * Clase principal de la aplicación del portfolio
+ */
 class PortfolioApp {
-  constructor() {
-    this.config = portfolioConfig;
-    this.components = new Map();
-    this.isInitialized = false;
-    this.deviceInfo = null;
-    this.performanceProfile = null;
-    this.networkInfo = null;
-    this.batteryInfo = null;
-    
-    // Responsive optimization flags
-    this.responsiveFeatures = {
-      touchOptimization: false,
-      adaptiveQuality: false,
-      batteryOptimization: false,
-      networkAwareness: false,
-      orientationHandling: false
-    };
-    
-    // Performance monitoring
-    this.performanceObserver = null;
-    this.resizeObserver = null;
-    this.orientationHandler = null;
-    
-    this.init();
-  }
-
-  /**
-   * Initialize the application
-   */
-  async init() {
-    try {
-      console.log('🚀 Initializing Portfolio App with Responsive Optimization...');
-      
-      // Device detection and capability assessment
-      await this.detectDeviceCapabilities();
-      
-      // Performance profiling
-      await this.profilePerformance();
-      
-      // Network awareness setup
-      await this.setupNetworkAwareness();
-      
-      // Battery monitoring (if available)
-      await this.setupBatteryMonitoring();
-      
-      // DOM ready check
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => this.initializeApp());
-      } else {
-        await this.initializeApp();
-      }
-      
-    } catch (error) {
-      console.error('❌ Error initializing app:', error);
-      this.handleInitializationError(error);
-    }
-  }
-
-  async detectDeviceCapabilities() {
-    this.deviceInfo = {
-      // Device type detection
-      isMobile: DOMHelpers.isMobile(),
-      isTablet: DOMHelpers.isTablet(),
-      isDesktop: DOMHelpers.isDesktop(),
-      
-      // Touch capabilities
-      hasTouch: DOMHelpers.hasTouch(),
-      maxTouchPoints: navigator.maxTouchPoints || 0,
-      
-      // Screen information
-      screenWidth: window.screen.width,
-      screenHeight: window.screen.height,
-      pixelRatio: window.devicePixelRatio || 1,
-      
-      // Viewport information
-      viewportWidth: window.innerWidth,
-      viewportHeight: window.innerHeight,
-      orientation: DOMHelpers.getOrientation(),
-      
-      // Hardware capabilities
-      hardwareConcurrency: navigator.hardwareConcurrency || 4,
-      deviceMemory: navigator.deviceMemory || 4,
-      
-      // Browser capabilities
-      userAgent: navigator.userAgent,
-      platform: navigator.platform,
-      language: navigator.language,
-      
-      // Modern features support
-      supportsPWA: 'serviceWorker' in navigator,
-      supportsWebP: await this.checkWebPSupport(),
-      supportsAVIF: await this.checkAVIFSupport(),
-      supportsContainerQueries: CSS.supports('container-type: inline-size'),
-      supportsViewportUnits: CSS.supports('height: 100dvh'),
-      
-      // Accessibility
-      prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-      prefersColorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
-      prefersContrast: window.matchMedia('(prefers-contrast: high)').matches ? 'high' : 'normal'
-    };
-    
-    console.log('📱 Device Capabilities:', this.deviceInfo);
-  }
-
-  /**
-   * Profile device performance for adaptive behavior
-   */
-  async profilePerformance() {
-    const startTime = performance.now();
-    
-    // Basic performance assessment
-    const performanceScore = Performance.getPerformanceProfile();
-    const memoryInfo = Performance.getMemoryInfo();
-    const connectionInfo = Performance.getConnectionInfo();
-    
-    this.performanceProfile = {
-      profile: performanceScore, // 'low', 'medium', 'high'
-      memory: memoryInfo,
-      connection: connectionInfo,
-      benchmarkTime: performance.now() - startTime,
-      
-      // Adaptive settings based on performance
-      maxAnimations: this.getMaxAnimations(performanceScore),
-      imageQuality: this.getImageQuality(performanceScore, connectionInfo),
-      enableParallax: performanceScore !== 'low',
-      enableComplexAnimations: performanceScore === 'high',
-      enableAutoplay: performanceScore !== 'low' && !this.deviceInfo.isMobile
-    };
-    
-    console.log('⚡ Performance Profile:', this.performanceProfile);
-  }
-
-  /**
-   * Setup network awareness for adaptive loading
-   */
-  async setupNetworkAwareness() {
-    if ('connection' in navigator) {
-      this.networkInfo = {
-        effectiveType: navigator.connection.effectiveType,
-        downlink: navigator.connection.downlink,
-        rtt: navigator.connection.rtt,
-        saveData: navigator.connection.saveData
-      };
-      
-      // Listen for connection changes
-      navigator.connection.addEventListener('change', () => {
-        this.handleNetworkChange();
-      });
-      
-      this.responsiveFeatures.networkAwareness = true;
-    }
-    
-    // Online/offline detection
-    window.addEventListener('online', () => this.handleOnlineStatus(true));
-    window.addEventListener('offline', () => this.handleOnlineStatus(false));
-  }
-
-  /**
-   * Setup battery monitoring for power-aware optimization
-   */
-  async setupBatteryMonitoring() {
-    if ('getBattery' in navigator) {
-      try {
-        const battery = await navigator.getBattery();
+    constructor() {
+        this.components = {};
+        this.services = {};
+        this.utils = {};
+        this.animations = {};
+        this.isInitialized = false;
         
-        this.batteryInfo = {
-          level: battery.level,
-          charging: battery.charging,
-          chargingTime: battery.chargingTime,
-          dischargingTime: battery.dischargingTime
-        };
-        
-        // Listen for battery changes
-        battery.addEventListener('levelchange', () => this.handleBatteryChange(battery));
-        battery.addEventListener('chargingchange', () => this.handleBatteryChange(battery));
-        
-        this.responsiveFeatures.batteryOptimization = true;
-        
-        console.log('🔋 Battery Monitoring Enabled:', this.batteryInfo);
-      } catch (error) {
-        console.warn('⚠️ Battery API not available:', error);
-      }
+        // Bind methods
+        this.init = this.init.bind(this);
+        this.initializeUtils = this.initializeUtils.bind(this);
+        this.initializeServices = this.initializeServices.bind(this);
+        this.initializeComponents = this.initializeComponents.bind(this);
+        this.initializeAnimations = this.initializeAnimations.bind(this);
+        this.setupEventListeners = this.setupEventListeners.bind(this);
     }
-  }
 
-  /**
-   * Initialize all application components
-   */
-  async initializeApp() {
-    try {
-      console.log('🎯 Initializing components with responsive optimization...');
-      
-      // Setup responsive event listeners
-      this.setupResponsiveListeners();
-      
-      // Apply responsive optimizations
-      this.applyResponsiveOptimizations();
-      
-      // Initialize lazy loading with responsive settings
-      await this.initializeLazyLoading();
-      
-      // Initialize theme system with responsive awareness
-      await this.initializeThemeSystem();
-      
-      // Initialize components with responsive config
-      await this.initializeComponents();
-      
-      // Initialize services with mobile optimization
-      await this.initializeServices();
-      
-      // Setup performance monitoring
-      this.setupPerformanceMonitoring();
-      
-      // Mark as initialized
-      this.isInitialized = true;
-      
-      console.log('✅ Portfolio App initialized successfully!');
-      
-      // Dispatch custom initialization event
-      this.dispatchEvent('app:initialized', {
-        deviceInfo: this.deviceInfo,
-        performanceProfile: this.performanceProfile,
-        responsiveFeatures: this.responsiveFeatures
-      });
-      
-    } catch (error) {
-      console.error('❌ Error during app initialization:', error);
-      this.handleInitializationError(error);
-    }
-  }
+    /**
+     * Inicialización principal de la aplicación
+     */
+    async init() {
+        try {
+            console.log('🚀 Iniciando Portfolio App...');
+            
+            // Verificar que el DOM esté cargado
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', this.init);
+                return;
+            }
 
-  /**
-   * Setup responsive event listeners
-   */
-  setupResponsiveListeners() {
-    // Viewport resize handler with throttling
-    this.resizeObserver = new ResizeObserver(
-      DOMHelpers.throttle((entries) => {
-        this.handleViewportResize(entries);
-      }, 100)
-    );
-    
-    if (document.documentElement) {
-      this.resizeObserver.observe(document.documentElement);
-    }
-    
-    // Orientation change handler
-    this.orientationHandler = DOMHelpers.throttle(() => {
-      this.handleOrientationChange();
-    }, 200);
-    
-    window.addEventListener('orientationchange', this.orientationHandler);
-    
-    // Visibility change for performance optimization
-    document.addEventListener('visibilitychange', () => {
-      this.handleVisibilityChange();
-    });
-    
-    // Focus/blur for mobile optimization
-    window.addEventListener('focus', () => this.handleWindowFocus(true));
-    window.addEventListener('blur', () => this.handleWindowFocus(false));
-    
-    this.responsiveFeatures.orientationHandling = true;
-  }
-
-  /**
-   * Apply responsive optimizations based on device capabilities
-   */
-  applyResponsiveOptimizations() {
-    const { isMobile, isTablet, hasTouch, prefersReducedMotion } = this.deviceInfo;
-    const { profile } = this.performanceProfile;
-    
-    // Add device classes to body
-    document.body.classList.add(
-      isMobile ? 'device-mobile' : isTablet ? 'device-tablet' : 'device-desktop',
-      hasTouch ? 'has-touch' : 'no-touch',
-      `performance-${profile}`
-    );
-    
-    // Apply reduced motion if preferred
-    if (prefersReducedMotion) {
-      document.body.classList.add('reduce-motion');
-    }
-    
-    // Touch optimization
-    if (hasTouch) {
-      this.enableTouchOptimizations();
-    }
-    
-    // Mobile-specific optimizations
-    if (isMobile) {
-      this.applyMobileOptimizations();
-    }
-    
-    // Performance-based optimizations
-    this.applyPerformanceOptimizations(profile);
-  }
-
-  /**
-   * Enable touch-specific optimizations
-   */
-  enableTouchOptimizations() {
-    // Add touch-friendly classes
-    document.body.classList.add('touch-optimized');
-    
-    // Disable hover effects on touch devices
-    const style = document.createElement('style');
-    style.textContent = `
-      @media (hover: none) {
-        .hover\\:scale-105:hover { transform: none; }
-        .hover\\:shadow-lg:hover { box-shadow: none; }
-      }
-    `;
-    document.head.appendChild(style);
-    
-    // Enable touch feedback
-    this.enableTouchFeedback();
-    
-    this.responsiveFeatures.touchOptimization = true;
-    console.log('👆 Touch optimizations enabled');
-  }
-
-  /**
-   * Apply mobile-specific optimizations
-   */
-  applyMobileOptimizations() {
-    // Viewport meta optimization
-    const viewport = document.querySelector('meta[name="viewport"]');
-    if (viewport) {
-      viewport.setAttribute('content', 
-        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
-      );
-    }
-    
-    // Disable text size adjust
-    document.body.style.webkitTextSizeAdjust = '100%';
-    document.body.style.textSizeAdjust = '100%';
-    
-    // Add mobile-specific classes
-    document.body.classList.add('mobile-optimized');
-    
-    console.log('📱 Mobile optimizations applied');
-  }
-
-  /**
-   * Apply performance-based optimizations
-   */
-  applyPerformanceOptimizations(profile) {
-    const optimizations = {
-      low: {
-        animations: false,
-        parallax: false,
-        heavyEffects: false,
-        autoplay: false,
-        lazyThreshold: '50px'
-      },
-      medium: {
-        animations: true,
-        parallax: false,
-        heavyEffects: false,
-        autoplay: false,
-        lazyThreshold: '100px'
-      },
-      high: {
-        animations: true,
-        parallax: true,
-        heavyEffects: true,
-        autoplay: true,
-        lazyThreshold: '200px'
-      }
-    };
-    
-    const config = optimizations[profile];
-    document.body.classList.add(`perf-${profile}`);
-    
-    // Store optimization config for components
-    this.config.responsive.performanceOptimizations = config;
-    
-    console.log(`⚡ Performance optimizations applied for ${profile} profile`);
-  }
-
-  /**
-   * Initialize lazy loading with responsive settings
-   */
-  async initializeLazyLoading() {
-    const lazyConfig = {
-      threshold: this.performanceProfile.profile === 'low' ? '50px' : '200px',
-      enablePlaceholders: true,
-      adaptiveQuality: this.responsiveFeatures.networkAwareness,
-      preferWebP: this.deviceInfo.supportsWebP,
-      preferAVIF: this.deviceInfo.supportsAVIF
-    };
-    
-    const lazyLoading = new LazyLoading(lazyConfig);
-    await lazyLoading.init();
-    
-    this.components.set('lazyLoading', lazyLoading);
-    console.log('🖼️ Responsive lazy loading initialized');
-  }
-
-  /**
-   * Initialize theme system with responsive awareness
-   */
-  async initializeThemeSystem() {
-    const themeConfig = {
-      respectMotionPreference: this.deviceInfo.prefersReducedMotion,
-      adaptiveTransitions: this.deviceInfo.isMobile,
-      batteryAware: this.responsiveFeatures.batteryOptimization,
-      performanceMode: this.performanceProfile.profile
-    };
-    
-    const themeSwitcher = new ThemeSwitcher(themeConfig);
-    await themeSwitcher.init();
-    
-    this.components.set('themeSwitcher', themeSwitcher);
-    console.log('🎨 Responsive theme system initialized');
-  }
-
-  /**
-   * Initialize all components with responsive configuration
-   */
-  async initializeComponents() {
-    const componentInitializers = [
-      { name: 'heroBanner', class: HeroBanner, selector: '#hero' },
-      { name: 'typingEffect', class: TypingEffect, selector: '.typing-text' },
-      { name: 'skillsChart', class: SkillsChart, selector: '#skills' },
-      { name: 'projectGallery', class: ProjectGallery, selector: '#projects' },
-      { name: 'projectFilter', class: ProjectFilter, selector: '.project-filters' },
-      { name: 'contactForm', class: ContactForm, selector: '#contact-form' },
-      { name: 'scrollAnimations', class: ScrollAnimations, selector: 'body' }
-    ];
-    
-    for (const { name, class: ComponentClass, selector } of componentInitializers) {
-      try {
-        const element = document.querySelector(selector);
-        if (element) {
-          const config = this.getComponentConfig(name);
-          const component = new ComponentClass(element, config);
-          await component.init();
-          this.components.set(name, component);
-          console.log(`✅ ${name} component initialized`);
+            // Inicializar en orden específico para evitar dependencias undefined
+            await this.initializeUtils();
+            await this.initializeServices();
+            await this.initializeComponents();
+            await this.initializeAnimations();
+            await this.setupEventListeners();
+            
+            this.isInitialized = true;
+            console.log('✅ Portfolio App inicializado correctamente');
+            
+            // Notificar que la app está lista
+            this.dispatchReadyEvent();
+            
+        } catch (error) {
+            console.error('❌ Error al inicializar Portfolio App:', error);
+            this.handleInitializationError(error);
         }
-      } catch (error) {
-        console.warn(`⚠️ Failed to initialize ${name}:`, error);
-      }
     }
-  }
 
-  /**
-   * Initialize services with mobile optimization
-   */
-  async initializeServices() {
-    try {
-      // Email service with mobile optimization
-      const emailConfig = {
-        networkAware: this.responsiveFeatures.networkAwareness,
-        mobileOptimized: this.deviceInfo.isMobile,
-        retryStrategy: this.getRetryStrategy()
-      };
-      
-      const emailService = new EmailService(emailConfig);
-      await emailService.init();
-      this.components.set('emailService', emailService);
-      
-      // Analytics with device information
-      const analyticsConfig = {
-        deviceInfo: this.deviceInfo,
-        performanceProfile: this.performanceProfile,
-        responsiveFeatures: this.responsiveFeatures
-      };
-      
-      const analytics = new Analytics(analyticsConfig);
-      await analytics.init();
-      this.components.set('analytics', analytics);
-      
-      console.log('📊 Services initialized with responsive optimization');
-      
-    } catch (error) {
-      console.warn('⚠️ Error initializing services:', error);
-    }
-  }
+    /**
+     * Inicializar utilidades
+     */
+    async initializeUtils() {
+        console.log('🔧 Inicializando utilidades...');
+        
+        try {
+            // Inicializar utilidades básicas
+            this.utils = {
+                domHelpers: DOMHelpers || null,
+                notifications: new NotificationSystem()
+            };
 
-  /**
-   * Setup performance monitoring
-   */
-  setupPerformanceMonitoring() {
-    if ('PerformanceObserver' in window) {
-      this.performanceObserver = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          this.handlePerformanceEntry(entry);
+            // Inicializar FormValidator para el formulario de contacto
+            const contactForm = document.querySelector('#contactForm');
+            if (contactForm) {
+                this.utils.contactFormValidator = initContactFormValidator();
+                console.log('✅ FormValidator del contacto inicializado');
+            } else {
+                console.log('⚠️ Formulario de contacto no encontrado, saltando FormValidator');
+            }
+
+        } catch (error) {
+            console.warn('⚠️ Error al inicializar utilidades:', error);
+            // Continuar sin fallar completamente
+            this.utils = {
+                domHelpers: null,
+                notifications: null,
+                contactFormValidator: null
+            };
         }
-      });
-      
-      // Observe various performance metrics
-      try {
-        this.performanceObserver.observe({ 
-          entryTypes: ['measure', 'navigation', 'paint', 'largest-contentful-paint'] 
+    }
+
+    /**
+     * Inicializar servicios
+     */
+    async initializeServices() {
+        console.log('🌐 Inicializando servicios...');
+        
+        try {
+            this.services = {};
+
+            // EmailService
+            try {
+                this.services.emailService = new EmailService();
+                console.log('✅ EmailService inicializado');
+            } catch (error) {
+                console.warn('⚠️ Error al inicializar EmailService:', error);
+                this.services.emailService = null;
+            }
+
+            // GitHubAPI
+            try {
+                this.services.githubAPI = new GitHubAPI();
+                if (this.services.githubAPI && this.services.githubAPI.init) {
+                    await this.services.githubAPI.init();
+                }
+                console.log('✅ GitHubAPI inicializado');
+            } catch (error) {
+                console.warn('⚠️ Error al inicializar GitHubAPI:', error);
+                this.services.githubAPI = null;
+            }
+
+        } catch (error) {
+            console.warn('⚠️ Error general al inicializar servicios:', error);
+        }
+    }
+
+    /**
+     * Inicializar componentes principales
+     */
+    async initializeComponents() {
+        console.log('🧩 Inicializando componentes...');
+        
+        this.components = {};
+
+        // ThemeSwitcher - PRIMERO porque otros componentes pueden depender de él
+        try {
+            // Verificar si el botón de tema existe antes de crear el ThemeSwitcher
+            const themeButton = document.querySelector('#themeToggle');
+            if (themeButton) {
+                this.components.themeSwitcher = new ThemeSwitcher();
+                console.log('✅ ThemeSwitcher inicializado');
+            } else {
+                console.log('⚠️ Botón de tema no encontrado, saltando ThemeSwitcher');
+            }
+        } catch (error) {
+            console.warn('⚠️ Error al inicializar ThemeSwitcher:', error);
+        }
+
+        // SkillsChart - usar selector en lugar de datos
+        try {
+            const skillsContainer = document.querySelector('#skillsChart') || 
+                                   document.querySelector('.skills-chart') ||
+                                   document.querySelector('#skills');
+            if (skillsContainer) {
+                this.components.skillsChart = new SkillsChart('#skillsChart');
+                
+                if (this.components.skillsChart.init) {
+                    await this.components.skillsChart.init();
+                }
+                console.log('✅ SkillsChart inicializado');
+            } else {
+                console.log('📝 Contenedor de habilidades no encontrado, saltando SkillsChart...');
+            }
+        } catch (error) {
+            console.warn('⚠️ Error al inicializar SkillsChart:', error);
+        }
+
+        // ExperienceTimeline - usar selector en lugar de datos
+        try {
+            const experienceContainer = document.querySelector('.experience-timeline') ||
+                                       document.querySelector('#experience') ||
+                                       document.querySelector('.timeline');
+            if (experienceContainer) {
+                this.components.experienceTimeline = new ExperienceTimeline('.experience-timeline');
+                
+                if (this.components.experienceTimeline.init) {
+                    await this.components.experienceTimeline.init();
+                }
+                console.log('✅ ExperienceTimeline inicializado');
+            } else {
+                console.log('📝 Contenedor de experiencia no encontrado, saltando ExperienceTimeline...');
+            }
+        } catch (error) {
+            console.warn('⚠️ Error al inicializar ExperienceTimeline:', error);
+        }
+
+        // ContactForm
+        try {
+            const contactFormElement = document.querySelector('#contactForm');
+            if (contactFormElement) {
+                // ContactForm solo necesita el selector, maneja el emailService internamente
+                this.components.contactForm = new ContactForm('#contactForm');
+                
+                if (this.components.contactForm.init) {
+                    await this.components.contactForm.init();
+                }
+                console.log('✅ ContactForm inicializado');
+            } else {
+                console.log('📝 Formulario de contacto no encontrado, saltando ContactForm...');
+            }
+        } catch (error) {
+            console.warn('⚠️ Error al inicializar ContactForm:', error);
+        }
+
+        console.log(`📊 Componentes inicializados: ${Object.keys(this.components).length}`);
+    }
+
+    /**
+     * Inicializar animaciones y efectos
+     */
+    async initializeAnimations() {
+        console.log('🎬 Inicializando animaciones...');
+        
+        this.animations = {};
+
+        // ScrollAnimations
+        try {
+            this.animations.scrollAnimations = new ScrollAnimations();
+            if (this.animations.scrollAnimations.init) {
+                await this.animations.scrollAnimations.init();
+            }
+            console.log('✅ ScrollAnimations inicializado');
+        } catch (error) {
+            console.warn('⚠️ Error al inicializar ScrollAnimations:', error);
+        }
+
+        // ProgressIndicators
+        try {
+            this.animations.progressIndicators = new ProgressIndicators();
+            if (this.animations.progressIndicators.init) {
+                await this.animations.progressIndicators.init();
+            }
+            console.log('✅ ProgressIndicators inicializado');
+        } catch (error) {
+            console.warn('⚠️ Error al inicializar ProgressIndicators:', error);
+        }
+
+        // TypingEffect - usar función helper que maneja la detección automática
+        try {
+            // Importar la función helper
+            const { initTypingEffect } = await import('./components/typing-effect.js');
+            
+            // Buscar elementos comunes donde aplicar el efecto
+            const typingElement = document.querySelector('.typing-text') || 
+                                 document.querySelector('#typing-text') ||
+                                 document.querySelector('.hero-subtitle') ||
+                                 document.querySelector('[data-typing]');
+            
+            if (typingElement) {
+                this.animations.typingEffect = initTypingEffect(typingElement, {
+                    texts: ['Desarrollador Full Stack', 'Frontend Developer', 'Backend Developer'],
+                    loop: true
+                });
+                
+                if (this.animations.typingEffect) {
+                    console.log('✅ TypingEffect inicializado');
+                } else {
+                    console.log('⚠️ TypingEffect no se pudo inicializar, pero no es crítico');
+                }
+            } else {
+                console.log('📝 No se encontró elemento para TypingEffect, saltando...');
+                this.animations.typingEffect = null;
+            }
+        } catch (error) {
+            console.warn('⚠️ Error al inicializar TypingEffect:', error);
+            this.animations.typingEffect = null;
+        }
+
+        console.log(`🎭 Animaciones inicializadas: ${Object.keys(this.animations).length}`);
+    }
+
+    /**
+     * Configurar event listeners globales
+     */
+    setupEventListeners() {
+        console.log('👂 Configurando event listeners...');
+        
+        try {
+            // Listener para cambios de tema
+            document.addEventListener('themeChanged', this.handleThemeChange.bind(this));
+            
+            // Listener para cambios de viewport
+            window.addEventListener('resize', this.debounce(this.handleViewportChange.bind(this), 250));
+            
+            // Listener para scroll
+            window.addEventListener('scroll', this.throttle(this.handleScroll.bind(this), 16));
+            
+            // Listener para errores globales
+            window.addEventListener('error', this.handleGlobalError.bind(this));
+            
+            // Listener para promesas rechazadas
+            window.addEventListener('unhandledrejection', this.handleUnhandledRejection.bind(this));
+
+            console.log('✅ Event listeners configurados');
+        } catch (error) {
+            console.warn('⚠️ Error al configurar event listeners:', error);
+        }
+    }
+
+    /**
+     * Manejar cambios de tema
+     */
+    handleThemeChange(event) {
+        console.log('🎨 Tema cambiado:', event.detail);
+        
+        // Propagar cambio a componentes que lo necesiten
+        Object.values(this.components).forEach(component => {
+            if (component && component.updateTheme) {
+                try {
+                    component.updateTheme(event.detail);
+                } catch (error) {
+                    console.warn('⚠️ Error al actualizar tema en componente:', error);
+                }
+            }
         });
-      } catch (error) {
-        console.warn('⚠️ Performance Observer not fully supported:', error);
-      }
     }
-    
-    // Memory monitoring for mobile devices
-    if (this.deviceInfo.isMobile && Performance.supportsMemoryAPI()) {
-      setInterval(() => {
-        this.monitorMemoryUsage();
-      }, 30000); // Check every 30 seconds
+
+    /**
+     * Manejar cambios de viewport
+     */
+    handleViewportChange() {
+        Object.values(this.components).forEach(component => {
+            if (component && component.handleResize) {
+                try {
+                    component.handleResize();
+                } catch (error) {
+                    console.warn('⚠️ Error al manejar resize en componente:', error);
+                }
+            }
+        });
     }
-  }
 
-  /**
-   * Get component-specific configuration with responsive optimizations
-   */
-  getComponentConfig(componentName) {
-    const baseConfig = this.config[componentName] || {};
-    const responsiveConfig = {
-      deviceInfo: this.deviceInfo,
-      performanceProfile: this.performanceProfile,
-      adaptiveQuality: this.responsiveFeatures.adaptiveQuality,
-      touchOptimized: this.responsiveFeatures.touchOptimization,
-      networkAware: this.responsiveFeatures.networkAwareness
-    };
-    
-    return { ...baseConfig, responsive: responsiveConfig };
-  }
-
-  /**
-   * Enable touch feedback for interactive elements
-   */
-  enableTouchFeedback() {
-    const touchElements = document.querySelectorAll(
-      'button, .btn, .card, .touch-feedback, a[href], [role="button"]'
-    );
-    
-    touchElements.forEach(element => {
-      element.addEventListener('touchstart', () => {
-        element.classList.add('touch-active');
-      }, { passive: true });
-      
-      element.addEventListener('touchend', () => {
-        setTimeout(() => {
-          element.classList.remove('touch-active');
-        }, 150);
-      }, { passive: true });
-    });
-  }
-
-  /**
-   * Handle viewport resize events
-   */
-  handleViewportResize(entries) {
-    const { width, height } = entries[0].contentRect;
-    
-    // Update device info
-    this.deviceInfo.viewportWidth = width;
-    this.deviceInfo.viewportHeight = height;
-    
-    // Check for device type changes (tablet rotation, etc.)
-    const newDeviceType = DOMHelpers.getDeviceType();
-    if (newDeviceType !== this.getDeviceType()) {
-      this.handleDeviceTypeChange(newDeviceType);
+    /**
+     * Manejar scroll global
+     */
+    handleScroll() {
+        Object.values(this.animations || {}).forEach(animation => {
+            if (animation && animation.update) {
+                try {
+                    animation.update();
+                } catch (error) {
+                    // Silenciar errores de scroll para no spamear consola
+                }
+            }
+        });
     }
-    
-    // Notify components of resize
-    this.components.forEach(component => {
-      if (component.handleResize) {
-        component.handleResize(width, height);
-      }
-    });
-    
-    // Dispatch resize event
-    this.dispatchEvent('app:resize', { width, height });
-  }
 
-  /**
-   * Handle orientation change events
-   */
-  handleOrientationChange() {
-    const newOrientation = DOMHelpers.getOrientation();
-    
-    if (newOrientation !== this.deviceInfo.orientation) {
-      this.deviceInfo.orientation = newOrientation;
-      
-      // Add orientation class to body
-      document.body.classList.remove('orientation-portrait', 'orientation-landscape');
-      document.body.classList.add(`orientation-${newOrientation}`);
-      
-      // Notify components
-      this.components.forEach(component => {
-        if (component.handleOrientationChange) {
-          component.handleOrientationChange(newOrientation);
+    /**
+     * Manejar errores globales
+     */
+    handleGlobalError(event) {
+        console.error('❌ Error global:', event.error);
+        
+        if (this.utils.notifications && this.utils.notifications.showError) {
+            this.utils.notifications.showError('Ocurrió un error inesperado');
         }
-      });
-      
-      // Dispatch orientation change event
-      this.dispatchEvent('app:orientationchange', { orientation: newOrientation });
-      
-      console.log(`📱 Orientation changed to: ${newOrientation}`);
     }
-  }
 
-  /**
-   * Handle network condition changes
-   */
-  handleNetworkChange() {
-    if (this.networkInfo && 'connection' in navigator) {
-      const connection = navigator.connection;
-      const oldEffectiveType = this.networkInfo.effectiveType;
-      
-      this.networkInfo = {
-        effectiveType: connection.effectiveType,
-        downlink: connection.downlink,
-        rtt: connection.rtt,
-        saveData: connection.saveData
-      };
-      
-      // Adjust quality based on connection
-      if (oldEffectiveType !== connection.effectiveType) {
-        this.adaptToNetworkConditions();
-      }
-      
-      console.log('🌐 Network conditions changed:', this.networkInfo);
+    /**
+     * Manejar promesas rechazadas
+     */
+    handleUnhandledRejection(event) {
+        console.error('❌ Promesa rechazada:', event.reason);
+        
+        if (this.utils.notifications && this.utils.notifications.showError) {
+            this.utils.notifications.showError('Error en operación asíncrona');
+        }
+        
+        // Prevenir que se muestre en consola del navegador
+        event.preventDefault();
     }
-  }
 
-  /**
-   * Handle battery level changes
-   */
-  handleBatteryChange(battery) {
-    this.batteryInfo = {
-      level: battery.level,
-      charging: battery.charging,
-      chargingTime: battery.chargingTime,
-      dischargingTime: battery.dischargingTime
-    };
-    
-    // Apply battery optimizations
-    if (battery.level < 0.2 && !battery.charging) {
-      this.enableBatterySaveMode();
-    } else if (battery.level > 0.5 || battery.charging) {
-      this.disableBatterySaveMode();
+    /**
+     * Manejar errores de inicialización
+     */
+    handleInitializationError(error) {
+        const errorMessage = 'Error al cargar el portfolio. Por favor, recarga la página.';
+        
+        // Mostrar mensaje de error al usuario
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ff4444;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 9999;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-family: Arial, sans-serif;
+        `;
+        errorDiv.innerHTML = `
+            <h2>⚠️ Error de inicialización</h2>
+            <p>${errorMessage}</p>
+            <button onclick="location.reload()" style="
+                background: white;
+                color: #ff4444;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-top: 10px;
+                font-weight: bold;
+            ">Recargar página</button>
+        `;
+        
+        document.body.appendChild(errorDiv);
     }
-    
-    console.log('🔋 Battery status changed:', this.batteryInfo);
-  }
 
-  /**
-   * Handle online/offline status changes
-   */
-  handleOnlineStatus(isOnline) {
-    document.body.classList.toggle('offline', !isOnline);
-    
-    this.components.forEach(component => {
-      if (component.handleConnectionChange) {
-        component.handleConnectionChange(isOnline);
-      }
-    });
-    
-    this.dispatchEvent('app:connectionchange', { isOnline });
-    console.log(`🌐 Connection status: ${isOnline ? 'online' : 'offline'}`);
-  }
-
-  /**
-   * Handle visibility change for performance optimization
-   */
-  handleVisibilityChange() {
-    const isVisible = !document.hidden;
-    
-    this.components.forEach(component => {
-      if (component.handleVisibilityChange) {
-        component.handleVisibilityChange(isVisible);
-      }
-    });
-    
-    // Pause/resume animations based on visibility
-    if (!isVisible) {
-      document.body.classList.add('page-hidden');
-    } else {
-      document.body.classList.remove('page-hidden');
+    /**
+     * Disparar evento de aplicación lista
+     */
+    dispatchReadyEvent() {
+        const readyEvent = new CustomEvent('portfolioReady', {
+            detail: {
+                components: Object.keys(this.components),
+                services: Object.keys(this.services),
+                animations: Object.keys(this.animations),
+                utils: Object.keys(this.utils),
+                timestamp: Date.now()
+            }
+        });
+        
+        document.dispatchEvent(readyEvent);
+        console.log('📢 Evento portfolioReady disparado');
     }
-  }
 
-  /**
-   * Handle window focus/blur for mobile optimization
-   */
-  handleWindowFocus(hasFocus) {
-    document.body.classList.toggle('window-blurred', !hasFocus);
-    
-    // Optimize performance when window loses focus
-    if (!hasFocus && this.deviceInfo.isMobile) {
-      this.pauseNonEssentialAnimations();
-    } else if (hasFocus) {
-      this.resumeAnimations();
+    /**
+     * Utilidades de rendimiento
+     */
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
     }
-  }
 
-  /**
-   * Enable battery save mode optimizations
-   */
-  enableBatterySaveMode() {
-    document.body.classList.add('battery-save-mode');
-    
-    // Reduce animations and effects
-    this.components.forEach(component => {
-      if (component.enableBatterySaveMode) {
-        component.enableBatterySaveMode();
-      }
-    });
-    
-    console.log('🔋 Battery save mode enabled');
-  }
-
-  /**
-   * Disable battery save mode
-   */
-  disableBatterySaveMode() {
-    document.body.classList.remove('battery-save-mode');
-    
-    this.components.forEach(component => {
-      if (component.disableBatterySaveMode) {
-        component.disableBatterySaveMode();
-      }
-    });
-    
-    console.log('🔋 Battery save mode disabled');
-  }
-
-  /**
-   * Adapt to network conditions
-   */
-  adaptToNetworkConditions() {
-    const { effectiveType, saveData } = this.networkInfo;
-    const isSlowConnection = effectiveType === 'slow-2g' || effectiveType === '2g' || saveData;
-    
-    if (isSlowConnection) {
-      document.body.classList.add('slow-connection');
-      // Reduce image quality, disable autoplay, etc.
-      this.applyLowBandwidthOptimizations();
-    } else {
-      document.body.classList.remove('slow-connection');
-      this.removeLowBandwidthOptimizations();
+    throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
     }
-  }
 
-  /**
-   * Apply low bandwidth optimizations
-   */
-  applyLowBandwidthOptimizations() {
-    this.components.forEach(component => {
-      if (component.enableDataSaveMode) {
-        component.enableDataSaveMode();
-      }
-    });
-    console.log('📶 Low bandwidth optimizations applied');
-  }
-
-  /**
-   * Remove low bandwidth optimizations
-   */
-  removeLowBandwidthOptimizations() {
-    this.components.forEach(component => {
-      if (component.disableDataSaveMode) {
-        component.disableDataSaveMode();
-      }
-    });
-    console.log('📶 Low bandwidth optimizations removed');
-  }
-
-  /**
-   * Utility methods for device and performance detection
-   */
-  getDeviceType() {
-    if (this.deviceInfo.isMobile) return 'mobile';
-    if (this.deviceInfo.isTablet) return 'tablet';
-    return 'desktop';
-  }
-
-  getMaxAnimations(profile) {
-    const limits = { low: 3, medium: 5, high: 10 };
-    return limits[profile] || 5;
-  }
-
-  getImageQuality(profile, connection) {
-    if (connection && (connection.saveData || connection.effectiveType === '2g')) {
-      return 'low';
+    /**
+     * Métodos públicos para acceder a instancias
+     */
+    getComponent(name) {
+        return this.components[name] || null;
     }
-    return profile === 'low' ? 'medium' : 'high';
-  }
 
-  getRetryStrategy() {
-    return this.deviceInfo.isMobile ? 'exponential' : 'linear';
-  }
-
-  /**
-   * Check image format support
-   */
-  async checkWebPSupport() {
-    return new Promise(resolve => {
-      const webP = new Image();
-      webP.onload = webP.onerror = () => resolve(webP.height === 2);
-      webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
-    });
-  }
-
-  async checkAVIFSupport() {
-    return new Promise(resolve => {
-      const avif = new Image();
-      avif.onload = avif.onerror = () => resolve(avif.height === 2);
-      avif.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgABogQEAwgMg8f8D///8WfhwB8+ErK42A=';
-    });
-  }
-
-  /**
-   * Performance entry handler
-   */
-  handlePerformanceEntry(entry) {
-    if (entry.entryType === 'largest-contentful-paint') {
-      if (entry.startTime > 2500) {
-        console.warn('⚠️ LCP is slower than recommended:', entry.startTime);
-        this.applyPerformanceOptimizations('low');
-      }
+    getService(name) {
+        return this.services[name] || null;
     }
-    
-    if (entry.entryType === 'navigation') {
-      console.log('📊 Navigation timing:', {
-        domContentLoaded: entry.domContentLoadedEventEnd - entry.domContentLoadedEventStart,
-        loadComplete: entry.loadEventEnd - entry.loadEventStart
-      });
-    }
-  }
 
-  /**
-   * Monitor memory usage on mobile devices
-   */
-  monitorMemoryUsage() {
-    if (performance.memory) {
-      const memoryUsage = {
-        used: performance.memory.usedJSHeapSize,
-        total: performance.memory.totalJSHeapSize,
-        limit: performance.memory.jsHeapSizeLimit
-      };
-      
-      const usagePercentage = (memoryUsage.used / memoryUsage.limit) * 100;
-      
-      if (usagePercentage > 75) {
-        console.warn('⚠️ High memory usage detected:', usagePercentage.toFixed(2) + '%');
-        this.triggerMemoryCleanup();
-      }
+    getUtil(name) {
+        return this.utils[name] || null;
     }
-  }
 
-  /**
-   * Trigger memory cleanup
-   */
-  triggerMemoryCleanup() {
-    this.components.forEach(component => {
-      if (component.cleanup) {
-        component.cleanup();
-      }
-    });
-    
-    // Force garbage collection if available
-    if (window.gc) {
-      window.gc();
+    getAnimation(name) {
+        return this.animations[name] || null;
     }
-  }
 
-  /**
-   * Pause non-essential animations
-   */
-  pauseNonEssentialAnimations() {
-    document.body.classList.add('animations-paused');
-    
-    this.components.forEach(component => {
-      if (component.pauseAnimations) {
-        component.pauseAnimations();
-      }
-    });
-  }
-
-  /**
-   * Resume animations
-   */
-  resumeAnimations() {
-    document.body.classList.remove('animations-paused');
-    
-    this.components.forEach(component => {
-      if (component.resumeAnimations) {
-        component.resumeAnimations();
-      }
-    });
-  }
-
-  /**
-   * Handle initialization errors
-   */
-  handleInitializationError(error) {
-    console.error('❌ Portfolio initialization failed:', error);
-    
-    // Show user-friendly error message
-    const errorElement = document.createElement('div');
-    errorElement.className = 'initialization-error';
-    errorElement.innerHTML = `
-      <div class="error-content">
-        <h2>Loading Error</h2>
-        <p>There was a problem loading the portfolio. Please refresh the page.</p>
-        <button onclick="window.location.reload()">Refresh Page</button>
-      </div>
-    `;
-    
-    document.body.appendChild(errorElement);
-    
-    // Track error
-    if (this.components.has('analytics')) {
-      this.components.get('analytics').trackError('initialization_failed', error);
+    isReady() {
+        return this.isInitialized;
     }
-  }
 
-  /**
-   * Dispatch custom events
-   */
-  dispatchEvent(eventName, detail = {}) {
-    const event = new CustomEvent(eventName, { detail });
-    window.dispatchEvent(event);
-  }
+    /**
+     * Destruir la aplicación (limpieza)
+     */
+    destroy() {
+        console.log('🧹 Limpiando Portfolio App...');
+        
+        // Destruir componentes
+        Object.values(this.components).forEach(component => {
+            if (component && component.destroy) {
+                try {
+                    component.destroy();
+                } catch (error) {
+                    console.warn('⚠️ Error al destruir componente:', error);
+                }
+            }
+        });
 
-  /**
-   * Cleanup method for proper disposal
-   */
-  destroy() {
-    // Remove event listeners
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
+        // Destruir animaciones
+        Object.values(this.animations).forEach(animation => {
+            if (animation && animation.destroy) {
+                try {
+                    animation.destroy();
+                } catch (error) {
+                    console.warn('⚠️ Error al destruir animación:', error);
+                }
+            }
+        });
+
+        // Limpiar referencias
+        this.components = {};
+        this.services = {};
+        this.utils = {};
+        this.animations = {};
+        this.isInitialized = false;
     }
-    
-    if (this.performanceObserver) {
-      this.performanceObserver.disconnect();
-    }
-    
-    if (this.orientationHandler) {
-      window.removeEventListener('orientationchange', this.orientationHandler);
-    }
-    
-    // Cleanup components
-    this.components.forEach(component => {
-      if (component.destroy) {
-        component.destroy();
-      }
-    });
-    
-    this.components.clear();
-    this.isInitialized = false;
-    
-    console.log('🧹 Portfolio app cleaned up');
-  }
 }
 
-// Initialize the application
-const portfolioApp = new PortfolioApp();
+// Función de inicialización segura
+function initializePortfolioApp() {
+    try {
+        // Crear instancia global de la aplicación
+        const portfolioApp = new PortfolioApp();
+        
+        // Inicializar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('📄 DOM cargado, inicializando app...');
+                portfolioApp.init();
+            });
+        } else {
+            console.log('📄 DOM ya estaba listo, inicializando app...');
+            portfolioApp.init();
+        }
 
-// Export for global access
-window.PortfolioApp = portfolioApp;
+        // Hacer disponible globalmente
+        window.portfolioApp = portfolioApp;
+        
+        return portfolioApp;
+    } catch (error) {
+        console.error('❌ Error fatal al crear PortfolioApp:', error);
+        
+        // Mostrar error básico al usuario
+        document.body.innerHTML = `
+            <div style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                background: #f8f9fa;
+                font-family: Arial, sans-serif;
+                text-align: center;
+                padding: 20px;
+            ">
+                <div style="
+                    background: white;
+                    padding: 40px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    max-width: 500px;
+                ">
+                    <h1 style="color: #dc3545; margin-bottom: 20px;">⚠️ Error de Carga</h1>
+                    <p style="color: #6c757d; margin-bottom: 30px;">
+                        No se pudo cargar el portfolio correctamente. 
+                        Por favor, recarga la página o contacta al administrador.
+                    </p>
+                    <button onclick="location.reload()" style="
+                        background: #007bff;
+                        color: white;
+                        border: none;
+                        padding: 12px 24px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-size: 16px;
+                    ">Recargar Página</button>
+                </div>
+            </div>
+        `;
+        
+        return null;
+    }
+}
 
-// Handle page unload
-window.addEventListener('beforeunload', () => {
-  portfolioApp.destroy();
-});
+// Inicializar la aplicación
+const portfolioApp = initializePortfolioApp();
 
+// Exportar para módulos ES6
 export default portfolioApp;

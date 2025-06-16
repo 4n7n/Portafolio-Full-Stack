@@ -1,0 +1,520 @@
+:root {
+  /* Colores principales */
+  --dark-primary: #0a0a0a;
+  --dark-secondary: #1a1a1a;
+  --dark-tertiary: #2a2a2a;
+  --white: #ffffff;
+  --gray-light: #e5e5e5;
+  --gray-medium: #888888;
+  --gray-dark: #444444;
+  
+  /* Tonalidades de rojo */
+  --red-intense: #dc2626;
+  --red-medium: #ef4444;
+  --red-soft: #fee2e2;
+  
+  /* Efectos y gradientes mejorados */
+  --gradient-red: linear-gradient(135deg, var(--red-intense), var(--red-medium));
+  --gradient-red-glow: linear-gradient(135deg, var(--red-intense), var(--red-medium)), 
+                       radial-gradient(circle, rgba(220,38,38,0.3), transparent);
+  --gradient-dark: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
+  --gradient-soft: linear-gradient(135deg, var(--dark-secondary), var(--dark-tertiary));
+  --shadow-glow: 0 8px 32px rgba(220, 38, 38, 0.4);
+  --shadow-glow-intense: 0 12px 48px rgba(220, 38, 38, 0.6);
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-glow: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  /* Superficies con texturas */
+  --surface-primary: var(--dark-primary);
+  --surface-secondary: var(--dark-secondary);
+  --surface-elevated: var(--dark-tertiary);
+  --surface-overlay: rgba(26, 26, 26, 0.95);
+  --surface-glass: rgba(26, 26, 26, 0.8);
+  
+  /* Texto con mejores contrastes */
+  --text-primary: var(--white);
+  --text-secondary: var(--gray-light);
+  --text-muted: var(--gray-medium);
+  --text-accent: var(--red-medium);
+  --text-glow: 0 0 10px rgba(220, 38, 38, 0.5);
+  
+  /* Bordes con gradientes */
+  --border-primary: rgba(220, 38, 38, 0.3);
+  --border-secondary: rgba(68, 68, 68, 0.4);
+  --border-subtle: rgba(68, 68, 68, 0.2);
+  --border-glow: linear-gradient(135deg, rgba(220, 38, 38, 0.4), rgba(220, 38, 38, 0.1));
+}
+
+/* ==========================================
+   TEMA LIGHT MODE
+   ========================================== */
+
+[data-theme="light"] {
+  /* Colores principales invertidos */
+  --dark-primary: #ffffff;
+  --dark-secondary: #f8f9fa;
+  --dark-tertiary: #e9ecef;
+  --white: #212529;
+  --gray-light: #495057;
+  --gray-medium: #6c757d;
+  --gray-dark: #adb5bd;
+  
+  /* Tonalidades de rojo ajustadas */
+  --red-intense: #b91c1c;
+  --red-medium: #dc2626;
+  --red-soft: #fecaca;
+  
+  /* Efectos adaptados mejorados */
+  --gradient-red: linear-gradient(135deg, var(--red-intense), var(--red-medium));
+  --gradient-red-glow: linear-gradient(135deg, var(--red-intense), var(--red-medium)), 
+                       radial-gradient(circle, rgba(185,28,28,0.2), transparent);
+  --gradient-dark: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
+  --gradient-soft: linear-gradient(135deg, var(--dark-secondary), var(--dark-tertiary));
+  --shadow-glow: 0 8px 32px rgba(185, 28, 28, 0.4);
+  --shadow-glow-intense: 0 12px 48px rgba(185, 28, 28, 0.6);
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --transition-glow: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  /* Superficies con mejores contrastes */
+  --surface-primary: var(--dark-primary);
+  --surface-secondary: var(--dark-secondary);
+  --surface-elevated: var(--dark-tertiary);
+  --surface-overlay: rgba(248, 249, 250, 0.95);
+  --surface-glass: rgba(248, 249, 250, 0.8);
+  
+  /* Texto optimizado */
+  --text-primary: var(--white);
+  --text-secondary: var(--gray-light);
+  --text-muted: var(--gray-medium);
+  --text-accent: var(--red-medium);
+  --text-glow: 0 0 10px rgba(185, 28, 28, 0.4);
+  
+  /* Bordes mejorados */
+  --border-primary: rgba(185, 28, 28, 0.4);
+  --border-secondary: rgba(173, 181, 189, 0.5);
+  --border-subtle: rgba(173, 181, 189, 0.3);
+  --border-glow: linear-gradient(135deg, rgba(185, 28, 28, 0.3), rgba(185, 28, 28, 0.1));
+}
+
+/* ==========================================
+   TEMA HIGH CONTRAST
+   ========================================== */
+
+[data-theme="high-contrast"] {
+  /* Colores de alto contraste */
+  --dark-primary: #000000;
+  --dark-secondary: #000000;
+  --dark-tertiary: #1a1a1a;
+  --white: #ffffff;
+  --gray-light: #ffffff;
+  --gray-medium: #cccccc;
+  --gray-dark: #666666;
+  
+  /* Rojos más intensos */
+  --red-intense: #ff0000;
+  --red-medium: #ff3333;
+  --red-soft: #ffcccc;
+  
+  /* Efectos intensificados */
+  --gradient-red: linear-gradient(135deg, var(--red-intense), var(--red-medium));
+  --gradient-dark: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
+  --shadow-glow: 0 8px 32px rgba(255, 0, 0, 0.5);
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.8);
+  
+  /* Superficies */
+  --surface-primary: var(--dark-primary);
+  --surface-secondary: var(--dark-secondary);
+  --surface-elevated: var(--dark-tertiary);
+  --surface-overlay: rgba(0, 0, 0, 0.95);
+  
+  /* Texto */
+  --text-primary: var(--white);
+  --text-secondary: var(--white);
+  --text-muted: var(--gray-medium);
+  --text-accent: var(--red-medium);
+  
+  /* Bordes más visibles */
+  --border-primary: rgba(255, 0, 0, 0.6);
+  --border-secondary: rgba(255, 255, 255, 0.3);
+  --border-subtle: rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================
+   TEMA CYBERPUNK
+   ========================================== */
+
+[data-theme="cyberpunk"] {
+  /* Colores cyberpunk intensificados */
+  --dark-primary: #0d0208;
+  --dark-secondary: #1a0e0d;
+  --dark-tertiary: #240a0e;
+  --white: #00ff41;
+  --gray-light: #ff006e;
+  --gray-medium: #8338ec;
+  --gray-dark: #3a86ff;
+  
+  /* Rojos neón mejorados */
+  --red-intense: #ff0040;
+  --red-medium: #ff1744;
+  --red-soft: #ff8a95;
+  
+  /* Efectos neón intensificados */
+  --gradient-red: linear-gradient(135deg, var(--red-intense), #ff006e);
+  --gradient-red-glow: linear-gradient(135deg, var(--red-intense), #ff006e), 
+                       radial-gradient(circle, rgba(255,0,64,0.4), transparent);
+  --gradient-dark: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
+  --shadow-glow: 0 8px 32px rgba(255, 0, 64, 0.8);
+  --shadow-glow-intense: 0 15px 60px rgba(255, 0, 64, 1);
+  --shadow-subtle: 0 4px 20px rgba(255, 0, 110, 0.4);
+  --transition-glow: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  /* Superficies neón */
+  --surface-primary: var(--dark-primary);
+  --surface-secondary: var(--dark-secondary);
+  --surface-elevated: var(--dark-tertiary);
+  --surface-overlay: rgba(13, 2, 8, 0.95);
+  --surface-glass: rgba(13, 2, 8, 0.8);
+  
+  /* Texto con glow */
+  --text-primary: var(--white);
+  --text-secondary: var(--gray-light);
+  --text-muted: var(--gray-medium);
+  --text-accent: var(--red-medium);
+  --text-glow: 0 0 15px rgba(0, 255, 65, 0.6);
+  
+  /* Bordes neón intensos */
+  --border-primary: rgba(255, 0, 64, 0.6);
+  --border-secondary: rgba(255, 0, 110, 0.4);
+  --border-subtle: rgba(131, 56, 236, 0.3);
+  --border-glow: linear-gradient(135deg, rgba(255, 0, 64, 0.6), rgba(255, 0, 110, 0.3));
+}
+
+/* ==========================================
+   TEMA MONOCHROME
+   ========================================== */
+
+[data-theme="monochrome"] {
+  /* Escala de grises */
+  --dark-primary: #000000;
+  --dark-secondary: #1a1a1a;
+  --dark-tertiary: #333333;
+  --white: #ffffff;
+  --gray-light: #e0e0e0;
+  --gray-medium: #808080;
+  --gray-dark: #404040;
+  
+  /* Rojos en escala de grises */
+  --red-intense: #404040;
+  --red-medium: #666666;
+  --red-soft: #cccccc;
+  
+  /* Efectos monocromáticos */
+  --gradient-red: linear-gradient(135deg, #404040, #666666);
+  --gradient-dark: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
+  --shadow-glow: 0 8px 32px rgba(64, 64, 64, 0.5);
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.4);
+  
+  /* Superficies */
+  --surface-primary: var(--dark-primary);
+  --surface-secondary: var(--dark-secondary);
+  --surface-elevated: var(--dark-tertiary);
+  --surface-overlay: rgba(26, 26, 26, 0.9);
+  
+  /* Texto */
+  --text-primary: var(--white);
+  --text-secondary: var(--gray-light);
+  --text-muted: var(--gray-medium);
+  --text-accent: #666666;
+  
+  /* Bordes */
+  --border-primary: rgba(64, 64, 64, 0.4);
+  --border-secondary: rgba(128, 128, 128, 0.3);
+  --border-subtle: rgba(64, 64, 64, 0.2);
+}
+
+/* ==========================================
+   APLICACIÓN DE TEMAS A ELEMENTOS
+   ========================================== */
+
+body {
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+/* Contenedores */
+.container,
+.card,
+.modal,
+.panel {
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-subtle);
+  transition: var(--transition);
+}
+
+.elevated {
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-subtle);
+}
+
+/* Texto */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+}
+
+p, span, div {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-accent {
+  color: var(--text-accent);
+}
+
+/* Enlaces y botones */
+a {
+  color: var(--text-accent);
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--red-intense);
+  text-shadow: var(--text-glow);
+  transform: translateY(-1px) scale(1.02);
+}
+
+.btn-primary {
+  background: var(--gradient-red-glow);
+  border: 1px solid var(--border-primary);
+  color: var(--white);
+  transition: var(--transition-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-glow-intense);
+  transform: translateY(-3px) scale(1.05);
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-secondary {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-primary);
+  transition: var(--transition-glow);
+  position: relative;
+}
+
+.btn-secondary:hover {
+  background: var(--surface-glass);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px) scale(1.03);
+}
+
+/* Formularios */
+input, textarea, select {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--border-primary);
+  box-shadow: 
+    0 0 0 3px rgba(220, 38, 38, 0.15),
+    var(--shadow-glow);
+  transform: translateY(-2px) scale(1.02);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* Navegación */
+.nav, .navbar {
+  background: var(--surface-overlay);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(10px);
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text-accent);
+}
+
+/* ==========================================
+   TRANSICIONES DE TEMAS
+   ========================================== */
+
+* {
+  transition: 
+    background-color var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+/* ==========================================
+   SELECTOR DE TEMAS
+   ========================================== */
+
+.theme-selector {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: var(--surface-glass);
+  border: 1px solid var(--border-primary);
+  border-radius: 15px;
+  padding: 0.75rem;
+  backdrop-filter: blur(15px);
+  z-index: 1000;
+  transition: var(--transition-glow);
+  box-shadow: var(--shadow-subtle);
+}
+
+.theme-selector:hover {
+  box-shadow: var(--shadow-glow-intense);
+  transform: scale(1.08) rotateY(5deg);
+  border-color: var(--red-medium);
+}
+
+.theme-option {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--border-secondary);
+  margin: 0.25rem;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+
+.theme-option:hover {
+  transform: scale(1.15) rotateZ(5deg);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-glow);
+}
+
+.theme-option.active {
+  border-color: var(--text-accent);
+  box-shadow: var(--shadow-glow-intense);
+  transform: scale(1.1);
+}
+
+.theme-option.active::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-accent);
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-shadow: var(--text-glow);
+}
+
+/* Colores específicos para cada tema */
+.theme-dark { background: #0a0a0a; }
+.theme-light { background: #ffffff; }
+.theme-high-contrast { background: #000000; }
+.theme-cyberpunk { background: linear-gradient(45deg, #0d0208, #ff0040); }
+.theme-monochrome { background: #333333; }
+
+/* ==========================================
+   MEDIA QUERIES PARA PREFERENCIAS DEL SISTEMA
+   ========================================== */
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --dark-primary: #ffffff;
+    --dark-secondary: #f8f9fa;
+    --white: #212529;
+    --text-primary: #212529;
+    --text-secondary: #495057;
+    --surface-primary: #ffffff;
+    --surface-secondary: #f8f9fa;
+  }
+}
+
+/* CORREGIDO: Eliminamos la media query problemática @media (prefers-contrast: high) */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .theme-selector {
+    transform: none !important;
+  }
+  
+  .theme-option:hover {
+    transform: none !important;
+  }
+}
+
+/* ==========================================
+   ESTADOS DE HOVER PARA TEMAS
+   ========================================== */
+
+[data-theme="dark"] .card:hover {
+  background: var(--dark-secondary);
+  box-shadow: var(--shadow-glow-intense);
+  transform: translateY(-5px) scale(1.02) rotateY(2deg);
+}
+
+[data-theme="light"] .card:hover {
+  background: var(--dark-tertiary);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-5px) scale(1.02) rotateY(2deg);
+}
+
+[data-theme="cyberpunk"] .card:hover {
+  background: var(--dark-secondary);
+  box-shadow: 
+    0 0 40px rgba(255, 0, 110, 0.6),
+    0 0 80px rgba(255, 0, 64, 0.3);
+  transform: translateY(-8px) scale(1.03) rotateY(3deg);
+}
+
+[data-theme="high-contrast"] .card:hover {
+  background: var(--dark-tertiary);
+  box-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.4),
+    0 0 60px rgba(255, 0, 0, 0.5);
+  transform: translateY(-6px) scale(1.02) rotateY(2deg);
+}
+
+[data-theme="monochrome"] .card:hover {
+  background: var(--dark-tertiary);
+  box-shadow: 
+    0 12px 30px rgba(128, 128, 128, 0.4),
+    0 0 20px rgba(64, 64, 64, 0.3);
+  transform: translateY(-5px) scale(1.02) rotateY(2deg);
+}

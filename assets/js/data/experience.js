@@ -1,162 +1,310 @@
-const experienceData = [
-  {
-    id: 1,
-    title: "Senior Frontend Developer",
-    company: "TechCorp Solutions",
-    location: "Madrid, España",
-    type: "work",
-    startDate: "2023-01-15",
-    endDate: null, // Current position
-    description: "Lidero el desarrollo frontend de aplicaciones web complejas utilizando React, TypeScript y arquitecturas modernas. Colaboro estrechamente con equipos de design y backend para crear experiencias de usuario excepcionales.",
-    skills: ["React", "TypeScript", "Next.js", "Tailwind CSS", "GraphQL", "Jest", "Cypress"],
-    achievements: [
-      "Implementé una nueva arquitectura de componentes que redujo el tiempo de desarrollo en 40%",
-      "Lideré la migración de JavaScript a TypeScript mejorando la calidad del código",
-      "Mentoricé a 3 desarrolladores junior en mejores prácticas de React",
-      "Optimicé el bundle size resultando en 60% mejora en tiempo de carga"
-    ],
-    projectsCount: 8,
-    companyUrl: "https://techcorp.com",
-    isCurrent: true
-  },
-  {
-    id: 2,
-    title: "Full Stack Developer",
-    company: "StartupHub",
-    location: "Barcelona, España",
-    type: "work",
-    startDate: "2021-06-01",
-    endDate: "2022-12-30",
-    description: "Desarrollé aplicaciones full-stack desde cero utilizando el stack MERN. Participé en todas las fases del ciclo de desarrollo desde el diseño de la base de datos hasta el deployment en producción.",
-    skills: ["React", "Node.js", "MongoDB", "Express.js", "AWS", "Docker", "Redux"],
-    achievements: [
-      "Construí una plataforma de e-commerce que procesó €500K en ventas en el primer año",
-      "Implementé sistema de pagos con Stripe y autenticación OAuth",
-      "Configuré CI/CD pipeline que redujo errores de deployment en 90%",
-      "Desarrollé API REST que maneja 10K+ requests diarios"
-    ],
-    projectsCount: 6,
-    companyUrl: "https://startuphub.es"
-  },
-  {
-    id: 3,
-    title: "Frontend Developer",
-    company: "Digital Agency Pro",
-    location: "Valencia, España",
-    type: "work",
-    startDate: "2020-03-01",
-    endDate: "2021-05-31",
-    description: "Especializado en desarrollo de sitios web corporativos y landing pages de alto rendimiento. Trabajé con múltiples clientes implementando soluciones personalizadas con foco en UX/UI.",
-    skills: ["HTML5", "CSS3", "JavaScript", "Vue.js", "Sass", "Webpack", "PHP"],
-    achievements: [
-      "Desarrollé 15+ sitios web para clientes corporativos",
-      "Implementé mejoras de performance resultando en 85% mejor Core Web Vitals",
-      "Creé sistema de componentes reutilizables que aceleró desarrollo en 50%",
-      "Logré 98% satisfacción de clientes en proyectos entregados"
-    ],
-    projectsCount: 15,
-    companyUrl: "https://digitalagencypro.com"
-  },
-  {
-    id: 4,
-    title: "Freelance Web Developer",
-    company: "Independiente",
-    location: "Remoto",
-    type: "freelance",
-    startDate: "2019-01-01",
-    endDate: "2020-02-28",
-    description: "Ofrecí servicios de desarrollo web freelance a pequeñas y medianas empresas. Especializado en WordPress, e-commerce y aplicaciones web personalizadas con enfoque en resultados de negocio.",
-    skills: ["WordPress", "WooCommerce", "PHP", "MySQL", "JavaScript", "Bootstrap"],
-    achievements: [
-      "Completé 25+ proyectos freelance con 100% satisfacción",
-      "Generé €150K en ingresos para clientes a través de e-commerce desarrollado",
-      "Construí red de 50+ clientes recurrentes",
-      "Mantuve rating 5/5 estrellas en plataformas freelance"
-    ],
-    projectsCount: 25,
-    companyUrl: null
-  },
-  {
-    id: 5,
-    title: "Bootcamp Full Stack Web Development",
-    company: "IronHack Madrid",
-    location: "Madrid, España",
-    type: "education",
-    startDate: "2018-09-01",
-    endDate: "2018-12-15",
-    description: "Bootcamp intensivo de 500+ horas cubriendo desarrollo full-stack moderno. Proyectos hands-on con tecnologías actuales del mercado y metodologías ágiles.",
-    skills: ["HTML5", "CSS3", "JavaScript", "Node.js", "MongoDB", "Express.js", "React"],
-    achievements: [
-      "Graduado con honores en top 10% de la clase",
-      "Proyecto final seleccionado para demo day",
-      "Desarrollé 3 aplicaciones full-stack funcionales",
-      "Completé hackathon interno ocupando 2do lugar"
-    ],
-    projectsCount: 5,
-    companyUrl: "https://ironhack.com",
-    isCertification: true,
-    certificateUrl: "https://certificates.ironhack.com/xyz"
-  },
-  {
-    id: 6,
-    title: "AWS Solutions Architect Associate",
-    company: "Amazon Web Services",
-    location: "Online",
-    type: "education",
-    startDate: "2022-03-01",
-    endDate: "2022-04-15",
-    description: "Certificación oficial de AWS para arquitectura de soluciones en la nube. Cubre diseño de sistemas escalables, seguros y cost-effective.",
-    skills: ["AWS", "Cloud Architecture", "EC2", "S3", "RDS", "Lambda", "CloudFormation"],
-    achievements: [
-      "Certificación obtenida en primer intento con 890/1000 puntos",
-      "Aplicado conocimientos en 5+ proyectos profesionales",
-      "Redujo costos de infraestructura en 35% en proyectos actuales"
-    ],
-    projectsCount: 0,
-    companyUrl: "https://aws.amazon.com",
-    isCertification: true,
-    certificateUrl: "https://aws.amazon.com/verification/xyz"
-  },
-  {
-    id: 7,
-    title: "Google Analytics Certified",
-    company: "Google",
-    location: "Online",
-    type: "education",
-    startDate: "2021-11-01",
-    endDate: "2021-11-30",
-    description: "Certificación en Google Analytics para análisis avanzado de datos web y optimización de conversiones.",
-    skills: ["Google Analytics", "Data Analysis", "Conversion Optimization", "SEO"],
-    achievements: [
-      "Implementado en 20+ proyectos para seguimiento de KPIs",
-      "Mejoré conversion rate promedio en 25% para clientes",
-      "Configuré funnels de conversión avanzados"
-    ],
-    projectsCount: 0,
-    companyUrl: "https://skillshop.exceedlms.com",
-    isCertification: true,
-    certificateUrl: "https://skillshop.exceedlms.com/xyz"
-  },
-  {
-    id: 8,
-    title: "Ingeniería Informática",
-    company: "Universidad Politécnica de Madrid",
-    location: "Madrid, España",
-    type: "education",
-    startDate: "2014-09-01",
-    endDate: "2018-06-30",
-    description: "Grado en Ingeniería Informática con especialización en Tecnologías de la Información. Sólida base en programación, algoritmos, bases de datos y arquitectura de software.",
-    skills: ["Java", "C++", "Python", "SQL", "Algorithms", "Data Structures", "Software Engineering"],
-    achievements: [
-      "Graduado con Matrícula de Honor (GPA: 8.5/10)",
-      "Proyecto final: Sistema de gestión hospitalaria con Java y Oracle",
-      "Beca de excelencia académica durante 3 años",
-      "Participación en programa Erasmus en TU Delft (Holanda)"
-    ],
-    projectsCount: 12,
-    companyUrl: "https://upm.es",
-    isCertification: false
-  }
-];
+export const EXPERIENCE_DATA = {
+  // Experiencia profesional
+  professional: [
+    {
+      id: 1,
+      position: "Desarrollador Full Stack Junior",
+      company: "TechStart Solutions",
+      location: "Oviedo, Asturias",
+      type: "full-time", // full-time, part-time, contract, internship
+      startDate: "2023-09-01",
+      endDate: null, // null = trabajo actual
+      current: true,
+      description: "Desarrollo de aplicaciones web completas utilizando tecnologías modernas como React, Node.js y MongoDB. Colaboración en equipo ágil para entregar soluciones innovadoras a clientes.",
+      responsibilities: [
+        "Desarrollo de interfaces de usuario con React y TypeScript",
+        "Implementación de APIs RESTful con Node.js y Express",
+        "Gestión de bases de datos MongoDB y optimización de consultas",
+        "Colaboración en metodologías ágiles (Scrum)",
+        "Code review y mentoring a desarrolladores junior",
+        "Implementación de tests unitarios y de integración"
+      ],
+      achievements: [
+        "Mejoré el rendimiento de la aplicación principal en un 40%",
+        "Lideré la migración de JavaScript vanilla a React",
+        "Implementé sistema de autenticación JWT seguro",
+        "Reduje el tiempo de carga de páginas en un 35%"
+      ],
+      technologies: ["React", "TypeScript", "Node.js", "Express", "MongoDB", "Docker", "Git", "Jest"],
+      logo: "/assets/images/companies/techstart-logo.png",
+      website: "https://techstart-solutions.com"
+    },
 
-export default experienceData;
+    {
+      id: 2,
+      position: "Desarrollador Frontend",
+      company: "Digital Marketing Pro",
+      location: "Remoto",
+      type: "part-time",
+      startDate: "2023-03-01",
+      endDate: "2023-08-31",
+      current: false,
+      description: "Desarrollo de landing pages y sitios web corporativos optimizados para conversión y SEO. Trabajo freelance con múltiples clientes del sector marketing digital.",
+      responsibilities: [
+        "Maquetación de diseños responsivos con HTML5 y CSS3",
+        "Implementación de animaciones CSS y JavaScript",
+        "Optimización SEO y velocidad de carga",
+        "Integración con herramientas de analytics y marketing",
+        "Mantenimiento y actualización de sitios existentes"
+      ],
+      achievements: [
+        "Aumenté la tasa de conversión promedio en un 25%",
+        "Desarrollé 15+ landing pages de alta calidad",
+        "Implementé sistema de A/B testing",
+        "Mejoré el SEO score promedio a 95/100"
+      ],
+      technologies: ["HTML5", "CSS3", "JavaScript", "SASS", "Webpack", "Figma", "Google Analytics"],
+      logo: "/assets/images/companies/dmp-logo.png",
+      website: "https://digitalmarketingpro.es"
+    },
+
+    {
+      id: 3,
+      position: "Prácticas Desarrollador Web",
+      company: "Innovación Digital Asturias",
+      location: "Gijón, Asturias",
+      type: "internship",
+      startDate: "2022-10-01",
+      endDate: "2023-02-28",
+      current: false,
+      description: "Prácticas profesionales enfocadas en el desarrollo web frontend y backend. Primera experiencia profesional en el sector tecnológico.",
+      responsibilities: [
+        "Maquetación de componentes web con HTML y CSS",
+        "Desarrollo de funcionalidades con JavaScript",
+        "Apoyo en el mantenimiento de aplicaciones PHP",
+        "Testing manual de aplicaciones web",
+        "Documentación técnica de proyectos"
+      ],
+      achievements: [
+        "Completé satisfactoriamente las 400 horas de prácticas",
+        "Desarrollé mi primer proyecto completo",
+        "Recibí oferta de trabajo al finalizar las prácticas",
+        "Contribuí a 5 proyectos diferentes"
+      ],
+      technologies: ["HTML5", "CSS3", "JavaScript", "PHP", "MySQL", "Bootstrap", "Git"],
+      logo: "/assets/images/companies/ida-logo.png",
+      website: "https://innovaciondigitalasturias.com"
+    }
+  ],
+
+  education: [
+    {
+      id: 1,
+      degree: "Desarrollo de Aplicaciones Web (DAW)",
+      institution: "IES San Juan Bautista",
+      location: "Oviedo, Asturias",
+      type: "Grado Superior",
+      startDate: "2021-09-01",
+      endDate: "2023-06-30",
+      current: false,
+      grade: "8.5/10",
+      description: "Formación profesional especializada en desarrollo web full-stack, bases de datos y metodologías de desarrollo.",
+      subjects: [
+        "Programación Web Frontend (HTML, CSS, JavaScript)",
+        "Programación Web Backend (PHP, Java, Python)",
+        "Bases de Datos (MySQL, PostgreSQL)",
+        "Frameworks Web (Laravel, Spring Boot)",
+        "Metodologías de Desarrollo Ágil",
+        "Diseño de Interfaces Web",
+        "Seguridad en Aplicaciones Web",
+        "Despliegue de Aplicaciones Web"
+      ],
+      projects: [
+        "Aplicación web de gestión escolar (PHP + MySQL)",
+        "E-commerce con carrito de compras (JavaScript + LocalStorage)",
+        "API REST para sistema de bibliotecas (Java + Spring Boot)"
+      ],
+      logo: "/assets/images/education/ies-logo.png"
+    },
+
+    {
+      id: 2,
+      degree: "Bachillerato Científico-Tecnológico",
+      institution: "IES Aramo",
+      location: "Oviedo, Asturias",
+      type: "Bachillerato",
+      startDate: "2019-09-01",
+      endDate: "2021-06-30",
+      current: false,
+      grade: "7.8/10",
+      description: "Bachillerato con especialización en matemáticas, física y tecnología, que despertó mi interés por la programación.",
+      subjects: [
+        "Matemáticas II",
+        "Física",
+        "Química",
+        "Tecnología Industrial",
+        "Dibujo Técnico",
+        "Informática (introducción a la programación)"
+      ],
+      logo: "/assets/images/education/aramo-logo.png"
+    }
+  ],
+
+  courses: [
+    {
+      id: 1,
+      title: "JavaScript Algorithms and Data Structures",
+      provider: "freeCodeCamp",
+      type: "online",
+      duration: "300 horas",
+      startDate: "2023-01-01",
+      endDate: "2023-03-15",
+      certificateUrl: "https://freecodecamp.org/certification/username/javascript-algorithms-and-data-structures",
+      skills: ["JavaScript", "Algoritmos", "Estructuras de Datos", "ES6+", "Programación Funcional"]
+    },
+    {
+      id: 2,
+      title: "React - The Complete Guide",
+      provider: "Udemy",
+      type: "online",
+      duration: "40 horas",
+      startDate: "2023-04-01",
+      endDate: "2023-05-20",
+      certificateUrl: "https://udemy-certificate.s3.amazonaws.com/react-complete-guide",
+      skills: ["React", "Hooks", "Context API", "Redux", "React Router", "Testing"]
+    },
+    {
+      id: 3,
+      title: "Node.js Backend Development",
+      provider: "Platzi",
+      type: "online",
+      duration: "25 horas",
+      startDate: "2023-06-01",
+      endDate: "2023-07-10",
+      certificateUrl: "https://platzi.com/certificate/nodejs-backend",
+      skills: ["Node.js", "Express", "MongoDB", "JWT", "API REST", "Middleware"]
+    },
+    {
+      id: 4,
+      title: "AWS Cloud Practitioner",
+      provider: "Amazon Web Services",
+      type: "certification",
+      duration: "Preparación: 80 horas",
+      startDate: "2023-10-01",
+      endDate: "2023-11-15",
+      certificateUrl: "https://aws.amazon.com/certification/certified-cloud-practitioner",
+      skills: ["AWS Services", "Cloud Computing", "Security", "Pricing", "Architecture"]
+    }
+  ],
+
+  // Proyectos académicos destacados
+  academicProjects: [
+    {
+      id: 1,
+      title: "Sistema de Gestión Escolar",
+      description: "Aplicación web completa para gestión de centros educativos con diferentes roles de usuario.",
+      technologies: ["PHP", "MySQL", "HTML5", "CSS3", "JavaScript", "Bootstrap"],
+      duration: "4 meses",
+      team: "3 personas",
+      role: "Full Stack Developer",
+      achievements: [
+        "Sistema de autenticación multi-rol",
+        "Gestión completa de estudiantes y profesores",
+        "Sistema de calificaciones y reportes",
+        "Panel de administración completo"
+      ]
+    },
+    {
+      id: 2,
+      title: "E-commerce de Productos Locales",
+      description: "Tienda online especializada en productos artesanales de Asturias.",
+      technologies: ["JavaScript", "LocalStorage", "CSS Grid", "Responsive Design"],
+      duration: "2 meses",
+      team: "Individual",
+      role: "Frontend Developer",
+      achievements: [
+        "Carrito de compras persistente",
+        "Sistema de filtros avanzados",
+        "Diseño completamente responsive",
+        "Optimización para dispositivos móviles"
+      ]
+    }
+  ],
+
+  // Habilidades desarrolladas por experiencia
+  skillsByExperience: {
+    "frontend": {
+      years: 2,
+      level: "Intermedio-Avanzado",
+      technologies: ["HTML5", "CSS3", "JavaScript", "React", "Vue.js", "TypeScript", "Sass", "Tailwind CSS"]
+    },
+    "backend": {
+      years: 1.5,
+      level: "Intermedio",
+      technologies: ["Node.js", "Express", "PHP", "Python", "MongoDB", "MySQL", "PostgreSQL", "JWT"]
+    },
+    "tools": {
+      years: 2,
+      level: "Intermedio",
+      technologies: ["Git", "Docker", "Webpack", "Figma", "VS Code", "Postman", "Jest"]
+    },
+    "cloud": {
+      years: 0.5,
+      level: "Básico-Intermedio",
+      technologies: ["AWS", "Heroku", "Netlify", "Vercel"]
+    }
+  },
+
+  timeline: [
+    {
+      date: "2019-09",
+      event: "Inicio Bachillerato Científico-Tecnológico",
+      type: "education",
+      icon: "graduation-cap"
+    },
+    {
+      date: "2021-06",
+      event: "Graduación Bachillerato",
+      type: "education",
+      icon: "award"
+    },
+    {
+      date: "2021-09",
+      event: "Inicio Grado Superior DAW",
+      type: "education",
+      icon: "book-open"
+    },
+    {
+      date: "2022-10",
+      event: "Prácticas en Innovación Digital Asturias",
+      type: "work",
+      icon: "briefcase"
+    },
+    {
+      date: "2023-01",
+      event: "Certificación JavaScript - freeCodeCamp",
+      type: "certification",
+      icon: "certificate"
+    },
+    {
+      date: "2023-03",
+      event: "Inicio trabajo part-time en Digital Marketing Pro",
+      type: "work",
+      icon: "briefcase"
+    },
+    {
+      date: "2023-06",
+      event: "Graduación DAW con nota media 8.5",
+      type: "education",
+      icon: "award"
+    },
+    {
+      date: "2023-09",
+      event: "Desarrollador Full Stack en TechStart Solutions",
+      type: "work",
+      icon: "code"
+    },
+    {
+      date: "2023-11",
+      event: "Certificación AWS Cloud Practitioner",
+      type: "certification",
+      icon: "cloud"
+    },
+    {
+      date: "2024-01",
+      event: "Promoción a desarrollador senior junior",
+      type: "work",
+      icon: "trending-up"
+    }
+  ]
+};

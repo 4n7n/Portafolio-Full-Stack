@@ -1,120 +1,105 @@
-export const NavigationConfig = {
-    // Items del menú principal
-    items: [
-        {
-            id: 'home',
-            label: 'Inicio',
-            icon: 'icon-home',
-            href: '#home',
-            order: 1,
-            mobile: true
-        },
-        {
-            id: 'about',
-            label: 'Sobre Mí',
-            icon: 'icon-user',
-            href: '#about',
-            order: 2,
-            mobile: true
-        },
-        {
-            id: 'skills',
-            label: 'Habilidades',
-            icon: 'icon-code',
-            href: '#skills',
-            order: 3,
-            mobile: true
-        },
-        {
-            id: 'projects',
-            label: 'Proyectos',
-            icon: 'icon-briefcase',
-            href: '#projects',
-            order: 4,
-            mobile: true
-        },
-        {
-            id: 'experience',
-            label: 'Experiencia',
-            icon: 'icon-award',
-            href: '#experience',
-            order: 5,
-            mobile: true
-        },
-        {
-            id: 'contact',
-            label: 'Contacto',
-            icon: 'icon-mail',
-            href: '#contact',
-            order: 6,
-            mobile: true
-        }
-    ],
-
-    // Links adicionales
-    externalLinks: [
-        {
-            id: 'blog',
-            label: 'Blog',
-            href: '/pages/blog.html',
-            target: '_blank',
-            icon: 'icon-edit'
-        },
-        {
-            id: 'github',
-            label: 'GitHub',
-            href: 'https://github.com/tu-usuario',
-            target: '_blank',
-            icon: 'icon-github'
-        }
-    ],
-
-    // Configuración de scroll
-    scroll: {
-        offset: 80, // Offset desde top de navbar
-        duration: 800, // Duración animación (ms)
-        easing: 'easeInOutCubic'
+export const NAVIGATION_CONFIG = {
+  // Elementos del menú principal
+  mainNav: [
+    {
+      id: 'inicio',
+      label: 'Inicio',
+      href: '#hero',
+      icon: 'home',
+      active: true
     },
-
-    // Configuración de intersection observer
-    observer: {
-        rootMargin: '-80px 0px -50% 0px',
-        threshold: 0.1
+    {
+      id: 'sobre-mi',
+      label: 'Sobre Mí',
+      href: '#about',
+      icon: 'user'
     },
-
-    // Breakpoints responsive
-    breakpoints: {
-        mobile: 768,
-        tablet: 1024
+    {
+      id: 'habilidades',
+      label: 'Habilidades',
+      href: '#skills',
+      icon: 'code'
     },
-
-    // Configuración del tema
-    theme: {
-        auto: true, // Auto-detectar tema del sistema
-        storage: 'theme-preference', // Key localStorage
-        default: 'light'
+    {
+      id: 'experiencia',
+      label: 'Experiencia',
+      href: '#experience',
+      icon: 'briefcase'
     },
-
-    // Idiomas soportados
-    languages: {
-        es: {
-            label: 'Español',
-            flag: '🇪🇸',
-            cvFile: 'cv-es.pdf'
-        },
-        en: {
-            label: 'English',
-            flag: '🇺🇸',
-            cvFile: 'cv-en.pdf'
-        }
+    {
+      id: 'proyectos',
+      label: 'Proyectos',
+      href: '#projects',
+      icon: 'folder'
     },
-
-    // Configuración de analytics
-    analytics: {
-        trackNavigation: true,
-        trackThemeChanges: true,
-        trackLanguageChanges: true
+    {
+      id: 'contacto',
+      label: 'Contacto',
+      href: '#contact',
+      icon: 'mail'
     }
-};
+  ],
 
-export default NavigationConfig;
+  // Configuración de scroll
+  scroll: {
+    offset: 80, // Offset para el navbar fijo
+    duration: 800,
+    easing: 'easeInOutCubic'
+  },
+
+  // Configuración del navbar
+  navbar: {
+    sticky: true,
+    hideOnScroll: false,
+    showProgressBar: true,
+    mobileBreakpoint: 768
+  },
+
+  // Configuración del menú móvil
+  mobileMenu: {
+    animationType: 'slide', // 'slide' | 'fade' | 'scale'
+    closeOnLinkClick: true,
+    overlayEnabled: true
+  },
+
+  // Breadcrumbs (si se implementan)
+  breadcrumbs: {
+    enabled: false,
+    separator: '/',
+    showHome: true
+  },
+
+  // Enlaces externos
+  externalLinks: [
+    {
+      id: 'github',
+      label: 'GitHub',
+      href: 'https://github.com/tu-usuario',
+      icon: 'github',
+      target: '_blank'
+    },
+    {
+      id: 'linkedin',
+      label: 'LinkedIn',
+      href: 'https://linkedin.com/in/tu-perfil',
+      icon: 'linkedin',
+      target: '_blank'
+    },
+    {
+      id: 'cv',
+      label: 'Descargar CV',
+      href: '/assets/docs/cv.pdf',
+      icon: 'download',
+      target: '_blank',
+      download: true
+    }
+  ],
+
+  // Configuración de indicadores de progreso
+  progressIndicators: {
+    enabled: true,
+    showPercentage: false,
+    style: 'bar', // 'bar' | 'circle' | 'dots'
+    position: 'top' // 'top' | 'bottom' | 'side'
+  }
+};

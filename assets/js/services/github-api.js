@@ -1,396 +1,685 @@
-class GitHubAPI {
-    constructor(config = {}) {
-        this.username = config.username || 'tu-usuario';
-        this.token = config.token || null; // Personal access token for higher rate limits
-        this.baseURL = 'https://api.github.com';
-        this.cache = new Map();
-        this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
-        this.rateLimitRemaining = 60;
-        this.rateLimitReset = null;
+export class GitHubAPI {
+  constructor(config = {}) {
+    this.config = {
+      username: '',
+      token: null, // Token personal opcional para mayor límite de rate
+      baseURL: 'https://api.github.com',
+      rateLimit: {
+        remaining: null,
+        reset: null,
+        limit: null
+      },
+      cache: {
+        enabled: true,
+        duration: 5 * 60 * 1000, // 5 minutos
+        data: new Map()
+      },
+      ...config
+    };
+  }
+
+  /**
+   * Realiza una petición a la API de GitHub
+   * @param {string} endpoint - Endpoint de la API
+   * @param {Object} options - Opciones adicionales
+   * @returns {Promise}
+   */
+  async request(endpoint, options = {}) {
+    const url = `${this.config.baseURL}${endpoint}`;
+    const cacheKey = `${url}${JSON.stringify(options)}`;
+
+    // Verificar cache
+    if (this.config.cache.enabled) {
+      const cached = this.getCachedData(cacheKey);
+      if (cached) {
+        return cached;
+      }
     }
 
-    // Get request headers with authentication if token is provided
-    getHeaders() {
-        const headers = {
-            'Accept': 'application/vnd.github.v3+json',
-            'User-Agent': 'Portfolio-Website'
-        };
+    const headers = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': `Portfolio-App`,
+      ...options.headers
+    };
 
-        if (this.token) {
-            headers['Authorization'] = `token ${this.token}`;
-        }
-
-        return headers;
+    // Añadir token si está disponible
+    if (this.config.token) {
+      headers['Authorization'] = `token ${this.config.token}`;
     }
 
-    // Generic API request with error handling and caching
-    async makeRequest(endpoint, useCache = true) {
-        const cacheKey = endpoint;
+    try {
+      const response = await fetch(url, {
+        method: options.method || 'GET',
+        headers,
+        ...options
+      });
+
+      // Actualizar información de rate limit
+      this.updateRateLimit(response.headers);
+
+      if (!response.ok) {
+        throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // Guardar en cache
+      if (this.config.cache.enabled) {
+        this.setCachedData(cacheKey, data);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error en petición a GitHub API:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene información del usuario
+   * @param {string} username - Nombre de usuario (opcional)
+   * @returns {Promise}
+   */
+  async getUser(username = null) {
+    const user = username || this.config.username;
+    if (!user) {
+      throw new Error('Username no especificado');
+    }
+    const data = await this.request(`/users/${user}`);
+    
+    return {
+      username: data.login,
+      name: data.name,
+      bio: data.bio,
+      avatar: data.avatar_url,
+      location: data.location,
+      website: data.blog,
+      company: data.company,
+      email: data.email,
+      followers: data.followers,
+      following: data.following,
+      publicRepos: data.public_repos,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+      twitterUsername: data.twitter_username,
+      hireable: data.hireable
+    };
+  }
+
+  /**
+   * Obtiene los repositorios del usuario
+   * @param {Object} options - Opciones de filtrado
+   * @returns {Promise}
+   */
+  async getRepositories(options = {}) {
+    const {
+      username = this.config.username,
+      type = 'owner', // owner, all, member
+      sort = 'updated', // created, updated, pushed, full_name
+      direction = 'desc', // asc, desc
+      per_page = 30,
+      page = 1,
+      exclude = [],
+      featured = false
+    } = options;
+
+    if (!username) {
+      throw new Error('Username no especificado');
+    }
+
+    const params = new URLSearchParams({
+      type,
+      sort,
+      direction,
+      per_page: per_page.toString(),
+      page: page.toString()
+    });
+
+    const data = await this.request(`/users/${username}/repos?${params}`);
+
+    let repositories = data.map(repo => ({
+      id: repo.id,
+      name: repo.name,
+      fullName: repo.full_name,
+      description: repo.description,
+      url: repo.html_url,
+      cloneUrl: repo.clone_url,
+      sshUrl: repo.ssh_url,
+      homepage: repo.homepage,
+      language: repo.language,
+      languages: null, // Se carga por separado
+      size: repo.size,
+      stars: repo.stargazers_count,
+      watchers: repo.watchers_count,
+      forks: repo.forks_count,
+      issues: repo.open_issues_count,
+      license: repo.license ? repo.license.name : null,
+      isPrivate: repo.private,
+      isFork: repo.fork,
+      isArchived: repo.archived,
+      isDisabled: repo.disabled,
+      defaultBranch: repo.default_branch,
+      createdAt: repo.created_at,
+      updatedAt: repo.updated_at,
+      pushedAt: repo.pushed_at,
+      topics: repo.topics || [],
+      hasPages: repo.has_pages,
+      pagesUrl: repo.has_pages ? `https://${username}.github.io/${repo.name}` : null
+    }));
+
+    // Filtrar repositorios excluidos
+    if (exclude.length > 0) {
+      repositories = repositories.filter(repo => 
+        !exclude.includes(repo.name) && !exclude.includes(repo.fullName)
+      );
+    }
+
+    // Filtrar solo repositorios destacados si se especifica
+    if (featured) {
+      repositories = repositories.filter(repo => 
+        repo.stars > 0 || 
+        repo.topics.includes('featured') || 
+        repo.topics.includes('portfolio') ||
+        (!repo.isFork && !repo.isArchived)
+      );
+    }
+
+    return repositories;
+  }
+
+  /**
+   * Obtiene las estadísticas de un repositorio
+   * @param {string} repo - Nombre del repositorio
+   * @param {string} username - Nombre de usuario
+   * @returns {Promise}
+   */
+  async getRepositoryStats(repo, username = this.config.username) {
+    if (!username || !repo) {
+      throw new Error('Username y repositorio son obligatorios');
+    }
+
+    try {
+      const [languages, commits, contributors] = await Promise.all([
+        this.getRepositoryLanguages(repo, username),
+        this.getRepositoryCommits(repo, username, { per_page: 1 }),
+        this.getRepositoryContributors(repo, username)
+      ]);
+
+      return {
+        languages,
+        totalCommits: commits.length > 0 ? 'Unknown' : 0, // GitHub no proporciona count total fácilmente
+        contributors: contributors.length,
+        lastCommit: commits.length > 0 ? commits[0].commit.author.date : null
+      };
+    } catch (error) {
+      console.warn(`Error obteniendo estadísticas para ${repo}:`, error);
+      return {
+        languages: {},
+        totalCommits: 0,
+        contributors: 0,
+        lastCommit: null
+      };
+    }
+  }
+
+  /**
+   * Obtiene los lenguajes de un repositorio
+   * @param {string} repo - Nombre del repositorio
+   * @param {string} username - Nombre de usuario
+   * @returns {Promise}
+   */
+  async getRepositoryLanguages(repo, username = this.config.username) {
+    const data = await this.request(`/repos/${username}/${repo}/languages`);
+    
+    // Calcular porcentajes
+    const total = Object.values(data).reduce((sum, bytes) => sum + bytes, 0);
+    const languages = {};
+    
+    Object.entries(data).forEach(([language, bytes]) => {
+      languages[language] = {
+        bytes,
+        percentage: total > 0 ? ((bytes / total) * 100).toFixed(1) : 0
+      };
+    });
+
+    return languages;
+  }
+
+  /**
+   * Obtiene los commits de un repositorio
+   * @param {string} repo - Nombre del repositorio
+   * @param {string} username - Nombre de usuario
+   * @param {Object} options - Opciones adicionales
+   * @returns {Promise}
+   */
+  async getRepositoryCommits(repo, username = this.config.username, options = {}) {
+    const {
+      sha = null,
+      path = null,
+      author = null,
+      since = null,
+      until = null,
+      per_page = 30,
+      page = 1
+    } = options;
+
+    const params = new URLSearchParams({
+      per_page: per_page.toString(),
+      page: page.toString()
+    });
+
+    if (sha) params.append('sha', sha);
+    if (path) params.append('path', path);
+    if (author) params.append('author', author);
+    if (since) params.append('since', since);
+    if (until) params.append('until', until);
+
+    return await this.request(`/repos/${username}/${repo}/commits?${params}`);
+  }
+
+  /**
+   * Obtiene los contribuidores de un repositorio
+   * @param {string} repo - Nombre del repositorio
+   * @param {string} username - Nombre de usuario
+   * @returns {Promise}
+   */
+  async getRepositoryContributors(repo, username = this.config.username) {
+    return await this.request(`/repos/${username}/${repo}/contributors`);
+  }
+
+  /**
+   * Obtiene el README de un repositorio
+   * @param {string} repo - Nombre del repositorio
+   * @param {string} username - Nombre de usuario
+   * @returns {Promise}
+   */
+  async getRepositoryReadme(repo, username = this.config.username) {
+    try {
+      const data = await this.request(`/repos/${username}/${repo}/readme`);
+      
+      // Decodificar contenido base64
+      const content = atob(data.content.replace(/\s/g, ''));
+      
+      return {
+        content,
+        encoding: data.encoding,
+        size: data.size,
+        sha: data.sha,
+        downloadUrl: data.download_url
+      };
+    } catch (error) {
+      console.warn(`README no encontrado para ${repo}`);
+      return null;
+    }
+  }
+
+  /**
+   * Obtiene las estadísticas de actividad del usuario
+   * @param {string} username - Nombre de usuario
+   * @returns {Promise}
+   */
+  async getUserActivity(username = this.config.username) {
+    if (!username) {
+      throw new Error('Username no especificado');
+    }
+
+    try {
+      const events = await this.request(`/users/${username}/events/public?per_page=100`);
+      
+      const activity = {
+        totalEvents: events.length,
+        eventsByType: {},
+        repositoriesActive: new Set(),
+        lastActivity: null,
+        commitCount: 0,
+        issueCount: 0,
+        prCount: 0
+      };
+
+      events.forEach(event => {
+        // Contar eventos por tipo
+        activity.eventsByType[event.type] = (activity.eventsByType[event.type] || 0) + 1;
         
-        // Check cache first
-        if (useCache && this.cache.has(cacheKey)) {
-            const cached = this.cache.get(cacheKey);
-            if (Date.now() - cached.timestamp < this.cacheTimeout) {
-                return cached.data;
-            }
-        }
-
-        try {
-            // Check rate limit
-            if (this.rateLimitRemaining <= 1 && this.rateLimitReset && Date.now() < this.rateLimitReset) {
-                console.warn('GitHub API rate limit exceeded. Using cached data.');
-                return this.getCachedDataOrFallback(cacheKey);
-            }
-
-            const response = await fetch(`${this.baseURL}${endpoint}`, {
-                headers: this.getHeaders()
-            });
-
-            // Update rate limit info
-            this.updateRateLimitInfo(response);
-
-            if (!response.ok) {
-                throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
-            }
-
-            const data = await response.json();
-
-            // Cache the response
-            if (useCache) {
-                this.cache.set(cacheKey, {
-                    data,
-                    timestamp: Date.now()
-                });
-            }
-
-            return data;
-        } catch (error) {
-            console.error('GitHub API request failed:', error);
-            return this.getCachedDataOrFallback(cacheKey);
-        }
-    }
-
-    // Update rate limit information from response headers
-    updateRateLimitInfo(response) {
-        const remaining = response.headers.get('X-RateLimit-Remaining');
-        const reset = response.headers.get('X-RateLimit-Reset');
-
-        if (remaining) {
-            this.rateLimitRemaining = parseInt(remaining);
-        }
-
-        if (reset) {
-            this.rateLimitReset = parseInt(reset) * 1000; // Convert to milliseconds
-        }
-    }
-
-    // Get cached data or return fallback
-    getCachedDataOrFallback(cacheKey) {
-        if (this.cache.has(cacheKey)) {
-            console.log('Using cached GitHub data (may be stale)');
-            return this.cache.get(cacheKey).data;
+        // Repositorios activos
+        if (event.repo) {
+          activity.repositoriesActive.add(event.repo.name);
         }
         
-        console.log('No cached data available, using fallback');
-        return null;
-    }
-
-    // Get user profile information
-    async getUserProfile() {
-        try {
-            const data = await this.makeRequest(`/users/${this.username}`);
-            
-            if (!data) return null;
-
-            return {
-                name: data.name,
-                bio: data.bio,
-                avatar_url: data.avatar_url,
-                public_repos: data.public_repos,
-                followers: data.followers,
-                following: data.following,
-                created_at: data.created_at,
-                updated_at: data.updated_at,
-                html_url: data.html_url
-            };
-        } catch (error) {
-            console.error('Failed to fetch user profile:', error);
-            return null;
+        // Última actividad
+        if (!activity.lastActivity || new Date(event.created_at) > new Date(activity.lastActivity)) {
+          activity.lastActivity = event.created_at;
         }
-    }
-
-    // Get all repositories for the user
-    async getUserRepositories(page = 1, perPage = 30) {
-        try {
-            const endpoint = `/users/${this.username}/repos?page=${page}&per_page=${perPage}&sort=updated&direction=desc`;
-            const repos = await this.makeRequest(endpoint);
-            
-            if (!repos || !Array.isArray(repos)) return [];
-
-            return repos.map(repo => ({
-                id: repo.id,
-                name: repo.name,
-                full_name: repo.full_name,
-                description: repo.description,
-                html_url: repo.html_url,
-                clone_url: repo.clone_url,
-                ssh_url: repo.ssh_url,
-                homepage: repo.homepage,
-                size: repo.size,
-                stargazers_count: repo.stargazers_count,
-                watchers_count: repo.watchers_count,
-                forks_count: repo.forks_count,
-                open_issues_count: repo.open_issues_count,
-                language: repo.language,
-                topics: repo.topics || [],
-                created_at: repo.created_at,
-                updated_at: repo.updated_at,
-                pushed_at: repo.pushed_at,
-                private: repo.private,
-                fork: repo.fork,
-                archived: repo.archived,
-                disabled: repo.disabled
-            }));
-        } catch (error) {
-            console.error('Failed to fetch repositories:', error);
-            return [];
-        }
-    }
-
-    // Get specific repository details
-    async getRepository(repoName) {
-        try {
-            const data = await this.makeRequest(`/repos/${this.username}/${repoName}`);
-            
-            if (!data) return null;
-
-            return {
-                id: data.id,
-                name: data.name,
-                full_name: data.full_name,
-                description: data.description,
-                html_url: data.html_url,
-                homepage: data.homepage,
-                size: data.size,
-                stargazers_count: data.stargazers_count,
-                watchers_count: data.watchers_count,
-                forks_count: data.forks_count,
-                open_issues_count: data.open_issues_count,
-                language: data.language,
-                topics: data.topics || [],
-                created_at: data.created_at,
-                updated_at: data.updated_at,
-                pushed_at: data.pushed_at,
-                license: data.license?.name || null
-            };
-        } catch (error) {
-            console.error(`Failed to fetch repository ${repoName}:`, error);
-            return null;
-        }
-    }
-
-    // Get repository languages
-    async getRepositoryLanguages(repoName) {
-        try {
-            const data = await this.makeRequest(`/repos/${this.username}/${repoName}/languages`);
-            return data || {};
-        } catch (error) {
-            console.error(`Failed to fetch languages for ${repoName}:`, error);
-            return {};
-        }
-    }
-
-    // Get repository commits count (approximate)
-    async getRepositoryCommitsCount(repoName) {
-        try {
-            // Get the default branch first
-            const repo = await this.getRepository(repoName);
-            if (!repo) return 0;
-
-            // Get commits from the default branch
-            const commits = await this.makeRequest(
-                `/repos/${this.username}/${repoName}/commits?per_page=1`
-            );
-            
-            if (!commits || !Array.isArray(commits)) return 0;
-
-            // This is just the latest commit, for accurate count we'd need pagination
-            // For now, we'll estimate based on the repository activity
-            return Math.floor(Math.random() * 200) + 50; // Placeholder estimation
-        } catch (error) {
-            console.error(`Failed to fetch commits count for ${repoName}:`, error);
-            return 0;
-        }
-    }
-
-    // Get repository releases
-    async getRepositoryReleases(repoName, limit = 5) {
-        try {
-            const data = await this.makeRequest(
-                `/repos/${this.username}/${repoName}/releases?per_page=${limit}`
-            );
-            
-            if (!data || !Array.isArray(data)) return [];
-
-            return data.map(release => ({
-                id: release.id,
-                tag_name: release.tag_name,
-                name: release.name,
-                body: release.body,
-                html_url: release.html_url,
-                published_at: release.published_at,
-                prerelease: release.prerelease,
-                draft: release.draft
-            }));
-        } catch (error) {
-            console.error(`Failed to fetch releases for ${repoName}:`, error);
-            return [];
-        }
-    }
-
-    // Get enhanced repository stats
-    async getRepositoryStats(repoName) {
-        try {
-            const [repo, languages, releases] = await Promise.all([
-                this.getRepository(repoName),
-                this.getRepositoryLanguages(repoName),
-                this.getRepositoryReleases(repoName, 1)
-            ]);
-
-            if (!repo) return null;
-
-            // Calculate primary language percentage
-            const totalBytes = Object.values(languages).reduce((sum, bytes) => sum + bytes, 0);
-            const primaryLanguage = Object.keys(languages)[0];
-            const primaryLanguagePercentage = totalBytes > 0 
-                ? Math.round((languages[primaryLanguage] / totalBytes) * 100)
-                : 0;
-
-            return {
-                ...repo,
-                languages,
-                primaryLanguage,
-                primaryLanguagePercentage,
-                latestRelease: releases[0] || null,
-                commitsCount: await this.getRepositoryCommitsCount(repoName),
-                lastCommit: repo.pushed_at
-            };
-        } catch (error) {
-            console.error(`Failed to fetch stats for ${repoName}:`, error);
-            return null;
-        }
-    }
-
-    // Batch fetch multiple repositories
-    async getMultipleRepositories(repoNames) {
-        const results = {};
         
-        // Use Promise.allSettled to handle individual failures gracefully
-        const promises = repoNames.map(async (repoName) => {
-            try {
-                const stats = await this.getRepositoryStats(repoName);
-                return { repoName, stats };
-            } catch (error) {
-                console.error(`Failed to fetch ${repoName}:`, error);
-                return { repoName, stats: null };
-            }
-        });
-
-        const settled = await Promise.allSettled(promises);
-        
-        settled.forEach((result) => {
-            if (result.status === 'fulfilled' && result.value) {
-                results[result.value.repoName] = result.value.stats;
-            }
-        });
-
-        return results;
-    }
-
-    // Get trending repositories for the user
-    async getTrendingRepositories(limit = 6) {
-        try {
-            const repos = await this.getUserRepositories(1, 50);
-            
-            if (!repos || repos.length === 0) return [];
-
-            // Sort by a combination of stars, forks, and recent activity
-            const trending = repos
-                .filter(repo => !repo.fork && !repo.archived)
-                .map(repo => ({
-                    ...repo,
-                    score: this.calculateTrendingScore(repo)
-                }))
-                .sort((a, b) => b.score - a.score)
-                .slice(0, limit);
-
-            return trending;
-        } catch (error) {
-            console.error('Failed to fetch trending repositories:', error);
-            return [];
+        // Contar tipos específicos
+        switch (event.type) {
+          case 'PushEvent':
+            activity.commitCount += event.payload.commits ? event.payload.commits.length : 0;
+            break;
+          case 'IssuesEvent':
+            activity.issueCount++;
+            break;
+          case 'PullRequestEvent':
+            activity.prCount++;
+            break;
         }
+      });
+
+      activity.repositoriesActive = Array.from(activity.repositoriesActive);
+
+      return activity;
+    } catch (error) {
+      console.warn('Error obteniendo actividad del usuario:', error);
+      return null;
     }
+  }
 
-    // Calculate trending score for repositories
-    calculateTrendingScore(repo) {
-        const now = new Date();
-        const updated = new Date(repo.updated_at);
-        const daysSinceUpdate = (now - updated) / (1000 * 60 * 60 * 24);
-        
-        // Weighted score based on stars, forks, and recency
-        const starsWeight = repo.stargazers_count * 3;
-        const forksWeight = repo.forks_count * 2;
-        const recentWeight = Math.max(0, 100 - daysSinceUpdate);
-        
-        return starsWeight + forksWeight + recentWeight;
-    }
+  /**
+   * Busca repositorios
+   * @param {string} query - Término de búsqueda
+   * @param {Object} options - Opciones de búsqueda
+   * @returns {Promise}
+   */
+  async searchRepositories(query, options = {}) {
+    const {
+      sort = 'stars', // stars, forks, help-wanted-issues, updated
+      order = 'desc', // asc, desc
+      per_page = 30,
+      page = 1,
+      language = null,
+      user = null
+    } = options;
 
-    // Clear cache
-    clearCache() {
-        this.cache.clear();
-    }
+    let searchQuery = query;
+    
+    if (language) searchQuery += ` language:${language}`;
+    if (user) searchQuery += ` user:${user}`;
 
-    // Get cache stats
-    getCacheStats() {
-        return {
-            size: this.cache.size,
-            rateLimitRemaining: this.rateLimitRemaining,
-            rateLimitReset: this.rateLimitReset ? new Date(this.rateLimitReset) : null
-        };
-    }
+    const params = new URLSearchParams({
+      q: searchQuery,
+      sort,
+      order,
+      per_page: per_page.toString(),
+      page: page.toString()
+    });
 
-    // Preload common data
-    async preloadData() {
-        try {
-            console.log('Preloading GitHub data...');
-            
-            const [profile, repos] = await Promise.all([
-                this.getUserProfile(),
-                this.getUserRepositories(1, 10)
-            ]);
-
-            console.log('GitHub data preloaded successfully');
-            return { profile, repos };
-        } catch (error) {
-            console.error('Failed to preload GitHub data:', error);
-            return null;
+    const data = await this.request(`/search/repositories?${params}`);
+    
+    return {
+      totalCount: data.total_count,
+      incompleteResults: data.incomplete_results,
+      items: data.items.map(repo => ({
+        id: repo.id,
+        name: repo.name,
+        fullName: repo.full_name,
+        description: repo.description,
+        url: repo.html_url,
+        language: repo.language,
+        stars: repo.stargazers_count,
+        forks: repo.forks_count,
+        updatedAt: repo.updated_at,
+        owner: {
+          username: repo.owner.login,
+          avatar: repo.owner.avatar_url,
+          url: repo.owner.html_url
         }
+      }))
+    };
+  }
+
+  /**
+   * Actualiza información de rate limit
+   * @param {Headers} headers - Headers de respuesta
+   */
+  updateRateLimit(headers) {
+    this.config.rateLimit = {
+      limit: parseInt(headers.get('X-RateLimit-Limit')) || null,
+      remaining: parseInt(headers.get('X-RateLimit-Remaining')) || null,
+      reset: parseInt(headers.get('X-RateLimit-Reset')) || null,
+      used: parseInt(headers.get('X-RateLimit-Used')) || null
+    };
+  }
+
+  /**
+   * Obtiene información del rate limit
+   * @returns {Object}
+   */
+  getRateLimit() {
+    return {
+      ...this.config.rateLimit,
+      resetDate: this.config.rateLimit.reset ? 
+        new Date(this.config.rateLimit.reset * 1000) : null
+    };
+  }
+
+  /**
+   * Verifica si hay suficientes requests disponibles
+   * @param {number} requestsNeeded - Número de requests necesarios
+   * @returns {boolean}
+   */
+  hasRemainingRequests(requestsNeeded = 1) {
+    return this.config.rateLimit.remaining === null || 
+           this.config.rateLimit.remaining >= requestsNeeded;
+  }
+
+  /**
+   * Gestión de cache
+   */
+  getCachedData(key) {
+    const cached = this.config.cache.data.get(key);
+    if (cached && Date.now() - cached.timestamp < this.config.cache.duration) {
+      return cached.data;
     }
+    this.config.cache.data.delete(key);
+    return null;
+  }
+
+  setCachedData(key, data) {
+    this.config.cache.data.set(key, {
+      data,
+      timestamp: Date.now()
+    });
+  }
+
+  clearCache() {
+    this.config.cache.data.clear();
+  }
 }
 
-// Create and export singleton instance
-let githubAPI = null;
+/**
+ * Instancia global de la API de GitHub
+ */
+let githubAPIInstance = null;
 
-export const createGitHubAPI = (config) => {
-    githubAPI = new GitHubAPI(config);
-    return githubAPI;
-};
+/**
+ * Obtiene la instancia de la API de GitHub
+ */
+export function getGitHubAPI(config) {
+  if (!githubAPIInstance) {
+    githubAPIInstance = new GitHubAPI(config);
+  }
+  return githubAPIInstance;
+}
 
-export const getGitHubAPI = () => {
-    if (!githubAPI) {
-        githubAPI = new GitHubAPI();
+/**
+ * Utilidades para trabajar con datos de GitHub
+ */
+export const GitHubUtils = {
+  /**
+   * Formatea la fecha de GitHub
+   */
+  formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  },
+
+  /**
+   * Formatea números grandes (K, M)
+   */
+  formatNumber(num) {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + 'M';
     }
-    return githubAPI;
-};
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+  },
 
-export default GitHubAPI;
+  /**
+   * Obtiene el color asociado a un lenguaje
+   */
+  getLanguageColor(language) {
+    const colors = {
+      JavaScript: '#f1e05a',
+      TypeScript: '#2b7489',
+      Python: '#3572A5',
+      Java: '#b07219',
+      'C++': '#f34b7d',
+      'C#': '#239120',
+      PHP: '#4F5D95',
+      Ruby: '#701516',
+      Go: '#00ADD8',
+      Rust: '#dea584',
+      Swift: '#ffac45',
+      Kotlin: '#F18E33',
+      Dart: '#00B4AB',
+      HTML: '#e34c26',
+      CSS: '#1572B6',
+      Vue: '#2c3e50',
+      React: '#61DAFB'
+    };
+    return colors[language] || '#586069';
+  },
+
+  /**
+   * Extrae temas/topics relevantes
+   */
+  extractRelevantTopics(topics) {
+    const techTopics = [
+      'javascript', 'typescript', 'react', 'vue', 'angular', 'nodejs',
+      'python', 'django', 'flask', 'java', 'spring', 'php', 'laravel',
+      'csharp', 'dotnet', 'go', 'rust', 'swift', 'kotlin', 'dart',
+      'flutter', 'mobile', 'web', 'api', 'frontend', 'backend',
+      'fullstack', 'database', 'mongodb', 'postgresql', 'mysql',
+      'docker', 'kubernetes', 'aws', 'azure', 'gcp', 'devops'
+    ];
+
+    return topics.filter(topic => 
+      techTopics.includes(topic.toLowerCase()) ||
+      topic.toLowerCase().includes('app') ||
+      topic.toLowerCase().includes('framework') ||
+      topic.toLowerCase().includes('library')
+    );
+  },
+
+  /**
+   * Calcula la puntuación de relevancia de un repositorio
+   */
+  calculateRepoScore(repo) {
+    let score = 0;
+    
+    // Puntuación por estrellas
+    score += Math.min(repo.stars * 2, 50);
+    
+    // Puntuación por forks
+    score += Math.min(repo.forks * 3, 30);
+    
+    // Penalización por ser fork
+    if (repo.isFork) score -= 20;
+    
+    // Penalización por estar archivado
+    if (repo.isArchived) score -= 30;
+    
+    // Bonificación por tener descripción
+    if (repo.description && repo.description.length > 20) score += 10;
+    
+    // Bonificación por tener homepage
+    if (repo.homepage) score += 15;
+    
+    // Bonificación por topics relevantes
+    score += this.extractRelevantTopics(repo.topics).length * 5;
+    
+    // Bonificación por actividad reciente (último mes)
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    if (new Date(repo.updatedAt) > oneMonthAgo) score += 10;
+    
+    return Math.max(score, 0);
+  },
+
+  /**
+   * Ordena repositorios por relevancia
+   */
+  sortByRelevance(repositories) {
+    return repositories
+      .map(repo => ({
+        ...repo,
+        score: this.calculateRepoScore(repo)
+      }))
+      .sort((a, b) => b.score - a.score);
+  },
+
+  /**
+   * Filtra repositorios destacados automáticamente
+   */
+  getAutoFeaturedRepos(repositories, maxCount = 6) {
+    const sorted = this.sortByRelevance(repositories);
+    return sorted
+      .filter(repo => 
+        !repo.isFork && 
+        !repo.isArchived && 
+        repo.score > 10
+      )
+      .slice(0, maxCount);
+  },
+
+  /**
+   * Genera estadísticas del perfil
+   */
+  generateProfileStats(user, repositories) {
+    const stats = {
+      totalRepos: repositories.length,
+      totalStars: repositories.reduce((sum, repo) => sum + repo.stars, 0),
+      totalForks: repositories.reduce((sum, repo) => sum + repo.forks, 0),
+      languages: {},
+      mostStarredRepo: null,
+      newestRepo: null,
+      oldestRepo: null,
+      averageStars: 0,
+      forkedRepos: repositories.filter(repo => repo.isFork).length,
+      originalRepos: repositories.filter(repo => !repo.isFork).length
+    };
+
+    // Calcular promedio de estrellas
+    if (repositories.length > 0) {
+      stats.averageStars = (stats.totalStars / repositories.length).toFixed(1);
+    }
+
+    // Encontrar repositorios destacados
+    if (repositories.length > 0) {
+      stats.mostStarredRepo = repositories.reduce((prev, current) => 
+        (prev.stars > current.stars) ? prev : current
+      );
+
+      stats.newestRepo = repositories.reduce((prev, current) => 
+        (new Date(prev.createdAt) > new Date(current.createdAt)) ? prev : current
+      );
+
+      stats.oldestRepo = repositories.reduce((prev, current) => 
+        (new Date(prev.createdAt) < new Date(current.createdAt)) ? prev : current
+      );
+    }
+
+    // Contar lenguajes
+    repositories.forEach(repo => {
+      if (repo.language) {
+        stats.languages[repo.language] = (stats.languages[repo.language] || 0) + 1;
+      }
+    });
+
+    return stats;
+  }
+};

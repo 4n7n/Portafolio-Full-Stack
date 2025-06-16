@@ -1,94 +1,150 @@
-const testimonialsData = [
-  {
-    id: 1,
-    content: "Trabajar con él ha sido excepcional. Su expertise técnico y capacidad para resolver problemas complejos es impresionante. Entregó nuestro proyecto en tiempo y superó nuestras expectativas de calidad.",
-    author: {
+export const TESTIMONIALS_DATA = {
+  // Testimonios de clientes y colegas
+  testimonials: [
+    {
+      id: 1,
       name: "María González",
-      role: "Product Manager",
-      company: "TechCorp Solutions",
+      position: "Project Manager",
+      company: "TechStart Solutions",
       avatar: "/assets/images/testimonials/maria-gonzalez.jpg",
-      linkedIn: "https://linkedin.com/in/mariagonzalez"
+      rating: 5,
+      text: "Trabajar con él ha sido una experiencia excepcional. Su capacidad para resolver problemas complejos y su atención al detalle son impresionantes. Siempre entrega código limpio y bien documentado.",
+      project: "Sistema de Gestión Empresarial",
+      date: "2024-02-15",
+      featured: true,
+      tags: ["Profesionalismo", "Calidad de código", "Resolución de problemas"]
     },
-    experienceId: 1,
-    rating: 5,
-    featured: true,
-    date: "2023-11-15"
-  },
-  {
-    id: 2,
-    content: "Un desarrollador excepcional que entiende perfectamente las necesidades del negocio. Su trabajo en nuestra plataforma de e-commerce fue fundamental para alcanzar nuestros objetivos de ventas.",
-    author: {
-      name: "Carlos Ruiz",
-      role: "CEO",
-      company: "StartupHub",
-      avatar: "/assets/images/testimonials/carlos-ruiz.jpg",
-      linkedIn: "https://linkedin.com/in/carlosruiz"
-    },
-    experienceId: 2,
-    rating: 5,
-    featured: true,
-    date: "2022-12-10"
-  },
-  {
-    id: 3,
-    content: "Su atención al detalle y conocimiento de las mejores prácticas de desarrollo frontend es impresionante. Los sitios web que desarrolló para nosotros han tenido un impacto tremendamente positivo en nuestros clientes.",
-    author: {
-      name: "Ana Martín",
-      role: "Creative Director",
-      company: "Digital Agency Pro",
-      avatar: "/assets/images/testimonials/ana-martin.jpg",
-      linkedIn: "https://linkedin.com/in/anamartin"
-    },
-    experienceId: 3,
-    rating: 5,
-    featured: true,
-    date: "2021-05-20"
-  },
-  {
-    id: 4,
-    content: "Como cliente freelance, valoré enormemente su profesionalismo y capacidad de comunicación. Siempre estuvo disponible para explicar conceptos técnicos de manera clara y entregó exactamente lo que necesitábamos.",
-    author: {
-      name: "Roberto Silva",
-      role: "Founder",
-      company: "Silva Consulting",
-      avatar: "/assets/images/testimonials/roberto-silva.jpg",
-      linkedIn: "https://linkedin.com/in/robertosilva"
-    },
-    experienceId: 4,
-    rating: 5,
-    featured: false,
-    date: "2019-11-30"
-  },
-  {
-    id: 5,
-    content: "Durante nuestro tiempo en IronHack, demostró ser uno de los estudiantes más dedicados y colaborativos. Su capacidad para aprender tecnologías nuevas rápidamente es notable.",
-    author: {
-      name: "David López",
-      role: "Lead Instructor",
-      company: "IronHack Madrid",
-      avatar: "/assets/images/testimonials/david-lopez.jpg",
-      linkedIn: "https://linkedin.com/in/davidlopez"
-    },
-    experienceId: 5,
-    rating: 5,
-    featured: false,
-    date: "2018-12-20"
-  },
-  {
-    id: 6,
-    content: "Un desarrollador que realmente entiende las necesidades del cliente. Su trabajo ha sido instrumental en el crecimiento de nuestro negocio online. Altamente recomendado.",
-    author: {
-      name: "Laura Fernández",
-      role: "Marketing Director",
-      company: "Innovate Solutions",
-      avatar: "/assets/images/testimonials/laura-fernandez.jpg",
-      linkedIn: "https://linkedin.com/in/laurafernandez"
-    },
-    experienceId: 4,
-    rating: 5,
-    featured: false,
-    date: "2020-01-15"
-  }
-];
 
-export default testimonialsData;
+    {
+      id: 2,
+      name: "Carlos Rodríguez",
+      position: "CEO",
+      company: "Digital Marketing Pro",
+      avatar: "/assets/images/testimonials/carlos-rodriguez.jpg",
+      rating: 5,
+      text: "Sus landing pages han aumentado significativamente nuestras conversiones. Entiende perfectamente las necesidades del negocio y las traduce en soluciones técnicas efectivas. Muy recomendable.",
+      project: "Landing Pages Corporativas",
+      date: "2023-08-20",
+      featured: true,
+      tags: ["Resultados", "Comprensión del negocio", "Conversiones"]
+    },
+
+    {
+      id: 3,
+      name: "Ana Martín",
+      position: "Senior Developer",
+      company: "TechStart Solutions",
+      avatar: "/assets/images/testimonials/ana-martin.jpg",
+      rating: 5,
+      text: "Como mentor, puedo decir que es uno de los desarrolladores junior más prometedores que he conocido. Aprende rápido, hace buenas preguntas y siempre está dispuesto a ayudar al equipo.",
+      project: "Colaboración en equipo",
+      date: "2024-01-10",
+      featured: true,
+      tags: ["Aprendizaje rápido", "Trabajo en equipo", "Potencial"]
+    },
+
+    {
+      id: 4,
+      name: "David López",
+      position: "UX/UI Designer",
+      company: "Freelance",
+      avatar: "/assets/images/testimonials/david-lopez.jpg",
+      rating: 4,
+      text: "Excelente colaboración en varios proyectos. Traduce perfectamente los diseños a código y propone mejoras técnicas que benefician la experiencia del usuario. Comunicación fluida y profesional.",
+      project: "Múltiples proyectos web",
+      date: "2023-11-05",
+      featured: false,
+      tags: ["Colaboración", "Pixel perfect", "UX awareness"]
+    },
+
+    {
+      id: 5,
+      name: "Laura Fernández",
+      position: "Marketing Director",
+      company: "StartUp Asturias",
+      avatar: "/assets/images/testimonials/laura-fernandez.jpg",
+      rating: 5,
+      text: "Desarrolló nuestra web corporativa superando todas las expectativas. El resultado es moderno, rápido y perfectamente optimizado para SEO. El proceso fue transparente y los plazos se cumplieron.",
+      project: "Sitio Web Corporativo",
+      date: "2023-07-12",
+      featured: false,
+      tags: ["SEO", "Diseño moderno", "Cumplimiento de plazos"]
+    },
+
+    {
+      id: 6,
+      name: "Roberto Sánchez",
+      position: "Technical Lead",
+      company: "Innovación Digital Asturias",
+      avatar: "/assets/images/testimonials/roberto-sanchez.jpg",
+      rating: 4,
+      text: "Durante sus prácticas demostró gran capacidad de aprendizaje y adaptación. Pasó de conocimientos básicos a contribuir significativamente en proyectos reales en muy poco tiempo.",
+      project: "Período de prácticas",
+      date: "2023-02-28",
+      featured: false,
+      tags: ["Prácticas", "Evolución", "Adaptación"]
+    }
+  ],
+
+  // Estadísticas de testimonios
+  stats: {
+    totalTestimonials: 6,
+    averageRating: 4.8,
+    ratingDistribution: {
+      5: 5,
+      4: 1,
+      3: 0,
+      2: 0,
+      1: 0
+    },
+    totalProjects: 15,
+    clientSatisfaction: 98,
+    repeatClients: 3
+  },
+
+  // Configuración de visualización
+  display: {
+    showRatings: true,
+    showAvatars: true,
+    showCompanies: true,
+    showDates: true,
+    showTags: true,
+    maxTestimonialsPerPage: 3,
+    autoRotate: true,
+    rotationInterval: 5000, // 5 segundos
+    enableNavigation: true
+  },
+
+  filters: {
+    byRating: [5, 4, 3, 2, 1],
+    byCompany: [
+      "TechStart Solutions",
+      "Digital Marketing Pro", 
+      "Innovación Digital Asturias",
+      "Freelance",
+      "StartUp Asturias"
+    ],
+    byProject: [
+      "Frontend",
+      "Backend", 
+      "Full Stack",
+      "UI/UX",
+      "SEO/Marketing"
+    ],
+    byFeatured: ["featured", "all"]
+  },
+
+  categories: {
+    technical: [1, 3, 6], // IDs de testimonios técnicos
+    business: [2, 5], // IDs de testimonios de negocio
+    collaboration: [4, 6], // IDs de testimonios de colaboración
+    featured: [1, 2, 3] // IDs de testimonios destacados
+  },
+
+  cta: {
+    title: "¿Trabajamos juntos?",
+    subtitle: "Únete a estos clientes satisfechos",
+    buttonText: "Contactar ahora",
+    buttonLink: "#contact"
+  }
+};

@@ -1,176 +1,300 @@
 export class DOMHelpers {
-  
   /**
-   * Encuentra elemento por selector con validación
-   * @param {string} selector - CSS selector
-   * @param {Element|Document} context - Context element
+   * Selecciona un elemento del DOM
+   * @param {string} selector - Selector CSS
+   * @param {Element} context - Contexto de búsqueda (opcional)
    * @returns {Element|null}
    */
-  static findElement(selector, context = document) {
-    const element = context.querySelector(selector);
-    if (!element) {
-      console.warn(`⚠️ Elemento no encontrado: ${selector}`);
+  static select(selector, context = document) {
+    return context.querySelector(selector);
+  }
+
+  /**
+   * Selecciona múltiples elementos del DOM
+   * @param {string} selector - Selector CSS
+   * @param {Element} context - Contexto de búsqueda (opcional)
+   * @returns {NodeList}
+   */
+  static selectAll(selector, context = document) {
+    return context.querySelectorAll(selector);
+  }
+
+  /**
+   * Crea un elemento con atributos y contenido
+   * @param {string} tag - Etiqueta HTML
+   * @param {Object} attributes - Atributos del elemento
+   * @param {string|Element} content - Contenido del elemento
+   * @returns {Element}
+   */
+  static createElement(tag, attributes = {}, content = '') {
+    const element = document.createElement(tag);
+    
+    // Establecer atributos
+    Object.entries(attributes).forEach(([key, value]) => {
+      if (key === 'className') {
+        element.className = value;
+      } else if (key === 'innerHTML') {
+        element.innerHTML = value;
+      } else if (key === 'textContent') {
+        element.textContent = value;
+      } else {
+        element.setAttribute(key, value);
+      }
+    });
+
+    // Establecer contenido
+    if (content) {
+      if (typeof content === 'string') {
+        element.textContent = content;
+      } else if (content instanceof Element) {
+        element.appendChild(content);
+      }
     }
+
     return element;
   }
 
   /**
-   * Encuentra múltiples elementos
-   * @param {string} selector - CSS selector
-   * @param {Element|Document} context - Context element
-   * @returns {Element[]}
+   * Añade clases CSS a un elemento
+   * @param {Element} element - Elemento DOM
+   * @param {...string} classes - Clases a añadir
    */
-  static findElements(selector, context = document) {
-    return Array.from(context.querySelectorAll(selector));
-  }
-
-  /**
-   * Añade clase con verificación
-   * @param {Element} element - Target element
-   * @param {string} className - Class name to add
-   */
-  static addClass(element, className) {
-    if (element && className) {
-      element.classList.add(className);
+  static addClass(element, ...classes) {
+    if (element && element.classList) {
+      element.classList.add(...classes);
     }
   }
 
   /**
-   * Remueve clase con verificación
-   * @param {Element} element - Target element
-   * @param {string} className - Class name to remove
+   * Remueve clases CSS de un elemento
+   * @param {Element} element - Elemento DOM
+   * @param {...string} classes - Clases a remover
    */
-  static removeClass(element, className) {
-    if (element && className) {
-      element.classList.remove(className);
+  static removeClass(element, ...classes) {
+    if (element && element.classList) {
+      element.classList.remove(...classes);
     }
   }
 
   /**
-   * Toggle clase con verificación
-   * @param {Element} element - Target element
-   * @param {string} className - Class name to toggle
-   * @param {boolean} force - Force add/remove
+   * Alterna clases CSS en un elemento
+   * @param {Element} element - Elemento DOM
+   * @param {string} className - Clase a alternar
    * @returns {boolean}
    */
-  static toggleClass(element, className, force = undefined) {
-    if (element && className) {
-      return element.classList.toggle(className, force);
+  static toggleClass(element, className) {
+    if (element && element.classList) {
+      return element.classList.toggle(className);
     }
     return false;
   }
 
   /**
-   * Verificar si elemento tiene clase
-   * @param {Element} element - Element to check
-   * @param {string} className - Class name to check
+   * Verifica si un elemento tiene una clase
+   * @param {Element} element - Elemento DOM
+   * @param {string} className - Clase a verificar
    * @returns {boolean}
    */
   static hasClass(element, className) {
-    return element && element.classList.contains(className);
+    return element && element.classList && element.classList.contains(className);
   }
 
   /**
-   * Crear elemento con atributos
-   * @param {string} tag - HTML tag name
-   * @param {Object} attributes - Element attributes
-   * @param {string} textContent - Text content
-   * @returns {Element}
+   * Obtiene o establece atributos de un elemento
+   * @param {Element} element - Elemento DOM
+   * @param {string|Object} attribute - Nombre del atributo u objeto con atributos
+   * @param {string} value - Valor del atributo (opcional)
+   * @returns {string|null}
    */
-  static createElement(tag, attributes = {}, textContent = '') {
-    const element = document.createElement(tag);
+  static attr(element, attribute, value) {
+    if (!element) return null;
+
+    if (typeof attribute === 'object') {
+      // Establecer múltiples atributos
+      Object.entries(attribute).forEach(([key, val]) => {
+        element.setAttribute(key, val);
+      });
+      return element;
+    }
+
+    if (value !== undefined) {
+      // Establecer atributo
+      element.setAttribute(attribute, value);
+      return element;
+    }
+
+    // Obtener atributo
+    return element.getAttribute(attribute);
+  }
+
+  /**
+   * Obtiene o establece el contenido HTML de un elemento
+   * @param {Element} element - Elemento DOM
+   * @param {string} html - Contenido HTML (opcional)
+   * @returns {string|Element}
+   */
+  static html(element, html) {
+    if (!element) return '';
+
+    if (html !== undefined) {
+      element.innerHTML = html;
+      return element;
+    }
+
+    return element.innerHTML;
+  }
+
+  /**
+   * Obtiene o establece el contenido de texto de un elemento
+   * @param {Element} element - Elemento DOM
+   * @param {string} text - Contenido de texto (opcional)
+   * @returns {string|Element}
+   */
+  static text(element, text) {
+    if (!element) return '';
+
+    if (text !== undefined) {
+      element.textContent = text;
+      return element;
+    }
+
+    return element.textContent;
+  }
+
+  /**
+   * Añade event listeners a elementos
+   * @param {Element|NodeList} elements - Elemento(s) DOM
+   * @param {string} event - Tipo de evento
+   * @param {Function} handler - Manejador del evento
+   * @param {Object} options - Opciones del evento
+   */
+  static on(elements, event, handler, options = {}) {
+    if (!elements) return;
+
+    const elementList = elements.length !== undefined ? elements : [elements];
     
-    Object.entries(attributes).forEach(([key, value]) => {
-      if (key === 'className') {
-        element.className = value;
-      } else if (key === 'dataset') {
-        Object.entries(value).forEach(([dataKey, dataValue]) => {
-          element.dataset[dataKey] = dataValue;
-        });
-      } else {
-        element.setAttribute(key, value);
+    elementList.forEach(element => {
+      if (element && element.addEventListener) {
+        element.addEventListener(event, handler, options);
       }
     });
-    
-    if (textContent) {
-      element.textContent = textContent;
-    }
-    
-    return element;
   }
 
   /**
-   * Insertar HTML de forma segura
-   * @param {Element} element - Target element
-   * @param {string} html - HTML content
+   * Remueve event listeners de elementos
+   * @param {Element|NodeList} elements - Elemento(s) DOM
+   * @param {string} event - Tipo de evento
+   * @param {Function} handler - Manejador del evento
+   * @param {Object} options - Opciones del evento
    */
-  static setHTML(element, html) {
-    if (element) {
-      element.innerHTML = html;
-    }
+  static off(elements, event, handler, options = {}) {
+    if (!elements) return;
+
+    const elementList = elements.length !== undefined ? elements : [elements];
+    
+    elementList.forEach(element => {
+      if (element && element.removeEventListener) {
+        element.removeEventListener(event, handler, options);
+      }
+    });
   }
 
   /**
-   * Obtener posición del elemento
-   * @param {Element} element - Target element
+   * Obtiene la posición de un elemento relativa al viewport
+   * @param {Element} element - Elemento DOM
    * @returns {Object}
    */
-  static getElementPosition(element) {
+  static getPosition(element) {
     if (!element) return { top: 0, left: 0, width: 0, height: 0 };
     
     const rect = element.getBoundingClientRect();
     return {
-      top: rect.top + window.pageYOffset,
-      left: rect.left + window.pageXOffset,
+      top: rect.top,
+      left: rect.left,
+      right: rect.right,
+      bottom: rect.bottom,
       width: rect.width,
       height: rect.height
     };
   }
 
   /**
-   * Verificar si elemento está en viewport
-   * @param {Element} element - Element to check
-   * @param {number} threshold - Threshold in pixels
+   * Verifica si un elemento está visible en el viewport
+   * @param {Element} element - Elemento DOM
+   * @param {number} threshold - Porcentaje de visibilidad requerido (0-1)
    * @returns {boolean}
    */
   static isInViewport(element, threshold = 0) {
     if (!element) return false;
-    
+
     const rect = element.getBoundingClientRect();
     const windowHeight = window.innerHeight || document.documentElement.clientHeight;
     const windowWidth = window.innerWidth || document.documentElement.clientWidth;
-    
-    return (
-      rect.top >= -threshold &&
-      rect.left >= -threshold &&
-      rect.bottom <= windowHeight + threshold &&
-      rect.right <= windowWidth + threshold
-    );
+
+    const verticalVisible = rect.top < windowHeight && rect.bottom > 0;
+    const horizontalVisible = rect.left < windowWidth && rect.right > 0;
+
+    if (threshold === 0) {
+      return verticalVisible && horizontalVisible;
+    }
+
+    const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+    const visibleWidth = Math.min(rect.right, windowWidth) - Math.max(rect.left, 0);
+    const visibleArea = visibleHeight * visibleWidth;
+    const totalArea = rect.height * rect.width;
+
+    return visibleArea / totalArea >= threshold;
   }
 
   /**
-   * Smooth scroll a elemento
-   * @param {Element} element - Element to scroll to
-   * @param {number} offset - Offset in pixels
-   * @param {string} behavior - Scroll behavior
+   * Realiza scroll suave a un elemento
+   * @param {Element|string} target - Elemento o selector
+   * @param {Object} options - Opciones de scroll
    */
-  static scrollToElement(element, offset = 0, behavior = 'smooth') {
+  static scrollTo(target, options = {}) {
+    const element = typeof target === 'string' ? this.select(target) : target;
     if (!element) return;
-    
-    const elementPosition = this.getElementPosition(element);
-    const offsetPosition = elementPosition.top - offset;
-    
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: behavior
-    });
+
+    const defaultOptions = {
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'nearest',
+      offset: 0
+    };
+
+    const config = { ...defaultOptions, ...options };
+
+    if (config.offset) {
+      const elementTop = element.offsetTop - config.offset;
+      window.scrollTo({
+        top: elementTop,
+        behavior: config.behavior
+      });
+    } else {
+      element.scrollIntoView({
+        behavior: config.behavior,
+        block: config.block,
+        inline: config.inline
+      });
+    }
   }
 
   /**
-   * Debounce función
-   * @param {Function} func - Function to debounce
-   * @param {number} wait - Wait time in milliseconds
-   * @param {boolean} immediate - Execute immediately
+   * Obtiene la posición de scroll actual
+   * @returns {Object}
+   */
+  static getScrollPosition() {
+    return {
+      x: window.pageXOffset || document.documentElement.scrollLeft,
+      y: window.pageYOffset || document.documentElement.scrollTop
+    };
+  }
+
+  /**
+   * Debounce para eventos
+   * @param {Function} func - Función a ejecutar
+   * @param {number} wait - Tiempo de espera en ms
+   * @param {boolean} immediate - Ejecutar inmediatamente
    * @returns {Function}
    */
   static debounce(func, wait, immediate = false) {
@@ -188,9 +312,9 @@ export class DOMHelpers {
   }
 
   /**
-   * Throttle función
-   * @param {Function} func - Function to throttle
-   * @param {number} limit - Limit in milliseconds
+   * Throttle para eventos
+   * @param {Function} func - Función a ejecutar
+   * @param {number} limit - Límite de tiempo en ms
    * @returns {Function}
    */
   static throttle(func, limit) {
@@ -205,349 +329,37 @@ export class DOMHelpers {
   }
 
   /**
-   * Esperar a que elemento esté disponible
-   * @param {string} selector - CSS selector
-   * @param {number} timeout - Timeout in milliseconds
-   * @returns {Promise<Element>}
+   * Espera a que el DOM esté listo
+   * @param {Function} callback - Función a ejecutar
    */
-  static waitForElement(selector, timeout = 10000) {
-    return new Promise((resolve, reject) => {
-      const element = document.querySelector(selector);
-      if (element) {
-        resolve(element);
-        return;
-      }
-
-      const observer = new MutationObserver((mutations, obs) => {
-        const element = document.querySelector(selector);
-        if (element) {
-          obs.disconnect();
-          resolve(element);
-        }
-      });
-
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
-
-      setTimeout(() => {
-        observer.disconnect();
-        reject(new Error(`Elemento ${selector} no encontrado en ${timeout}ms`));
-      }, timeout);
-    });
+  static ready(callback) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', callback);
+    } else {
+      callback();
+    }
   }
 
   /**
-   * Cargar script dinámicamente
-   * @param {string} src - Script source URL
+   * Copia texto al portapapeles
+   * @param {string} text - Texto a copiar
    * @returns {Promise}
    */
-  static loadScript(src) {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = src;
-      script.onload = resolve;
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
-  }
-
-  /**
-   * Obtener datos de elemento
-   * @param {Element} element - Target element
-   * @param {string} key - Data key
-   * @returns {string|null}
-   */
-  static getElementData(element, key) {
-    if (!element) return null;
-    return element.dataset[key] || element.getAttribute(`data-${key}`);
-  }
-
-  /**
-   * Establecer datos de elemento
-   * @param {Element} element - Target element
-   * @param {string} key - Data key
-   * @param {string} value - Data value
-   */
-  static setElementData(element, key, value) {
-    if (element) {
-      element.dataset[key] = value;
+  static async copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (err) {
+      // Fallback para navegadores antiguos
+      const textArea = this.createElement('textarea', {
+        value: text,
+        style: 'position: fixed; top: -9999px; left: -9999px;'
+      });
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      return true;
     }
-  }
-
-  // =========================================
-  // DEVICE DETECTION METHODS
-  // =========================================
-  
-  /**
-   * Check if device is mobile
-   * @returns {boolean}
-   */
-  static isMobile() {
-    return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-           (window.innerWidth <= 768 && 'ontouchstart' in window);
-  }
-  
-  /**
-   * Check if device is tablet
-   * @returns {boolean}
-   */
-  static isTablet() {
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isTabletUA = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/i.test(userAgent);
-    const isTabletSize = window.innerWidth >= 768 && window.innerWidth <= 1024;
-    return isTabletUA || (isTabletSize && 'ontouchstart' in window);
-  }
-  
-  /**
-   * Check if device is desktop
-   * @returns {boolean}
-   */
-  static isDesktop() {
-    return !this.isMobile() && !this.isTablet();
-  }
-  
-  /**
-   * Get device type
-   * @returns {string} 'mobile' | 'tablet' | 'desktop'
-   */
-  static getDeviceType() {
-    if (this.isMobile()) return 'mobile';
-    if (this.isTablet()) return 'tablet';
-    return 'desktop';
-  }
-  
-  /**
-   * Check if device has touch capability
-   * @returns {boolean}
-   */
-  static hasTouch() {
-    return 'ontouchstart' in window || 
-           navigator.maxTouchPoints > 0 || 
-           navigator.msMaxTouchPoints > 0;
-  }
-  
-  /**
-   * Get maximum touch points
-   * @returns {number}
-   */
-  static getMaxTouchPoints() {
-    return navigator.maxTouchPoints || navigator.msMaxTouchPoints || 0;
-  }
-  
-  /**
-   * Check if device supports hover
-   * @returns {boolean}
-   */
-  static supportsHover() {
-    return window.matchMedia('(hover: hover)').matches;
-  }
-  
-  /**
-   * Get device orientation
-   * @returns {string} 'portrait' | 'landscape'
-   */
-  static getOrientation() {
-    if (screen.orientation) {
-      return screen.orientation.angle === 0 || screen.orientation.angle === 180 
-        ? 'portrait' : 'landscape';
-    }
-    return window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
-  }
-  
-  /**
-   * Check if device is in landscape mode
-   * @returns {boolean}
-   */
-  static isLandscape() {
-    return this.getOrientation() === 'landscape';
-  }
-  
-  /**
-   * Check if device is in portrait mode
-   * @returns {boolean}
-   */
-  static isPortrait() {
-    return this.getOrientation() === 'portrait';
-  }
-
-  // =========================================
-  // VIEWPORT AND SCREEN METHODS
-  // =========================================
-
-  /**
-   * Get viewport dimensions
-   * @returns {Object}
-   */
-  static getViewportSize() {
-    return {
-      width: window.innerWidth || document.documentElement.clientWidth,
-      height: window.innerHeight || document.documentElement.clientHeight
-    };
-  }
-
-  /**
-   * Get screen dimensions
-   * @returns {Object}
-   */
-  static getScreenSize() {
-    return {
-      width: screen.width,
-      height: screen.height,
-      availWidth: screen.availWidth,
-      availHeight: screen.availHeight
-    };
-  }
-
-  /**
-   * Get current breakpoint
-   * @returns {string}
-   */
-  static getCurrentBreakpoint() {
-    const width = window.innerWidth;
-    if (width < 576) return 'xs';
-    if (width < 768) return 'sm';
-    if (width < 992) return 'md';
-    if (width < 1200) return 'lg';
-    if (width < 1400) return 'xl';
-    return 'xxl';
-  }
-
-  /**
-   * Check if viewport matches breakpoint
-   * @param {string} breakpoint - Breakpoint name
-   * @returns {boolean}
-   */
-  static matchesBreakpoint(breakpoint) {
-    const breakpoints = {
-      xs: 576,
-      sm: 768,
-      md: 992,
-      lg: 1200,
-      xl: 1400
-    };
-    
-    const width = window.innerWidth;
-    const minWidth = breakpoints[breakpoint] || 0;
-    const nextBreakpoint = Object.keys(breakpoints)[Object.keys(breakpoints).indexOf(breakpoint) + 1];
-    const maxWidth = nextBreakpoint ? breakpoints[nextBreakpoint] - 1 : Infinity;
-    
-    return width >= minWidth && width <= maxWidth;
-  }
-
-  // =========================================
-  // EVENT HANDLING METHODS
-  // =========================================
-
-  /**
-   * Add event listener with options
-   * @param {Element} element - Target element
-   * @param {string} event - Event type
-   * @param {Function} handler - Event handler
-   * @param {Object} options - Event options
-   */
-  static addEventListener(element, event, handler, options = {}) {
-    if (element && typeof handler === 'function') {
-      element.addEventListener(event, handler, options);
-    }
-  }
-
-  /**
-   * Remove event listener
-   * @param {Element} element - Target element
-   * @param {string} event - Event type
-   * @param {Function} handler - Event handler
-   */
-  static removeEventListener(element, event, handler) {
-    if (element && typeof handler === 'function') {
-      element.removeEventListener(event, handler);
-    }
-  }
-
-  /**
-   * Listen for orientation change
-   * @param {Function} callback - Callback function
-   * @returns {Function} Cleanup function
-   */
-  static onOrientationChange(callback) {
-    const handler = () => {
-      setTimeout(() => callback(this.getOrientation()), 100);
-    };
-    
-    window.addEventListener('orientationchange', handler);
-    window.addEventListener('resize', handler);
-    
-    return () => {
-      window.removeEventListener('orientationchange', handler);
-      window.removeEventListener('resize', handler);
-    };
-  }
-
-  /**
-   * Listen for viewport resize
-   * @param {Function} callback - Callback function
-   * @param {number} delay - Debounce delay
-   * @returns {Function} Cleanup function
-   */
-  static onViewportResize(callback, delay = 250) {
-    const debouncedCallback = this.debounce(callback, delay);
-    window.addEventListener('resize', debouncedCallback);
-    
-    return () => {
-      window.removeEventListener('resize', debouncedCallback);
-    };
   }
 }
-
-// =========================================
-// LEGACY OBJECT EXPORT (For compatibility)
-// =========================================
-
-export const DOMHelpersObject = {
-  // Basic DOM methods
-  findElement: DOMHelpers.findElement,
-  findElements: DOMHelpers.findElements,
-  addClass: DOMHelpers.addClass,
-  removeClass: DOMHelpers.removeClass,
-  toggleClass: DOMHelpers.toggleClass,
-  hasClass: DOMHelpers.hasClass,
-  createElement: DOMHelpers.createElement,
-  setHTML: DOMHelpers.setHTML,
-  getElementPosition: DOMHelpers.getElementPosition,
-  isInViewport: DOMHelpers.isInViewport,
-  scrollToElement: DOMHelpers.scrollToElement,
-  debounce: DOMHelpers.debounce,
-  throttle: DOMHelpers.throttle,
-  waitForElement: DOMHelpers.waitForElement,
-  loadScript: DOMHelpers.loadScript,
-  getElementData: DOMHelpers.getElementData,
-  setElementData: DOMHelpers.setElementData,
-  
-  // Device detection methods
-  isMobile: DOMHelpers.isMobile,
-  isTablet: DOMHelpers.isTablet,
-  isDesktop: DOMHelpers.isDesktop,
-  getDeviceType: DOMHelpers.getDeviceType,
-  hasTouch: DOMHelpers.hasTouch,
-  getMaxTouchPoints: DOMHelpers.getMaxTouchPoints,
-  supportsHover: DOMHelpers.supportsHover,
-  getOrientation: DOMHelpers.getOrientation,
-  isLandscape: DOMHelpers.isLandscape,
-  isPortrait: DOMHelpers.isPortrait,
-  
-  // Viewport methods
-  getViewportSize: DOMHelpers.getViewportSize,
-  getScreenSize: DOMHelpers.getScreenSize,
-  getCurrentBreakpoint: DOMHelpers.getCurrentBreakpoint,
-  matchesBreakpoint: DOMHelpers.matchesBreakpoint,
-  
-  // Event methods
-  addEventListener: DOMHelpers.addEventListener,
-  removeEventListener: DOMHelpers.removeEventListener,
-  onOrientationChange: DOMHelpers.onOrientationChange,
-  onViewportResize: DOMHelpers.onViewportResize
-};
-
-// Default export
-export default DOMHelpers;
