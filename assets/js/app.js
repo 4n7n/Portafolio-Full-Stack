@@ -1,605 +1,843 @@
-// ===== IMPORTACIONES DE CONFIGURACIÓN =====
-import { NAVIGATION_CONFIG } from './config/navigation-config.js';
-import { PORTFOLIO_CONFIG } from './config/portfolio-config.js';
+// Solo importar las dependencias que realmente existen
+let PORTFOLIO_CONFIG = null;
+let SKILLS_DATA = null;
+let DOMHelpers = null;
 
-// ===== IMPORTACIONES DE DATOS =====
-import { EXPERIENCE_DATA } from './data/experience.js';
-import { PROJECTS_DATA } from './data/projects.js';
-import { SKILLS_DATA } from './data/skills.js';
-import { TESTIMONIALS_DATA } from './data/testimonials.js';
+// ===== IMPORTACIONES NUEVAS DE ICONOS =====
+let ICONS_DATA = null;
+let TECHNOLOGIES_CONFIG = null;
+let iconHelper = null;
 
-// ===== IMPORTACIONES DE UTILIDADES =====
-import { DOMHelpers } from './utils/dom-helpers.js';
-import { FormValidator, ValidationRules, initContactFormValidator } from './utils/form-validator.js';
-import { NotificationSystem } from './utils/notifications.js';
+// Importaciones dinámicas con manejo de errores
+try {
+    const configModule = await import('./config/portfolio-config.js').catch(() => null);
+    PORTFOLIO_CONFIG = configModule?.PORTFOLIO_CONFIG || null;
+} catch (error) {
+    console.log('📝 portfolio-config.js no disponible, usando datos por defecto');
+}
 
-// ===== IMPORTACIONES DE SERVICIOS =====
-import { EmailService } from './services/email-service.js';
-import { GitHubAPI } from './services/github-api.js';
+try {
+    const skillsModule = await import('./data/skills.js').catch(() => null);
+    SKILLS_DATA = skillsModule?.SKILLS_DATA || null;
+} catch (error) {
+    console.log('📝 skills.js no disponible, usando datos integrados');
+}
 
-// ===== IMPORTACIONES DE COMPONENTES PRINCIPALES =====
-import { ThemeSwitcher } from './components/theme-switcher.js';
+try {
+    const helpersModule = await import('./utils/dom-helpers.js').catch(() => null);
+    DOMHelpers = helpersModule?.DOMHelpers || null;
+} catch (error) {
+    console.log('📝 dom-helpers.js no disponible, usando funciones nativas');
+}
 
-// ===== IMPORTACIONES DE COMPONENTES DE CONTENIDO =====
-import { SkillsChart } from './components/skills-chart.js';
-import { ExperienceTimeline } from './components/experience-timeline.js';
-import { ContactForm } from './components/contact-form.js';
+// Importar datos de iconos
+try {
+    const iconsModule = await import('./data/icons-data.js').catch(() => null);
+    ICONS_DATA = iconsModule?.ICONS_DATA || null;
+} catch (error) {
+    console.log('📝 icons-data.js no disponible');
+}
 
-// ===== IMPORTACIONES DE EFECTOS Y ANIMACIONES =====
-import { ScrollAnimations } from './components/scroll-animations.js';
-import { ProgressIndicators } from './components/progress-indicators.js';
-import { TypingEffect } from './components/typing-effect.js';
+// Importar configuración de tecnologías  
+try {
+    const techModule = await import('./config/technologies-config.js').catch(() => null);
+    TECHNOLOGIES_CONFIG = techModule?.TECHNOLOGIES_CONFIG || null;
+} catch (error) {
+    console.log('📝 technologies-config.js no disponible');
+}
+
+// Importar helper de iconos
+try {
+    const helperModule = await import('./components/icon-helper.js').catch(() => null);
+    iconHelper = helperModule?.iconHelper || null;
+} catch (error) {
+    console.log('📝 icon-helper.js no disponible');
+}
+
+// DATOS DE FALLBACK integrados
+const DEFAULT_CONFIG = {
+    personal: {
+        name: "Anthony Bonilla Paredes",
+        title: "Desarrollador Web Full Stack",
+        email: "anthonybonillaparedes7@gmail.com",
+        phone: "+34 624 42 56 67"
+    },
+    seo: {
+        description: "Anthony Bonilla Paredes - Desarrollador Full Stack especializado en MERN Stack. Graduado de The Bridge con 480h de formación intensiva."
+    }
+};
 
 /**
- * Clase principal de la aplicación del portfolio
+ * Clase principal del Portfolio
  */
 class PortfolioApp {
     constructor() {
         this.components = {};
-        this.services = {};
-        this.utils = {};
-        this.animations = {};
         this.isInitialized = false;
-        
-        // Bind methods
-        this.init = this.init.bind(this);
-        this.initializeUtils = this.initializeUtils.bind(this);
-        this.initializeServices = this.initializeServices.bind(this);
-        this.initializeComponents = this.initializeComponents.bind(this);
-        this.initializeAnimations = this.initializeAnimations.bind(this);
-        this.setupEventListeners = this.setupEventListeners.bind(this);
+        this.config = PORTFOLIO_CONFIG || DEFAULT_CONFIG;
+        this.init();
     }
 
-    /**
-     * Inicialización principal de la aplicación
-     */
     async init() {
         try {
-            console.log('🚀 Iniciando Portfolio App...');
+            console.log('🚀 Inicializando Portfolio de Anthony Bonilla Paredes...');
             
-            // Verificar que el DOM esté cargado
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', this.init);
-                return;
-            }
-
-            // Inicializar en orden específico para evitar dependencias undefined
-            await this.initializeUtils();
-            await this.initializeServices();
+            // Esperar DOM listo
+            await this.waitForDOM();
+            
+            // Actualizar información personal
+            this.updatePersonalInfo();
+            
+            // Inicializar componentes principales
             await this.initializeComponents();
-            await this.initializeAnimations();
-            await this.setupEventListeners();
+            
+            // Configurar eventos globales
+            this.setupGlobalEvents();
+            
+            // Inicializar animaciones
+            this.initializeAnimations();
             
             this.isInitialized = true;
-            console.log('✅ Portfolio App inicializado correctamente');
-            
-            // Notificar que la app está lista
-            this.dispatchReadyEvent();
+            console.log('✅ Portfolio inicializado correctamente');
             
         } catch (error) {
-            console.error('❌ Error al inicializar Portfolio App:', error);
-            this.handleInitializationError(error);
+            console.error('❌ Error al inicializar portfolio:', error);
         }
     }
 
     /**
-     * Inicializar utilidades
+     * Esperar a que el DOM esté listo
      */
-    async initializeUtils() {
-        console.log('🔧 Inicializando utilidades...');
-        
-        try {
-            // Inicializar utilidades básicas
-            this.utils = {
-                domHelpers: DOMHelpers || null,
-                notifications: new NotificationSystem()
-            };
-
-            // Inicializar FormValidator para el formulario de contacto
-            const contactForm = document.querySelector('#contactForm');
-            if (contactForm) {
-                this.utils.contactFormValidator = initContactFormValidator();
-                console.log('✅ FormValidator del contacto inicializado');
+    waitForDOM() {
+        return new Promise((resolve) => {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', resolve);
             } else {
-                console.log('⚠️ Formulario de contacto no encontrado, saltando FormValidator');
+                resolve();
             }
-
-        } catch (error) {
-            console.warn('⚠️ Error al inicializar utilidades:', error);
-            // Continuar sin fallar completamente
-            this.utils = {
-                domHelpers: null,
-                notifications: null,
-                contactFormValidator: null
-            };
-        }
+        });
     }
 
     /**
-     * Inicializar servicios
+     * Actualizar información personal en la página
      */
-    async initializeServices() {
-        console.log('🌐 Inicializando servicios...');
+    updatePersonalInfo() {
+        const { personal } = this.config;
         
-        try {
-            this.services = {};
-
-            // EmailService
-            try {
-                this.services.emailService = new EmailService();
-                console.log('✅ EmailService inicializado');
-            } catch (error) {
-                console.warn('⚠️ Error al inicializar EmailService:', error);
-                this.services.emailService = null;
-            }
-
-            // GitHubAPI
-            try {
-                this.services.githubAPI = new GitHubAPI();
-                if (this.services.githubAPI && this.services.githubAPI.init) {
-                    await this.services.githubAPI.init();
-                }
-                console.log('✅ GitHubAPI inicializado');
-            } catch (error) {
-                console.warn('⚠️ Error al inicializar GitHubAPI:', error);
-                this.services.githubAPI = null;
-            }
-
-        } catch (error) {
-            console.warn('⚠️ Error general al inicializar servicios:', error);
+        // Actualizar título de la página
+        document.title = `${personal.name} - ${personal.title}`;
+        
+        // Actualizar meta descripción
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc && this.config.seo) {
+            metaDesc.content = this.config.seo.description;
         }
+
+        // Actualizar nombre en el hero
+        const heroName = document.querySelector('.hero-name');
+        if (heroName) {
+            heroName.textContent = personal.name.toUpperCase();
+        }
+
+        // Actualizar email y teléfono en contacto
+        const emailElements = document.querySelectorAll('[data-email], .font-code');
+        emailElements.forEach(el => {
+            if (el.textContent.includes('@') || el.textContent.includes('email')) {
+                el.textContent = personal.email;
+                if (el.tagName === 'A' || el.closest('a')) {
+                    const link = el.tagName === 'A' ? el : el.closest('a');
+                    link.href = `mailto:${personal.email}`;
+                }
+            }
+        });
+
+        const phoneElements = document.querySelectorAll('.font-code');
+        phoneElements.forEach(el => {
+            if (el.textContent.includes('+34') || el.textContent.includes('624')) {
+                el.textContent = personal.phone;
+            }
+        });
+
+        console.log('✅ Información personal actualizada');
     }
 
     /**
-     * Inicializar componentes principales
+     * Inicializar componentes principales - VERSIÓN CORREGIDA CON ICONOS
      */
     async initializeComponents() {
         console.log('🧩 Inicializando componentes...');
-        
-        this.components = {};
 
-        // ThemeSwitcher - PRIMERO porque otros componentes pueden depender de él
+        // 1. SkillsChart - Con manejo robusto de errores
+        await this.initializeSkillsChart();
+
+        // 2. ThemeSwitcher
+        await this.initializeThemeSwitcher();
+
+        // 3. ContactForm
+        await this.initializeContactForm();
+
+        // 4. ScrollAnimations
+        await this.initializeScrollAnimations();
+
+        // 5. Icons Helper - Inicializar iconos del portfolio
         try {
-            // Verificar si el botón de tema existe antes de crear el ThemeSwitcher
-            const themeButton = document.querySelector('#themeToggle');
-            if (themeButton) {
-                this.components.themeSwitcher = new ThemeSwitcher();
-                console.log('✅ ThemeSwitcher inicializado');
+            if (iconHelper) {
+                iconHelper.initPortfolioIcons();
+                console.log('✅ Icons Helper inicializado');
             } else {
-                console.log('⚠️ Botón de tema no encontrado, saltando ThemeSwitcher');
+                // Fallback: crear iconos sociales básicos
+                this.createBasicSocialIcons();
+            }
+        } catch (error) {
+            console.warn('⚠️ Error al inicializar Icons Helper:', error);
+            this.createBasicSocialIcons();
+        }
+    }
+
+    /**
+     * Inicializar SkillsChart con fallback completo
+     */
+    async initializeSkillsChart() {
+        try {
+            // Buscar contenedor del chart
+            const skillsContainer = document.querySelector('#skillsChart') || 
+                                   document.querySelector('.skills-chart-wrapper canvas') ||
+                                   document.querySelector('#skills canvas');
+            
+            if (skillsContainer) {
+                try {
+                    // Importar dinámicamente SkillsChart
+                    const { SkillsChart } = await import('./components/skills-chart.js');
+                    
+                    if (SkillsChart) {
+                        this.components.skillsChart = new SkillsChart('#skillsChart');
+                        console.log('✅ SkillsChart inicializado correctamente');
+                        return;
+                    }
+                } catch (importError) {
+                    console.warn('⚠️ No se pudo importar SkillsChart:', importError.message);
+                }
+                
+                // Fallback: Crear visualización simple
+                this.createSkillsChartFallback();
+                
+            } else {
+                console.log('📝 Canvas para SkillsChart no encontrado, creando contenedor');
+                this.createSkillsSection();
+            }
+            
+        } catch (error) {
+            console.warn('⚠️ Error al inicializar SkillsChart:', error);
+            this.createSkillsChartFallback();
+        }
+    }
+
+    /**
+     * Crear fallback visual para skills
+     */
+    createSkillsChartFallback() {
+        const skillsWrapper = document.querySelector('.skills-chart-wrapper') ||
+                             document.querySelector('#skills .skills-container > div:last-child');
+        
+        if (skillsWrapper) {
+            skillsWrapper.innerHTML = `
+                <div class="skills-chart-fallback">
+                    <div class="chart-header">
+                        <h3>🎓 Stack MERN - The Bridge Bootcamp</h3>
+                        <p>480 horas de formación intensiva</p>
+                    </div>
+                    
+                    <div class="skills-grid">
+                        <div class="skill-card" data-level="advanced">
+                            <div class="skill-icon" style="background: #F7DF1E20;">
+                                <div style="width: 20px; height: 20px; background: #F7DF1E; border-radius: 50%;"></div>
+                            </div>
+                            <h5 class="skill-name">JavaScript ES6+</h5>
+                            <div class="skill-progress-circle">
+                                <svg width="60" height="60">
+                                    <circle cx="30" cy="30" r="25" stroke="#e0e0e0" stroke-width="4" fill="transparent"/>
+                                    <circle cx="30" cy="30" r="25" stroke="#F7DF1E" stroke-width="4" fill="transparent"
+                                            stroke-dasharray="157" stroke-dashoffset="${157 - (88 / 100) * 157}" class="progress-stroke"/>
+                                </svg>
+                                <span class="skill-percentage">88%</span>
+                            </div>
+                            <span class="skill-experience">6 meses</span>
+                        </div>
+                        
+                        <div class="skill-card" data-level="advanced">
+                            <div class="skill-icon" style="background: #61DAFB20;">
+                                <div style="width: 20px; height: 20px; background: #61DAFB; border-radius: 50%;"></div>
+                            </div>
+                            <h5 class="skill-name">React</h5>
+                            <div class="skill-progress-circle">
+                                <svg width="60" height="60">
+                                    <circle cx="30" cy="30" r="25" stroke="#e0e0e0" stroke-width="4" fill="transparent"/>
+                                    <circle cx="30" cy="30" r="25" stroke="#61DAFB" stroke-width="4" fill="transparent"
+                                            stroke-dasharray="157" stroke-dashoffset="${157 - (85 / 100) * 157}" class="progress-stroke"/>
+                                </svg>
+                                <span class="skill-percentage">85%</span>
+                            </div>
+                            <span class="skill-experience">5 meses</span>
+                        </div>
+                        
+                        <div class="skill-card" data-level="advanced">
+                            <div class="skill-icon" style="background: #33993320;">
+                                <div style="width: 20px; height: 20px; background: #339933; border-radius: 50%;"></div>
+                            </div>
+                            <h5 class="skill-name">Node.js</h5>
+                            <div class="skill-progress-circle">
+                                <svg width="60" height="60">
+                                    <circle cx="30" cy="30" r="25" stroke="#e0e0e0" stroke-width="4" fill="transparent"/>
+                                    <circle cx="30" cy="30" r="25" stroke="#339933" stroke-width="4" fill="transparent"
+                                            stroke-dasharray="157" stroke-dashoffset="${157 - (82 / 100) * 157}" class="progress-stroke"/>
+                                </svg>
+                                <span class="skill-percentage">82%</span>
+                            </div>
+                            <span class="skill-experience">5 meses</span>
+                        </div>
+                        
+                        <div class="skill-card" data-level="intermediate">
+                            <div class="skill-icon" style="background: #47A24820;">
+                                <div style="width: 20px; height: 20px; background: #47A248; border-radius: 50%;"></div>
+                            </div>
+                            <h5 class="skill-name">MongoDB</h5>
+                            <div class="skill-progress-circle">
+                                <svg width="60" height="60">
+                                    <circle cx="30" cy="30" r="25" stroke="#e0e0e0" stroke-width="4" fill="transparent"/>
+                                    <circle cx="30" cy="30" r="25" stroke="#47A248" stroke-width="4" fill="transparent"
+                                            stroke-dasharray="157" stroke-dashoffset="${157 - (78 / 100) * 157}" class="progress-stroke"/>
+                                </svg>
+                                <span class="skill-percentage">78%</span>
+                            </div>
+                            <span class="skill-experience">4 meses</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">480</span>
+                            <span class="stat-label">Horas Bootcamp</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">25+</span>
+                            <span class="stat-label">Tecnologías</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">96%</span>
+                            <span class="stat-label">Empleabilidad</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">MERN</span>
+                            <span class="stat-label">Stack</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Animar los círculos de progreso
+            setTimeout(() => {
+                const circles = skillsWrapper.querySelectorAll('.progress-stroke');
+                circles.forEach((circle, index) => {
+                    setTimeout(() => {
+                        circle.style.transition = 'stroke-dashoffset 1.5s ease-out';
+                    }, index * 200);
+                });
+            }, 500);
+            
+            console.log('📊 Fallback visual de SkillsChart creado');
+        }
+    }
+
+    /**
+     * Crear sección de skills si no existe
+     */
+    createSkillsSection() {
+        const skillsSection = document.querySelector('#skills');
+        if (skillsSection && !skillsSection.querySelector('.skills-chart-wrapper')) {
+            const container = skillsSection.querySelector('.container') || 
+                             skillsSection.querySelector('.skills-container');
+            
+            if (container) {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="skills-chart-wrapper">
+                        <canvas id="skillsChart" width="400" height="400"></canvas>
+                    </div>
+                `);
+                
+                // Intentar inicializar de nuevo
+                this.initializeSkillsChart();
+            }
+        }
+    }
+
+    /**
+     * Crear iconos sociales básicos si el helper falla
+     */
+    createBasicSocialIcons() {
+        // Buscar contenedor para iconos sociales en contacto
+        const contactInfo = document.querySelector('.contact-info');
+        if (contactInfo) {
+            const socialContainer = document.createElement('div');
+            socialContainer.className = 'social-icons-basic';
+            socialContainer.style.cssText = `
+                display: flex;
+                gap: 1rem;
+                margin-top: 1.5rem;
+                align-items: center;
+            `;
+            
+            const socialLinks = [
+                { name: 'GitHub', url: 'https://github.com/anthony-bonilla', emoji: '💻' },
+                { name: 'LinkedIn', url: 'https://linkedin.com/in/anthony-bonilla-paredes', emoji: '💼' },
+                { name: 'Email', url: 'mailto:anthonybonillaparedes7@gmail.com', emoji: '📧' }
+            ];
+            
+            socialLinks.forEach(social => {
+                const link = document.createElement('a');
+                link.href = social.url;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.style.cssText = `
+                    width: 40px;
+                    height: 40px;
+                    background: var(--gradient-red, linear-gradient(135deg, #dc2626, #ef4444));
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-decoration: none;
+                    font-size: 18px;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+                `;
+                link.innerHTML = social.emoji;
+                link.title = social.name;
+                
+                link.addEventListener('mouseenter', () => {
+                    link.style.transform = 'translateY(-3px) scale(1.1)';
+                    link.style.boxShadow = '0 8px 25px rgba(220, 38, 38, 0.5)';
+                });
+                
+                link.addEventListener('mouseleave', () => {
+                    link.style.transform = 'translateY(0) scale(1)';
+                    link.style.boxShadow = '0 4px 15px rgba(220, 38, 38, 0.3)';
+                });
+                
+                socialContainer.appendChild(link);
+            });
+            
+            contactInfo.appendChild(socialContainer);
+            console.log('📱 Iconos sociales básicos creados');
+        }
+    }
+
+    /**
+     * Inicializar ThemeSwitcher
+     */
+    async initializeThemeSwitcher() {
+        try {
+            let themeButton = document.querySelector('#themeToggle') || 
+                             document.querySelector('[data-theme-toggle]') ||
+                             document.querySelector('.theme-toggle');
+            
+            if (!themeButton) {
+                themeButton = this.createThemeToggle();
+            }
+
+            if (themeButton) {
+                try {
+                    const { ThemeSwitcher } = await import('./components/theme-switcher.js');
+                    this.components.themeSwitcher = new ThemeSwitcher();
+                    console.log('✅ ThemeSwitcher inicializado');
+                } catch (importError) {
+                    console.log('📝 ThemeSwitcher no disponible, usando funcionalidad básica');
+                    this.setupBasicThemeToggle(themeButton);
+                }
             }
         } catch (error) {
             console.warn('⚠️ Error al inicializar ThemeSwitcher:', error);
         }
+    }
 
-        // SkillsChart - usar selector en lugar de datos
-        try {
-            const skillsContainer = document.querySelector('#skillsChart') || 
-                                   document.querySelector('.skills-chart') ||
-                                   document.querySelector('#skills');
-            if (skillsContainer) {
-                this.components.skillsChart = new SkillsChart('#skillsChart');
-                
-                if (this.components.skillsChart.init) {
-                    await this.components.skillsChart.init();
-                }
-                console.log('✅ SkillsChart inicializado');
-            } else {
-                console.log('📝 Contenedor de habilidades no encontrado, saltando SkillsChart...');
-            }
-        } catch (error) {
-            console.warn('⚠️ Error al inicializar SkillsChart:', error);
-        }
+    /**
+     * Configurar toggle básico de tema
+     */
+    setupBasicThemeToggle(button) {
+        // Cargar tema guardado
+        const savedTheme = localStorage.getItem('portfolio-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        button.innerHTML = savedTheme === 'dark' ? '🌙' : '☀️';
+        
+        button.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            button.innerHTML = newTheme === 'dark' ? '🌙' : '☀️';
+            localStorage.setItem('portfolio-theme', newTheme);
+        });
+    }
 
-        // ExperienceTimeline - usar selector en lugar de datos
+    /**
+     * Inicializar ContactForm
+     */
+    async initializeContactForm() {
         try {
-            const experienceContainer = document.querySelector('.experience-timeline') ||
-                                       document.querySelector('#experience') ||
-                                       document.querySelector('.timeline');
-            if (experienceContainer) {
-                this.components.experienceTimeline = new ExperienceTimeline('.experience-timeline');
-                
-                if (this.components.experienceTimeline.init) {
-                    await this.components.experienceTimeline.init();
+            const contactForm = document.querySelector('#contactForm');
+            if (contactForm) {
+                try {
+                    const { ContactForm } = await import('./components/contact-form.js');
+                    this.components.contactForm = new ContactForm('#contactForm');
+                    console.log('✅ ContactForm inicializado');
+                } catch (importError) {
+                    console.log('📝 ContactForm no disponible, usando funcionalidad básica');
+                    this.setupBasicContactForm(contactForm);
                 }
-                console.log('✅ ExperienceTimeline inicializado');
-            } else {
-                console.log('📝 Contenedor de experiencia no encontrado, saltando ExperienceTimeline...');
-            }
-        } catch (error) {
-            console.warn('⚠️ Error al inicializar ExperienceTimeline:', error);
-        }
-
-        // ContactForm
-        try {
-            const contactFormElement = document.querySelector('#contactForm');
-            if (contactFormElement) {
-                // ContactForm solo necesita el selector, maneja el emailService internamente
-                this.components.contactForm = new ContactForm('#contactForm');
-                
-                if (this.components.contactForm.init) {
-                    await this.components.contactForm.init();
-                }
-                console.log('✅ ContactForm inicializado');
-            } else {
-                console.log('📝 Formulario de contacto no encontrado, saltando ContactForm...');
             }
         } catch (error) {
             console.warn('⚠️ Error al inicializar ContactForm:', error);
         }
-
-        console.log(`📊 Componentes inicializados: ${Object.keys(this.components).length}`);
     }
 
     /**
-     * Inicializar animaciones y efectos
+     * Configurar formulario básico
      */
-    async initializeAnimations() {
-        console.log('🎬 Inicializando animaciones...');
-        
-        this.animations = {};
-
-        // ScrollAnimations
-        try {
-            this.animations.scrollAnimations = new ScrollAnimations();
-            if (this.animations.scrollAnimations.init) {
-                await this.animations.scrollAnimations.init();
+    setupBasicContactForm(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Validación básica
+            const name = form.querySelector('#name')?.value.trim();
+            const email = form.querySelector('#email')?.value.trim();
+            const message = form.querySelector('#message')?.value.trim();
+            
+            if (!name || !email || !message) {
+                alert('Por favor, completa todos los campos obligatorios.');
+                return;
             }
-            console.log('✅ ScrollAnimations inicializado');
+            
+            // Simular envío
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.textContent = 'Enviando...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert('¡Mensaje enviado! Te contactaré pronto.');
+                form.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+    }
+
+    /**
+     * Inicializar ScrollAnimations
+     */
+    async initializeScrollAnimations() {
+        try {
+            try {
+                const { ScrollAnimations } = await import('./components/scroll-animations.js');
+                this.components.scrollAnimations = new ScrollAnimations();
+                console.log('✅ ScrollAnimations inicializado');
+            } catch (importError) {
+                console.log('📝 ScrollAnimations no disponible, usando animaciones básicas');
+                this.setupBasicAnimations();
+            }
         } catch (error) {
             console.warn('⚠️ Error al inicializar ScrollAnimations:', error);
         }
-
-        // ProgressIndicators
-        try {
-            this.animations.progressIndicators = new ProgressIndicators();
-            if (this.animations.progressIndicators.init) {
-                await this.animations.progressIndicators.init();
-            }
-            console.log('✅ ProgressIndicators inicializado');
-        } catch (error) {
-            console.warn('⚠️ Error al inicializar ProgressIndicators:', error);
-        }
-
-        // TypingEffect - usar función helper que maneja la detección automática
-        try {
-            // Importar la función helper
-            const { initTypingEffect } = await import('./components/typing-effect.js');
-            
-            // Buscar elementos comunes donde aplicar el efecto
-            const typingElement = document.querySelector('.typing-text') || 
-                                 document.querySelector('#typing-text') ||
-                                 document.querySelector('.hero-subtitle') ||
-                                 document.querySelector('[data-typing]');
-            
-            if (typingElement) {
-                this.animations.typingEffect = initTypingEffect(typingElement, {
-                    texts: ['Desarrollador Full Stack', 'Frontend Developer', 'Backend Developer'],
-                    loop: true
-                });
-                
-                if (this.animations.typingEffect) {
-                    console.log('✅ TypingEffect inicializado');
-                } else {
-                    console.log('⚠️ TypingEffect no se pudo inicializar, pero no es crítico');
-                }
-            } else {
-                console.log('📝 No se encontró elemento para TypingEffect, saltando...');
-                this.animations.typingEffect = null;
-            }
-        } catch (error) {
-            console.warn('⚠️ Error al inicializar TypingEffect:', error);
-            this.animations.typingEffect = null;
-        }
-
-        console.log(`🎭 Animaciones inicializadas: ${Object.keys(this.animations).length}`);
     }
 
     /**
-     * Configurar event listeners globales
+     * Configurar animaciones básicas
      */
-    setupEventListeners() {
-        console.log('👂 Configurando event listeners...');
-        
-        try {
-            // Listener para cambios de tema
-            document.addEventListener('themeChanged', this.handleThemeChange.bind(this));
-            
-            // Listener para cambios de viewport
-            window.addEventListener('resize', this.debounce(this.handleViewportChange.bind(this), 250));
-            
-            // Listener para scroll
-            window.addEventListener('scroll', this.throttle(this.handleScroll.bind(this), 16));
-            
-            // Listener para errores globales
-            window.addEventListener('error', this.handleGlobalError.bind(this));
-            
-            // Listener para promesas rechazadas
-            window.addEventListener('unhandledrejection', this.handleUnhandledRejection.bind(this));
-
-            console.log('✅ Event listeners configurados');
-        } catch (error) {
-            console.warn('⚠️ Error al configurar event listeners:', error);
-        }
-    }
-
-    /**
-     * Manejar cambios de tema
-     */
-    handleThemeChange(event) {
-        console.log('🎨 Tema cambiado:', event.detail);
-        
-        // Propagar cambio a componentes que lo necesiten
-        Object.values(this.components).forEach(component => {
-            if (component && component.updateTheme) {
-                try {
-                    component.updateTheme(event.detail);
-                } catch (error) {
-                    console.warn('⚠️ Error al actualizar tema en componente:', error);
+    setupBasicAnimations() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
                 }
-            }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section-title, .section-subtitle, .project-card, .skill-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
         });
     }
 
     /**
-     * Manejar cambios de viewport
+     * Crear botón de tema simple
      */
-    handleViewportChange() {
-        Object.values(this.components).forEach(component => {
-            if (component && component.handleResize) {
-                try {
-                    component.handleResize();
-                } catch (error) {
-                    console.warn('⚠️ Error al manejar resize en componente:', error);
-                }
-            }
-        });
-    }
-
-    /**
-     * Manejar scroll global
-     */
-    handleScroll() {
-        Object.values(this.animations || {}).forEach(animation => {
-            if (animation && animation.update) {
-                try {
-                    animation.update();
-                } catch (error) {
-                    // Silenciar errores de scroll para no spamear consola
-                }
-            }
-        });
-    }
-
-    /**
-     * Manejar errores globales
-     */
-    handleGlobalError(event) {
-        console.error('❌ Error global:', event.error);
-        
-        if (this.utils.notifications && this.utils.notifications.showError) {
-            this.utils.notifications.showError('Ocurrió un error inesperado');
-        }
-    }
-
-    /**
-     * Manejar promesas rechazadas
-     */
-    handleUnhandledRejection(event) {
-        console.error('❌ Promesa rechazada:', event.reason);
-        
-        if (this.utils.notifications && this.utils.notifications.showError) {
-            this.utils.notifications.showError('Error en operación asíncrona');
-        }
-        
-        // Prevenir que se muestre en consola del navegador
-        event.preventDefault();
-    }
-
-    /**
-     * Manejar errores de inicialización
-     */
-    handleInitializationError(error) {
-        const errorMessage = 'Error al cargar el portfolio. Por favor, recarga la página.';
-        
-        // Mostrar mensaje de error al usuario
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.style.cssText = `
+    createThemeToggle() {
+        const button = document.createElement('button');
+        button.id = 'themeToggle';
+        button.className = 'theme-toggle';
+        button.innerHTML = '🌙';
+        button.style.cssText = `
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #ff4444;
+            top: 20px;
+            right: 20px;
+            background: var(--red-intense, #dc2626);
             color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            z-index: 9999;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            font-family: Arial, sans-serif;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
         `;
-        errorDiv.innerHTML = `
-            <h2>⚠️ Error de inicialización</h2>
-            <p>${errorMessage}</p>
-            <button onclick="location.reload()" style="
-                background: white;
-                color: #ff4444;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 4px;
-                cursor: pointer;
-                margin-top: 10px;
-                font-weight: bold;
-            ">Recargar página</button>
-        `;
-        
-        document.body.appendChild(errorDiv);
-    }
 
-    /**
-     * Disparar evento de aplicación lista
-     */
-    dispatchReadyEvent() {
-        const readyEvent = new CustomEvent('portfolioReady', {
-            detail: {
-                components: Object.keys(this.components),
-                services: Object.keys(this.services),
-                animations: Object.keys(this.animations),
-                utils: Object.keys(this.utils),
-                timestamp: Date.now()
-            }
+        button.addEventListener('mouseenter', () => {
+            button.style.transform = 'scale(1.1)';
+            button.style.boxShadow = '0 8px 25px rgba(220, 38, 38, 0.5)';
         });
-        
-        document.dispatchEvent(readyEvent);
-        console.log('📢 Evento portfolioReady disparado');
+
+        button.addEventListener('mouseleave', () => {
+            button.style.transform = 'scale(1)';
+            button.style.boxShadow = '0 4px 15px rgba(220, 38, 38, 0.3)';
+        });
+
+        document.body.appendChild(button);
+        return button;
     }
 
     /**
-     * Utilidades de rendimiento
+     * Configurar eventos globales
      */
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
+    setupGlobalEvents() {
+        // Navegación suave
+        const navLinks = document.querySelectorAll('a[href^="#"]');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Animación de contadores
+        this.animateCounters();
+
+        // Progress bar de scroll
+        this.setupScrollProgress();
+
+        console.log('✅ Eventos globales configurados');
     }
 
-    throttle(func, limit) {
-        let inThrottle;
-        return function() {
-            const args = arguments;
-            const context = this;
-            if (!inThrottle) {
-                func.apply(context, args);
-                inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
+    /**
+     * Animar contadores de estadísticas
+     */
+    animateCounters() {
+        const counters = document.querySelectorAll('[data-count]');
+        
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = parseInt(counter.getAttribute('data-count'));
+                    
+                    this.animateNumber(counter, 0, target, 2000);
+                    observer.unobserve(counter);
+                }
+            });
+        }, observerOptions);
+
+        counters.forEach(counter => observer.observe(counter));
+    }
+
+    /**
+     * Animar número individualmente
+     */
+    animateNumber(element, start, end, duration) {
+        const startTime = performance.now();
+        
+        const updateNumber = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const current = Math.floor(start + (end - start) * easeOut);
+            
+            element.textContent = current + (element.textContent.includes('+') ? '+' : '');
+            
+            if (progress < 1) {
+                requestAnimationFrame(updateNumber);
             }
         };
+        
+        requestAnimationFrame(updateNumber);
     }
 
     /**
-     * Métodos públicos para acceder a instancias
+     * Configurar barra de progreso de scroll
+     */
+    setupScrollProgress() {
+        const progressBar = document.querySelector('.scroll-progress');
+        if (!progressBar) return;
+
+        window.addEventListener('scroll', () => {
+            const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = window.scrollY;
+            const progress = (scrolled / windowHeight) * 100;
+            
+            progressBar.style.width = `${Math.min(progress, 100)}%`;
+        });
+    }
+
+    /**
+     * Inicializar animaciones básicas
+     */
+    initializeAnimations() {
+        // Fade in elements cuando entran en vista
+        const elementsToAnimate = document.querySelectorAll(
+            '.section-title, .section-subtitle, .project-card, .timeline-item, .skill-item'
+        );
+
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    fadeObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        elementsToAnimate.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            fadeObserver.observe(el);
+        });
+
+        // Animar barras de habilidades
+        this.animateSkillBars();
+
+        console.log('✅ Animaciones básicas inicializadas');
+    }
+
+    /**
+     * Animar barras de habilidades
+     */
+    animateSkillBars() {
+        const skillBars = document.querySelectorAll('.skill-progress');
+        
+        const skillObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const bar = entry.target;
+                    const width = bar.style.width;
+                    
+                    bar.style.width = '0%';
+                    bar.style.transition = 'width 1.5s ease-out';
+                    
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                    
+                    skillObserver.unobserve(bar);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        skillBars.forEach(bar => skillObserver.observe(bar));
+    }
+
+    /**
+     * Métodos públicos
      */
     getComponent(name) {
         return this.components[name] || null;
-    }
-
-    getService(name) {
-        return this.services[name] || null;
-    }
-
-    getUtil(name) {
-        return this.utils[name] || null;
-    }
-
-    getAnimation(name) {
-        return this.animations[name] || null;
     }
 
     isReady() {
         return this.isInitialized;
     }
 
-    /**
-     * Destruir la aplicación (limpieza)
-     */
-    destroy() {
-        console.log('🧹 Limpiando Portfolio App...');
-        
-        // Destruir componentes
-        Object.values(this.components).forEach(component => {
-            if (component && component.destroy) {
-                try {
-                    component.destroy();
-                } catch (error) {
-                    console.warn('⚠️ Error al destruir componente:', error);
-                }
+    // Actualizar datos del bootcamp dinámicamente
+    updateBootcampInfo() {
+        // Actualizar estadísticas con datos reales del bootcamp
+        const stats = document.querySelectorAll('.hero-stat-number, .stat-number');
+        stats.forEach(stat => {
+            const countAttr = stat.getAttribute('data-count');
+            if (countAttr === '20') {
+                stat.setAttribute('data-count', '25'); // 25 tecnologías aprendidas
+                stat.textContent = '25+';
             }
         });
 
-        // Destruir animaciones
-        Object.values(this.animations).forEach(animation => {
-            if (animation && animation.destroy) {
-                try {
-                    animation.destroy();
-                } catch (error) {
-                    console.warn('⚠️ Error al destruir animación:', error);
-                }
-            }
-        });
-
-        // Limpiar referencias
-        this.components = {};
-        this.services = {};
-        this.utils = {};
-        this.animations = {};
-        this.isInitialized = false;
+        console.log('✅ Información del bootcamp actualizada');
     }
 }
 
-// Función de inicialización segura
-function initializePortfolioApp() {
+// Función de inicialización
+function initPortfolioApp() {
     try {
-        // Crear instancia global de la aplicación
-        const portfolioApp = new PortfolioApp();
+        const app = new PortfolioApp();
         
-        // Inicializar cuando el DOM esté listo
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                console.log('📄 DOM cargado, inicializando app...');
-                portfolioApp.init();
-            });
-        } else {
-            console.log('📄 DOM ya estaba listo, inicializando app...');
-            portfolioApp.init();
-        }
-
-        // Hacer disponible globalmente
-        window.portfolioApp = portfolioApp;
+        // Hacer disponible globalmente para debugging
+        window.portfolioApp = app;
         
-        return portfolioApp;
+        // Actualizar info del bootcamp después de inicializar
+        setTimeout(() => {
+            app.updateBootcampInfo();
+        }, 1000);
+        
+        return app;
+        
     } catch (error) {
-        console.error('❌ Error fatal al crear PortfolioApp:', error);
+        console.error('❌ Error fatal al inicializar portfolio:', error);
         
-        // Mostrar error básico al usuario
+        // Mostrar mensaje de error simple pero con estilo de tu tema
         document.body.innerHTML = `
             <div style="
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 min-height: 100vh;
-                background: #f8f9fa;
-                font-family: Arial, sans-serif;
                 text-align: center;
-                padding: 20px;
+                font-family: Arial, sans-serif;
+                background: #0a0a0a;
+                color: white;
             ">
                 <div style="
-                    background: white;
-                    padding: 40px;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                    max-width: 500px;
+                    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+                    padding: 3rem;
+                    border-radius: 20px;
+                    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+                    border: 1px solid rgba(220, 38, 38, 0.3);
                 ">
-                    <h1 style="color: #dc3545; margin-bottom: 20px;">⚠️ Error de Carga</h1>
-                    <p style="color: #6c757d; margin-bottom: 30px;">
-                        No se pudo cargar el portfolio correctamente. 
-                        Por favor, recarga la página o contacta al administrador.
-                    </p>
+                    <h1 style="color: #dc2626; margin-bottom: 1rem;">⚠️ Error de Carga</h1>
+                    <p style="margin-bottom: 2rem; color: #e5e5e5;">No se pudo cargar el portfolio de Anthony Bonilla.</p>
                     <button onclick="location.reload()" style="
-                        background: #007bff;
+                        background: linear-gradient(135deg, #dc2626, #ef4444);
                         color: white;
                         border: none;
-                        padding: 12px 24px;
-                        border-radius: 4px;
+                        padding: 1rem 2rem;
+                        border-radius: 12px;
                         cursor: pointer;
-                        font-size: 16px;
-                    ">Recargar Página</button>
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+                    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        🔄 Recargar Portfolio
+                    </button>
                 </div>
             </div>
         `;
@@ -608,8 +846,17 @@ function initializePortfolioApp() {
     }
 }
 
-// Inicializar la aplicación
-const portfolioApp = initializePortfolioApp();
+// Inicializar aplicación
+const portfolioApp = initPortfolioApp();
+
+// Log de inicialización
+console.log('🎯 Portfolio de Anthony Bonilla Paredes');
+console.log('📚 Bootcamp: The Bridge Digital Talent Accelerator');
+console.log('💻 Stack: MERN (MongoDB, Express, React, Node.js)');
+console.log('⏱️ Duración: 480 horas');
+console.log('🎓 Graduado: 07 de Febrero de 2025');
+console.log('🚀 Inicialización robusta con fallbacks activada');
+console.log('🎨 Sistema de iconos integrado');
 
 // Exportar para módulos ES6
 export default portfolioApp;

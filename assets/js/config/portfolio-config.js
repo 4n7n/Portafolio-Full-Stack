@@ -4,8 +4,8 @@ export const PORTFOLIO_CONFIG = {
     name: "Anthony Bonilla Paredes",
     title: "Desarrollador Web Full Stack",
     subtitle: "Especialista en Stack MERN",
-    email: "anthony.bonilla@email.com",
-    phone: "+34 XXX XXX XXX",
+    email: "anthonybonillaparedes7@gmail.com",  // ✅ Email real del HTML
+    phone: "+34 624 42 56 67",                  // ✅ Teléfono real del HTML
     location: "España",
     linkedIn: "https://linkedin.com/in/anthony-bonilla-paredes",
     github: "https://github.com/anthony-bonilla",
@@ -96,37 +96,37 @@ export const PORTFOLIO_CONFIG = {
       }
     },
 
-    // Íconos de interfaz
+    // Íconos de interfaz - RUTAS CORREGIDAS ✅
     icons: {
       social: {
         basePath: "./assets/images/icons/social/",
         icons: {
-          github: "github.svg",
-          linkedin: "linkedin.svg",
-          twitter: "twitter.svg",
-          instagram: "instagram.svg",
-          email: "email.svg"
+          github: "github.svg",        // ✅ correcto
+          linkedin: "linkedin.svg",    // ✅ correcto
+          twitter: "x.svg",            // ✅ CORREGIDO (era twitter.svg)
+          instagram: "instagram.svg",  // ✅ correcto
+          email: "gmail.svg"           // ✅ CORREGIDO (era email.svg)
         }
       },
       contact: {
         basePath: "./assets/images/icons/contact/",
         icons: {
-          phone: "phone.svg",
-          location: "location.svg",
-          calendar: "calendar.svg",
-          message: "message.svg"
+          phone: "phone.svg",          // ✅ correcto
+          location: "placeholder.svg", // ✅ CORREGIDO (era location.svg)
+          calendar: "calendar.svg",    // ✅ correcto
+          message: "chat.svg"          // ✅ CORREGIDO (era message.svg)
         }
       },
       ui: {
         basePath: "./assets/images/icons/ui/",
         icons: {
-          menu: "menu.svg",
-          close: "close.svg",
-          arrowDown: "arrow-down.svg",
-          arrowRight: "arrow-right.svg",
-          download: "download.svg",
-          externalLink: "external-link.svg",
-          themeToggle: "theme-toggle.svg"
+          menu: "menu.svg",            // ✅ correcto
+          close: "close-x.svg",        // ✅ CORREGIDO (era close.svg)
+          arrowDown: "bottom-arrow.svg", // ✅ CORREGIDO (era arrow-down.svg)
+          arrowRight: "right-arrow.svg", // ✅ CORREGIDO (era arrow-right.svg)
+          download: "download-button.svg", // ✅ CORREGIDO (era download.svg)
+          externalLink: "external-link.svg", // ✅ correcto
+          themeToggle: "dark-mode.svg" // ✅ CORREGIDO (era theme-toggle.svg)
         }
       }
     },
@@ -141,77 +141,77 @@ export const PORTFOLIO_CONFIG = {
     }
   },
 
-  // Configuración de redes sociales
+  // Configuración de redes sociales - RUTAS CORREGIDAS ✅
   social: {
     github: {
       url: "https://github.com/anthony-bonilla",
       username: "@anthony-bonilla",
-      icon: "./assets/images/icons/social/github.svg"
+      icon: "./assets/images/icons/social/github.svg"  // ✅ correcto
     },
     linkedin: {
       url: "https://linkedin.com/in/anthony-bonilla-paredes", 
       username: "Anthony Bonilla",
-      icon: "./assets/images/icons/social/linkedin.svg"
+      icon: "./assets/images/icons/social/linkedin.svg"  // ✅ correcto
     },
     twitter: {
       url: "https://twitter.com/anthony_bonilla",
       username: "@anthony_bonilla",
-      icon: "./assets/images/icons/social/twitter.svg"
+      icon: "./assets/images/icons/social/x.svg"  // ✅ CORREGIDO
     },
     instagram: {
       url: "https://instagram.com/anthony_bonilla",
       username: "@anthony_bonilla", 
-      icon: "./assets/images/icons/social/instagram.svg"
+      icon: "./assets/images/icons/social/instagram.svg"  // ✅ correcto
     }
   },
 
-  // Información de contacto
+  // Información de contacto - RUTAS CORREGIDAS ✅
   contact: {
     info: [
       {
         type: "email",
         label: "Email",
-        value: "anthony.bonilla@email.com",
-        icon: "./assets/images/icons/contact/message.svg",
-        href: "mailto:anthony.bonilla@email.com"
+        value: "anthonybonillaparedes7@gmail.com",  // ✅ Email real
+        icon: "./assets/images/icons/contact/chat.svg",  // ✅ CORREGIDO
+        href: "mailto:anthonybonillaparedes7@gmail.com"
       },
       {
         type: "phone",
         label: "Teléfono", 
-        value: "+34 XXX XXX XXX",
-        icon: "./assets/images/icons/contact/phone.svg",
-        href: "tel:+34XXXXXXXXX"
+        value: "+34 624 42 56 67",  // ✅ Teléfono real
+        icon: "./assets/images/icons/contact/phone.svg",  // ✅ correcto
+        href: "tel:+34624425667"
       },
       {
         type: "location",
         label: "Ubicación",
         value: "España",
-        icon: "./assets/images/icons/contact/location.svg"
+        icon: "./assets/images/icons/contact/placeholder.svg"  // ✅ CORREGIDO
       },
       {
         type: "availability",
         label: "Disponibilidad",
         value: "Disponible para nuevas oportunidades",
-        icon: "./assets/images/icons/contact/calendar.svg"
+        icon: "./assets/images/icons/contact/calendar.svg"  // ✅ correcto
       }
     ],
     
-    // Documentos descargables
+    // Documentos descargables - RUTAS CORREGIDAS ✅
     documents: [
       {
         name: "CV Español",
         file: "./assets/documents/cv-es.pdf",
-        icon: "./assets/images/icons/ui/download.svg"
+        icon: "./assets/images/icons/ui/download-button.svg"  // ✅ CORREGIDO
       },
       {
         name: "CV English",
         file: "./assets/documents/cv-en.pdf", 
-        icon: "./assets/images/icons/ui/download.svg"
+        icon: "./assets/images/icons/ui/download-button.svg"  // ✅ CORREGIDO
       },
       {
         name: "Certificado The Bridge",
         file: "./assets/documents/Anthony Bonillla certificado_desarrollo_web_full_stack_bbk.pdf",
-        icon: "./assets/images/icons/ui/download.svg"
+        icon: "./assets/images/icons/ui/download-button.svg"  // ✅ CORREGIDO
       }
     ]
   },
