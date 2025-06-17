@@ -162,7 +162,7 @@ class PortfolioApp {
     }
 
     /**
-     * Inicializar componentes principales - VERSIÓN CORREGIDA CON ICONOS
+     * Inicializar componentes principales - SIN TEMAS NI ICONOS FLOTANTES
      */
     async initializeComponents() {
         console.log('🧩 Inicializando componentes...');
@@ -170,28 +170,14 @@ class PortfolioApp {
         // 1. SkillsChart - Con manejo robusto de errores
         await this.initializeSkillsChart();
 
-        // 2. ThemeSwitcher
-        await this.initializeThemeSwitcher();
-
-        // 3. ContactForm
+        // 2. ContactForm
         await this.initializeContactForm();
 
-        // 4. ScrollAnimations
+        // 3. ScrollAnimations
         await this.initializeScrollAnimations();
 
-        // 5. Icons Helper - Inicializar iconos del portfolio
-        try {
-            if (iconHelper) {
-                iconHelper.initPortfolioIcons();
-                console.log('✅ Icons Helper inicializado');
-            } else {
-                // Fallback: crear iconos sociales básicos
-                this.createBasicSocialIcons();
-            }
-        } catch (error) {
-            console.warn('⚠️ Error al inicializar Icons Helper:', error);
-            this.createBasicSocialIcons();
-        }
+        // ELIMINADO: ThemeSwitcher y IconHelper
+        console.log('✅ Componentes principales inicializados (sin botones flotantes)');
     }
 
     /**
@@ -371,113 +357,6 @@ class PortfolioApp {
     }
 
     /**
-     * Crear iconos sociales básicos si el helper falla
-     */
-    createBasicSocialIcons() {
-        // Buscar contenedor para iconos sociales en contacto
-        const contactInfo = document.querySelector('.contact-info');
-        if (contactInfo) {
-            const socialContainer = document.createElement('div');
-            socialContainer.className = 'social-icons-basic';
-            socialContainer.style.cssText = `
-                display: flex;
-                gap: 1rem;
-                margin-top: 1.5rem;
-                align-items: center;
-            `;
-            
-            const socialLinks = [
-                { name: 'GitHub', url: 'https://github.com/anthony-bonilla', emoji: '💻' },
-                { name: 'LinkedIn', url: 'https://linkedin.com/in/anthony-bonilla-paredes', emoji: '💼' },
-                { name: 'Email', url: 'mailto:anthonybonillaparedes7@gmail.com', emoji: '📧' }
-            ];
-            
-            socialLinks.forEach(social => {
-                const link = document.createElement('a');
-                link.href = social.url;
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-                link.style.cssText = `
-                    width: 40px;
-                    height: 40px;
-                    background: var(--gradient-red, linear-gradient(135deg, #dc2626, #ef4444));
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    text-decoration: none;
-                    font-size: 18px;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
-                `;
-                link.innerHTML = social.emoji;
-                link.title = social.name;
-                
-                link.addEventListener('mouseenter', () => {
-                    link.style.transform = 'translateY(-3px) scale(1.1)';
-                    link.style.boxShadow = '0 8px 25px rgba(220, 38, 38, 0.5)';
-                });
-                
-                link.addEventListener('mouseleave', () => {
-                    link.style.transform = 'translateY(0) scale(1)';
-                    link.style.boxShadow = '0 4px 15px rgba(220, 38, 38, 0.3)';
-                });
-                
-                socialContainer.appendChild(link);
-            });
-            
-            contactInfo.appendChild(socialContainer);
-            console.log('📱 Iconos sociales básicos creados');
-        }
-    }
-
-    /**
-     * Inicializar ThemeSwitcher
-     */
-    async initializeThemeSwitcher() {
-        try {
-            let themeButton = document.querySelector('#themeToggle') || 
-                             document.querySelector('[data-theme-toggle]') ||
-                             document.querySelector('.theme-toggle');
-            
-            if (!themeButton) {
-                themeButton = this.createThemeToggle();
-            }
-
-            if (themeButton) {
-                try {
-                    const { ThemeSwitcher } = await import('./components/theme-switcher.js');
-                    this.components.themeSwitcher = new ThemeSwitcher();
-                    console.log('✅ ThemeSwitcher inicializado');
-                } catch (importError) {
-                    console.log('📝 ThemeSwitcher no disponible, usando funcionalidad básica');
-                    this.setupBasicThemeToggle(themeButton);
-                }
-            }
-        } catch (error) {
-            console.warn('⚠️ Error al inicializar ThemeSwitcher:', error);
-        }
-    }
-
-    /**
-     * Configurar toggle básico de tema
-     */
-    setupBasicThemeToggle(button) {
-        // Cargar tema guardado
-        const savedTheme = localStorage.getItem('portfolio-theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        button.innerHTML = savedTheme === 'dark' ? '🌙' : '☀️';
-        
-        button.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            button.innerHTML = newTheme === 'dark' ? '🌙' : '☀️';
-            localStorage.setItem('portfolio-theme', newTheme);
-        });
-    }
-
-    /**
      * Inicializar ContactForm
      */
     async initializeContactForm() {
@@ -568,45 +447,6 @@ class PortfolioApp {
             el.style.transition = 'all 0.6s ease-out';
             observer.observe(el);
         });
-    }
-
-    /**
-     * Crear botón de tema simple
-     */
-    createThemeToggle() {
-        const button = document.createElement('button');
-        button.id = 'themeToggle';
-        button.className = 'theme-toggle';
-        button.innerHTML = '🌙';
-        button.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--red-intense, #dc2626);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            font-size: 20px;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
-        `;
-
-        button.addEventListener('mouseenter', () => {
-            button.style.transform = 'scale(1.1)';
-            button.style.boxShadow = '0 8px 25px rgba(220, 38, 38, 0.5)';
-        });
-
-        button.addEventListener('mouseleave', () => {
-            button.style.transform = 'scale(1)';
-            button.style.boxShadow = '0 4px 15px rgba(220, 38, 38, 0.3)';
-        });
-
-        document.body.appendChild(button);
-        return button;
     }
 
     /**
@@ -855,8 +695,7 @@ console.log('📚 Bootcamp: The Bridge Digital Talent Accelerator');
 console.log('💻 Stack: MERN (MongoDB, Express, React, Node.js)');
 console.log('⏱️ Duración: 480 horas');
 console.log('🎓 Graduado: 07 de Febrero de 2025');
-console.log('🚀 Inicialización robusta con fallbacks activada');
-console.log('🎨 Sistema de iconos integrado');
+console.log('🚀 Inicialización limpia sin botones flotantes');
 
 // Exportar para módulos ES6
 export default portfolioApp;
