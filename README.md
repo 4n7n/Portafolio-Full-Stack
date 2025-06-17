@@ -57,198 +57,43 @@ Mobile First: Diseño responsivo desde móvil
 Progressive Enhancement: Mejora progresiva de funcionalidades
 
 📁 Estructura del Proyecto
-C:.
-│   .gitignore
-│   CHANGELOG.md
-│   index.html
-│   README.md
-│   
-└───assets
-    ├───components
-    │       about-us.html
-    │       contact-info.html
-    │       experience-work.html
-    │       project-card.html
-    │       skill-bar.html
-    │       
-    ├───css
-    │   │   main.css
-    │   │   
-    │   ├───components
-    │   │       about.css
-    │   │       contact.css
-    │   │       experience.css
-    │   │       hero.css
-    │   │       icons.css
-    │   │       modal.css
-    │   │       projects.css
-    │   │       scroll-animations.css
-    │   │       skills.css
-    │   │       tech-showcase.css
-    │   │
-    │   └───utils
-    │           animations.css
-    │           fonts.css
-    │           reset.css
-    │           responsive.css
-    │           themes.css
-    │           variables.css
+
+portfolio/
+├── index.html                 # Página principal
+├── README.md                  # Documentación del proyecto
+├── CHANGELOG.md              # Registro de cambios
+├── .gitignore                # Archivos ignorados por Git
+│
+└── assets/
+    ├── components/           # Componentes HTML reutilizables
+    │   ├── about-us.html
+    │   ├── contact-info.html
+    │   ├── experience-work.html
+    │   ├── project-card.html
+    │   └── skill-bar.html
     │
-    ├───docs
-    │       Feature-1--foundation-setup.md
-    │       Feature-10--'''-'''.md
-    │       Feature-2--navigation-system.md
-    │       Feature-3--hero-about-sections.md
-    │       Feature-4--skills-display.md
-    │       Feature-5--projects-gallery-scalable.md
-    │       Feature-6--contact-final-polish.md
-    │       Feature-7--theme-system-advanced.md
-    │       Feature-8--scroll-animations.md
-    │       Feature-9--responsive-optimization.md
+    ├── css/                  # Hojas de estilo
+    │   ├── main.css         # Estilos principales
+    │   ├── components/      # Estilos por componente
+    │   └── utils/           # Utilidades CSS
     │
-    ├───fonts
-    │   ├───FiraCode
-    │   │       FiraCode-Bold.ttf
-    │   │       FiraCode-Medium.ttf
-    │   │       FiraCode-Regular.ttf
-    │   │
-    │   ├───Inter
-    │   │       Inter-Bold.ttf
-    │   │       Inter-Medium.ttf
-    │   │       Inter-Regular.ttf
-    │   │
-    │   ├───JetBrainsMono
-    │   │       JetBrainsMono-Bold.ttf
-    │   │       JetBrainsMonoNL-Regular.ttf
-    │   │
-    │   ├───Roboto
-    │   │       Roboto_Condensed-Medium.ttf
-    │   │       Roboto_Condensed-Regular.ttf
-    │   │       Roboto_SemiCondensed-Bold.ttf
-    │   │
-    │   └───SquareOne
-    │           Square One Bold Italic.ttf
-    │           Square One Bold.ttf
-    │           Square One Italic.ttf
-    │           Square One.ttf
+    ├── js/                   # JavaScript
+    │   ├── app.js           # Aplicación principal
+    │   ├── components/      # Componentes JS
+    │   ├── config/          # Configuraciones
+    │   ├── data/            # Datos de la aplicación
+    │   ├── services/        # Servicios y APIs
+    │   └── utils/           # Utilidades JS
     │
-    ├───images
-    │   ├───certificates
-    │   │       Anthony-Bonillla-certificado_desarrollo_web_full_stack_bbk.jpg
-    │   │       The_Bridge.svg
-    │   │
-    │   ├───documents
-    │   │       Anthony Bonillla certificado_desarrollo_web_full_stack_bbk.pdf
-    │   │
-    │   ├───icons
-    │   │   ├───contact
-    │   │   │       calendar.svg
-    │   │   │       chat.svg
-    │   │   │       phone.svg
-    │   │   │       placeholder.svg
-    │   │   │
-    │   │   ├───social
-    │   │   │       github.svg
-    │   │   │       gmail.svg
-    │   │   │       instagram.svg
-    │   │   │       linkedin.svg
-    │   │   │       x.svg
-    │   │   │
-    │   │   └───ui
-    │   │           bottom-arrow.svg
-    │   │           close-x.svg
-    │   │           dark-mode.svg
-    │   │           download-button.svg
-    │   │           external-link.svg
-    │   │           menu.svg
-    │   │           right-arrow.svg
-    │   │
-    │   ├───institutions
-    │   │       BBK.svg
-    │   │       The_Bridge.svg
-    │   │
-    │   ├───profile
-    │   ├───projects
-    │   └───technologies
-    │       ├───backend
-    │       │       bcrypt.svg
-    │       │       express.svg
-    │       │       jsonwebtokens.svg
-    │       │       nodedotjs.svg
-    │       │       nodemon.svg
-    │       │       npm.svg
-    │       │
-    │       ├───databases
-    │       │       mongodb.svg
-    │       │       mysql.svg
-    │       │       sequelize.svg
-    │       │
-    │       ├───devops
-    │       │       docker.svg
-    │       │       firebase.svg
-    │       │       heroku.svg
-    │       │       jenkins.svg
-    │       │       kubernetes.svg
-    │       │
-    │       ├───frontend
-    │       │       babel.svg
-    │       │       bootstrap.svg
-    │       │       chartdotjs.svg
-    │       │       css.svg
-    │       │       d3.svg
-    │       │       html5.svg
-    │       │       javascript.svg
-    │       │       react.svg
-    │       │       reactrouter.svg
-    │       │       sass.svg
-    │       │       webpack.svg
-    │       │
-    │       └───tools
-    │               git.svg
-    │               github.svg
-    │               gnubash.svg
-    │               jest.svg
-    │               postman.svg
-    │               ssh.svg
-    │               swagger.svg
-    │               virtualbox.svg
-    │               vscode.svg
+    ├── images/              # Recursos gráficos
+    │   ├── certificates/    # Certificados y logros
+    │   ├── icons/          # Iconografía
+    │   ├── profile/        # Fotos de perfil
+    │   ├── projects/       # Imágenes de proyectos
+    │   └── technologies/   # Logos de tecnologías
     │
-    └───js
-        │   app.js
-        │
-        ├───components
-        │       contact-form.js
-        │       experience-timeline.js
-        │       icon-helper.js
-        │       progress-indicators.js
-        │       scroll-animations.js
-        │       skills-chart.js
-        │       tech-showcase.js
-        │       theme-switcher.js
-        │       typing-effect.js
-        │
-        ├───config
-        │       navigation-config.js
-        │       portfolio-config.js
-        │       technologies-config.js
-        │
-        ├───data
-        │       experience.js
-        │       icons-data.js
-        │       projects.js
-        │       skills.js
-        │       testimonials.js
-        │
-        ├───services
-        │       contact-data.js
-        │       email-service.js
-        │       github-api.js
-        │
-        └───utils
-                dom-helpers.js
-                form-validator.js
-                notifications.js
+    ├── fonts/              # Fuentes tipográficas
+    └── docs/               # Documentación técnica
 
 🚀 Instalación y Configuración
 Prerrequisitos
@@ -298,10 +143,10 @@ Este proyecto está bajo la Licencia MIT. Ver LICENSE para más detalles.
 📞 Contacto
 Anthony Bonilla
 
-📧 Email: tu-email@ejemplo.com
-💼 LinkedIn: tu-linkedin
-🐱 GitHub: tu-github
-🌐 Portfolio: tu-portfolio.com
+📧 Email: anthonybonillaparedes7@gmail.com
+💼 LinkedIn: https://www.linkedin.com/in/anthony-bonilla-paredes-b31090333/
+🐱 GitHub: [tu-github](https://github.com/4n7n)
+🌐 Portfolio: [tu-portfolio.com](https://portafoliofullstack.netlify.app/)
 
 
 🙏 Agradecimientos
@@ -314,3 +159,4 @@ Fuentes tipográficas de Google Fonts
 
 ![alt text](_92d2d4b2-5d0f-4ed8-b1e9-4be65b9124c6.jpeg)
 
+¿Te gusta este proyecto? ⭐ ¡Dale una estrella en GitHub!
