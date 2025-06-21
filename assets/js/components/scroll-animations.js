@@ -1,4 +1,3 @@
-
 import { DOMHelpers } from '../utils/dom-helpers.js';
 
 /**
@@ -22,6 +21,8 @@ export class ScrollAnimations {
     this.progressBars = [];
     this.revealElements = [];
     this.isInitialized = false;
+    this.animationFrameId = null;
+    this.scrollHandler = null;
 
     this.init();
   }
@@ -77,7 +78,7 @@ export class ScrollAnimations {
    */
   prepareElement(element) {
     const animationType = element.dataset.animate;
-    const delay = element.dataset.delay || 0;
+    const delay = parseInt(element.dataset.delay || 0);
     
     // Aplicar estado inicial según el tipo de animación
     switch (animationType) {
@@ -120,10 +121,13 @@ export class ScrollAnimations {
       case 'slideRight':
         element.style.transform = 'translateX(-100%)';
         break;
+      default:
+        console.warn(`Tipo de animación desconocido: ${animationType}`);
+        return;
     }
 
     // Configurar transición
-    const duration = element.dataset.duration || 600;
+    const duration = parseInt(element.dataset.duration || 600);
     const easing = element.dataset.easing || 'cubic-bezier(0.25, 0.46, 0.45, 0.94)';
     
     element.style.transition = `all ${duration}ms ${easing}`;
@@ -131,6 +135,9 @@ export class ScrollAnimations {
     if (delay > 0) {
       element.style.transitionDelay = `${delay}ms`;
     }
+
+    // Agregar will-change para mejor rendimiento
+    element.style.willChange = 'transform, opacity';
   }
 
   /**
@@ -161,15 +168,19 @@ export class ScrollAnimations {
 
     element.classList.add('animated');
 
-    // Callback opcional cuando termina la animación
-    const onComplete = element.dataset.onComplete;
-    if (onComplete && window[onComplete]) {
-      const duration = parseInt(element.dataset.duration || 600);
-      const delay = parseInt(element.dataset.delay || 0);
-      setTimeout(() => {
+    // Limpiar will-change después de la animación
+    const duration = parseInt(element.dataset.duration || 600);
+    const delay = parseInt(element.dataset.delay || 0);
+    
+    setTimeout(() => {
+      element.style.willChange = 'auto';
+      
+      // Callback opcional cuando termina la animación
+      const onComplete = element.dataset.onComplete;
+      if (onComplete && typeof window[onComplete] === 'function') {
         window[onComplete](element);
-      }, duration + delay);
-    }
+      }
+    }, duration + delay);
   }
 
   /**
@@ -198,12 +209,13 @@ export class ScrollAnimations {
       this.parallaxElements.forEach(element => {
         const rect = element.getBoundingClientRect();
         const elementTop = rect.top + scrollTop;
-        const elementHeight = rect.height;
         
         // Solo procesar elementos visibles o cerca del viewport
-        if (rect.bottom >= 0 && rect.top <= windowHeight) {
+        if (rect.bottom >= -100 && rect.top <= windowHeight + 100) {
           const speed = parseFloat(element.dataset.parallax) || 0.5;
-          const yPos = -(scrollTop - elementTop) * speed;
+          // Limitar el valor de speed para evitar movimientos extremos
+          const clampedSpeed = Math.max(-2, Math.min(2, speed));
+          const yPos = -(scrollTop - elementTop) * clampedSpeed;
           
           element.style.transform = `translate3d(0, ${yPos}px, 0)`;
         }
@@ -212,14 +224,14 @@ export class ScrollAnimations {
       ticking = false;
     };
 
-    const onScroll = () => {
+    this.scrollHandler = () => {
       if (!ticking) {
-        requestAnimationFrame(updateParallax);
+        this.animationFrameId = requestAnimationFrame(updateParallax);
         ticking = true;
       }
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', this.scrollHandler, { passive: true });
     
     // Ejecutar una vez al inicio
     updateParallax();
@@ -262,31 +274,37 @@ export class ScrollAnimations {
     const suffix = element.dataset.suffix || '';
     const separator = element.dataset.separator || '';
     
-    let startValue = 0;
-    const increment = target / (duration / 16);
+    if (isNaN(target)) {
+      console.warn('Valor de contador inválido:', element.dataset.counter);
+      return;
+    }
     
-    const updateCounter = () => {
-      startValue += increment;
+    let startValue = 0;
+    const startTime = performance.now();
+    
+    const updateCounter = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
       
-      if (startValue >= target) {
-        startValue = target;
-      }
+      // Usar easing para una animación más suave
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const currentValue = Math.floor(target * easeOutQuart);
       
-      let displayValue = Math.floor(startValue);
+      let displayValue = currentValue;
       
       // Agregar separador de miles si está especificado
       if (separator) {
-        displayValue = displayValue.toLocaleString();
+        displayValue = currentValue.toLocaleString();
       }
       
       element.textContent = prefix + displayValue + suffix;
       
-      if (startValue < target) {
+      if (progress < 1) {
         requestAnimationFrame(updateCounter);
       }
     };
 
-    updateCounter();
+    requestAnimationFrame(updateCounter);
   }
 
   /**
@@ -321,8 +339,13 @@ export class ScrollAnimations {
    * Prepara una barra de progreso
    */
   prepareProgressBar(element) {
-    const progress = element.dataset.progress;
-    const type = element.dataset.type || 'bar'; // bar, circle, semi-circle
+    const progress = parseInt(element.dataset.progress);
+    const type = element.dataset.type || 'bar';
+    
+    if (isNaN(progress) || progress < 0 || progress > 100) {
+      console.warn('Valor de progreso inválido:', element.dataset.progress);
+      return;
+    }
     
     switch (type) {
       case 'bar':
@@ -334,6 +357,8 @@ export class ScrollAnimations {
       case 'semi-circle':
         this.createSemiCircularProgress(element, progress);
         break;
+      default:
+        console.warn('Tipo de barra de progreso desconocido:', type);
     }
   }
 
@@ -344,8 +369,8 @@ export class ScrollAnimations {
     if (!element.querySelector('.progress-bar-fill')) {
       element.innerHTML = `
         <div class="progress-bar-container">
-          <div class="progress-bar-fill" style="width: 0%"></div>
-          <span class="progress-text">${targetProgress}%</span>
+          <div class="progress-bar-fill" style="width: 0%; transition: width 0.3s ease;"></div>
+          <span class="progress-text">0%</span>
         </div>
       `;
     }
@@ -361,20 +386,22 @@ export class ScrollAnimations {
     if (!element.querySelector('.circular-progress')) {
       element.innerHTML = `
         <div class="circular-progress">
-          <svg width="100" height="100">
+          <svg width="100" height="100" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="${radius}" 
                     stroke="#e0e0e0" 
                     stroke-width="8" 
                     fill="transparent"/>
             <circle cx="50" cy="50" r="${radius}" 
-                    stroke="var(--primary-color)" 
+                    stroke="var(--primary-color, #007bff)" 
                     stroke-width="8" 
                     fill="transparent"
                     class="progress-circle"
                     stroke-dasharray="${circumference}"
-                    stroke-dashoffset="${circumference}"/>
+                    stroke-dashoffset="${circumference}"
+                    stroke-linecap="round"
+                    style="transition: stroke-dashoffset 0.3s ease;"/>
           </svg>
-          <div class="progress-text">${targetProgress}%</div>
+          <div class="progress-text">0%</div>
         </div>
       `;
     }
@@ -384,26 +411,28 @@ export class ScrollAnimations {
    * Crea progreso semicircular
    */
   createSemiCircularProgress(element, targetProgress) {
-    const radius = 45;
+    const radius = 40;
     const circumference = Math.PI * radius;
     
     if (!element.querySelector('.semi-circular-progress')) {
       element.innerHTML = `
         <div class="semi-circular-progress">
-          <svg width="100" height="60">
+          <svg width="100" height="60" viewBox="0 0 100 60">
             <path d="M 10 50 A 40 40 0 0 1 90 50" 
                   stroke="#e0e0e0" 
                   stroke-width="8" 
                   fill="transparent"/>
             <path d="M 10 50 A 40 40 0 0 1 90 50" 
-                  stroke="var(--primary-color)" 
+                  stroke="var(--primary-color, #007bff)" 
                   stroke-width="8" 
                   fill="transparent"
                   class="progress-path"
                   stroke-dasharray="${circumference}"
-                  stroke-dashoffset="${circumference}"/>
+                  stroke-dashoffset="${circumference}"
+                  stroke-linecap="round"
+                  style="transition: stroke-dashoffset 0.3s ease;"/>
           </svg>
-          <div class="progress-text">${targetProgress}%</div>
+          <div class="progress-text">0%</div>
         </div>
       `;
     }
@@ -417,15 +446,15 @@ export class ScrollAnimations {
     const duration = parseInt(element.dataset.duration || 1500);
     const type = element.dataset.type || 'bar';
     
-    let currentProgress = 0;
-    const increment = targetProgress / (duration / 16);
+    const startTime = performance.now();
     
-    const updateProgress = () => {
-      currentProgress += increment;
+    const updateProgress = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
       
-      if (currentProgress >= targetProgress) {
-        currentProgress = targetProgress;
-      }
+      // Usar easing para una animación más suave
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const currentProgress = targetProgress * easeOutQuart;
       
       switch (type) {
         case 'bar':
@@ -439,12 +468,12 @@ export class ScrollAnimations {
           break;
       }
       
-      if (currentProgress < targetProgress) {
+      if (progress < 1) {
         requestAnimationFrame(updateProgress);
       }
     };
 
-    updateProgress();
+    requestAnimationFrame(updateProgress);
   }
 
   /**
@@ -500,7 +529,7 @@ export class ScrollAnimations {
     const fadeOutElements = DOMHelpers.selectAll('[data-fade-out]');
     
     if (fadeOutElements.length > 0) {
-      window.addEventListener('scroll', DOMHelpers.throttle(() => {
+      const fadeOutHandler = DOMHelpers.throttle(() => {
         const scrollTop = window.pageYOffset;
         const windowHeight = window.innerHeight;
         
@@ -514,7 +543,9 @@ export class ScrollAnimations {
             element.style.opacity = opacity;
           }
         });
-      }, 16), { passive: true });
+      }, 16);
+
+      window.addEventListener('scroll', fadeOutHandler, { passive: true });
     }
 
     // Efecto sticky mejorado
@@ -529,7 +560,6 @@ export class ScrollAnimations {
     
     stickyElements.forEach(element => {
       const offset = parseInt(element.dataset.stickyOffset || 0);
-      const container = element.closest('[data-sticky-container]') || document.body;
       
       const stickyObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -583,14 +613,14 @@ export class ScrollAnimations {
    * Pausa todas las animaciones
    */
   pauseAnimations() {
-    document.body.style.setProperty('--animation-play-state', 'paused');
+    document.documentElement.style.setProperty('--animation-play-state', 'paused');
   }
 
   /**
    * Reanuda todas las animaciones
    */
   resumeAnimations() {
-    document.body.style.setProperty('--animation-play-state', 'running');
+    document.documentElement.style.setProperty('--animation-play-state', 'running');
   }
 
   /**
@@ -614,10 +644,16 @@ export class ScrollAnimations {
     this.observers.forEach(observer => observer.disconnect());
     this.observers = [];
     
+    // Limpiar arrays
+    this.revealElements = [];
+    this.counters = [];
+    this.progressBars = [];
+    
     // Reinicializar
     this.setupRevealAnimations();
     this.setupCounterAnimations();
     this.setupProgressBars();
+    this.setupStickyElements();
   }
 
   /**
@@ -630,7 +666,8 @@ export class ScrollAnimations {
       counters: this.counters.length,
       progressBars: this.progressBars.length,
       observers: this.observers.length,
-      animatedElements: document.querySelectorAll('.animated').length
+      animatedElements: document.querySelectorAll('.animated').length,
+      isInitialized: this.isInitialized
     };
   }
 
@@ -638,23 +675,44 @@ export class ScrollAnimations {
    * Destructor
    */
   destroy() {
+    // Cancelar animationFrame pendiente
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
+
+    // Remover event listeners
+    if (this.scrollHandler) {
+      window.removeEventListener('scroll', this.scrollHandler);
+    }
+
+    // Desconectar observadores
     this.observers.forEach(observer => observer.disconnect());
+    
+    // Limpiar propiedades
     this.observers = [];
     this.parallaxElements = [];
     this.counters = [];
     this.progressBars = [];
     this.revealElements = [];
     this.isInitialized = false;
+    this.animationFrameId = null;
+    this.scrollHandler = null;
   }
 }
 
-// Auto-inicialización
+// Auto-inicialización con manejo de errores
 DOMHelpers.ready(() => {
-  window.scrollAnimationsInstance = new ScrollAnimations({
-    threshold: 0.1,
-    enableParallax: true,
-    enableCounters: true,
-    enableReveal: true,
-    enableProgressBars: true
-  });
+  try {
+    if (!window.scrollAnimationsInstance) {
+      window.scrollAnimationsInstance = new ScrollAnimations({
+        threshold: 0.1,
+        enableParallax: true,
+        enableCounters: true,
+        enableReveal: true,
+        enableProgressBars: true
+      });
+    }
+  } catch (error) {
+    console.error('Error al inicializar ScrollAnimations:', error);
+  }
 });

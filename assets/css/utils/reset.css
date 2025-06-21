@@ -17,14 +17,29 @@
   --gradient-dark: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
   --shadow-glow: 0 8px 32px rgba(220, 38, 38, 0.3);
   --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Typography */
-  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, 'Courier New', monospace;
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Monaco, 'Cascadia Code', Consolas, 'Courier New', monospace;
+  
+  /* Focus styles */
+  --focus-ring: 2px solid var(--red-medium);
+  --focus-offset: 3px;
+  --focus-shadow: 0 0 0 1px var(--red-medium), 0 0 20px rgba(220, 38, 38, 0.4);
+  
+  /* Spacing */
+  --content-max-width: 1200px;
+  --container-padding: clamp(1rem, 5vw, 3rem);
+  
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
 }
 
 /* ==========================================
-   RESET UNIVERSAL
+   RESET UNIVERSAL MEJORADO
    ========================================== */
 
 *,
@@ -43,9 +58,13 @@ html {
   font-size: 100%;
   line-height: 1.5;
   scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  /* CORREGIDO: Eliminamos -webkit-text-size-adjust por problemas de compatibilidad */
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevenir zoom horizontal en iOS */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 body {
@@ -58,7 +77,11 @@ body {
   min-height: 100vh;
   position: relative;
   text-rendering: optimizeLegibility;
-  font-feature-settings: "kern", "liga", "clig", "calt";
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1, "calt" 1;
+  /* Mejorar performance en móviles */
+  -webkit-overflow-scrolling: touch;
+  /* Prevenir scroll bounce en iOS */
+  overscroll-behavior-y: none;
 }
 
 /* ==========================================
@@ -71,16 +94,22 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
   color: var(--white);
   text-rendering: optimizeLegibility;
+  /* Mejorar kern en headings */
+  letter-spacing: -0.025em;
+  /* Evitar orphans en títulos */
+  text-wrap: balance;
 }
 
 h1 {
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
+  letter-spacing: -0.05em;
 }
 
 h2 {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
 h3 {
@@ -107,10 +136,19 @@ p {
   margin: 0 0 1rem 0;
   color: var(--gray-light);
   line-height: 1.7;
+  /* Mejorar legibilidad */
+  text-wrap: pretty;
+  /* Evitar líneas muy cortas */
+  orphans: 2;
+  widows: 2;
+}
+
+p:last-child {
+  margin-bottom: 0;
 }
 
 /* ==========================================
-   LISTAS
+   LISTAS MEJORADAS
    ========================================== */
 
 ul, ol {
@@ -123,15 +161,39 @@ li {
   margin: 0;
 }
 
+/* Listas con estilos cuando se necesitan */
+.styled-list {
+  padding-left: 1.5rem;
+}
+
+.styled-list ul {
+  list-style-type: disc;
+}
+
+.styled-list ol {
+  list-style-type: decimal;
+}
+
+.styled-list li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.styled-list li:last-child {
+  margin-bottom: 0;
+}
+
 /* ==========================================
-   ENLACES
+   ENLACES OPTIMIZADOS
    ========================================== */
 
 a {
   color: var(--red-medium);
   text-decoration: none;
-  transition: var(--transition);
+  transition: var(--transition-fast);
   cursor: pointer;
+  /* Mejorar área táctil */
+  position: relative;
 }
 
 a:hover,
@@ -139,19 +201,39 @@ a:focus {
   color: var(--red-intense);
   text-decoration: none;
   outline: none;
-  text-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
-  transform: translateY(-1px);
+}
+
+/* Solo aplicamos hover effects en dispositivos compatibles */
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    text-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
+    transform: translateY(-1px);
+  }
 }
 
 a:focus-visible {
-  outline: 2px solid var(--red-medium);
-  outline-offset: 3px;
-  border-radius: 3px;
-  box-shadow: 0 0 0 1px var(--red-medium);
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--focus-shadow);
+}
+
+/* Enlaces externos */
+a[href^="http"]:not([href*="yourdomain.com"])::after {
+  content: "↗";
+  font-size: 0.8em;
+  margin-left: 0.25em;
+  opacity: 0.7;
+}
+
+/* Enlaces de teléfono */
+a[href^="tel:"]::before {
+  content: "📞 ";
+  opacity: 0.7;
 }
 
 /* ==========================================
-   BOTONES
+   BOTONES OPTIMIZADOS
    ========================================== */
 
 button {
@@ -164,27 +246,41 @@ button {
   background: transparent;
   color: inherit;
   cursor: pointer;
-  transition: var(--transition);
+  transition: var(--transition-fast);
+  /* Mejorar área táctil */
+  min-height: 44px;
+  min-width: 44px;
+  /* Evitar selección de texto */
+  user-select: none;
+  -webkit-user-select: none;
+  /* Prevenir zoom en iOS */
+  touch-action: manipulation;
 }
 
 button:focus-visible {
-  outline: 2px solid var(--red-medium);
-  outline-offset: 3px;
-  border-radius: 3px;
-  box-shadow: 
-    0 0 0 1px var(--red-medium),
-    var(--shadow-glow);
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--focus-shadow);
 }
 
 button:disabled {
-  opacity: 0.4;
+  opacity: 0.6;
   cursor: not-allowed;
   pointer-events: none;
-  filter: grayscale(100%);
+  user-select: none;
+}
+
+/* Estados activos para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+  button:active {
+    transform: scale(0.98);
+    transition-duration: 0.1s;
+  }
 }
 
 /* ==========================================
-   FORMULARIOS
+   FORMULARIOS MEJORADOS
    ========================================== */
 
 input,
@@ -199,7 +295,9 @@ select {
   background: transparent;
   color: inherit;
   outline: none;
-  transition: var(--transition);
+  transition: var(--transition-fast);
+  /* Prevenir zoom en iOS */
+  font-size: max(16px, 1rem);
 }
 
 input:focus,
@@ -211,32 +309,44 @@ select:focus {
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--red-medium);
-  outline-offset: 3px;
-  border-radius: 3px;
-  box-shadow: 
-    0 0 0 1px var(--red-medium),
-    0 0 20px rgba(220, 38, 38, 0.3);
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--focus-shadow);
 }
 
 input::placeholder,
 textarea::placeholder {
   color: var(--gray-medium);
   opacity: 0.8;
-  font-style: italic;
+  /* Mejorar accesibilidad */
+  font-weight: 400;
 }
 
 input:disabled,
 textarea:disabled,
 select:disabled {
-  opacity: 0.4;
+  opacity: 0.6;
   cursor: not-allowed;
   pointer-events: none;
-  filter: grayscale(100%);
+  user-select: none;
+}
+
+/* Estados de validación */
+input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 1px #dc2626;
+}
+
+input:valid:not(:placeholder-shown),
+textarea:valid:not(:placeholder-shown) {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 1px #16a34a;
 }
 
 /* ==========================================
-   IMÁGENES Y MEDIA
+   IMÁGENES Y MEDIA OPTIMIZADOS
    ========================================== */
 
 img,
@@ -254,21 +364,34 @@ img {
   background-repeat: no-repeat;
   background-size: cover;
   shape-margin: 0.75rem;
-  transition: var(--transition);
+  transition: var(--transition-fast);
+  /* Mejorar calidad en pantallas de alta densidad */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimize-contrast;
 }
 
-img:hover {
-  transform: scale(1.02);
-  filter: brightness(1.05);
+/* Solo aplicamos hover effects en dispositivos compatibles */
+@media (hover: hover) and (pointer: fine) {
+  img:hover {
+    transform: scale(1.02);
+    filter: brightness(1.05);
+  }
 }
 
 svg {
   fill: currentColor;
   flex-shrink: 0;
+  /* Mejorar rendering de SVG */
+  shape-rendering: geometricPrecision;
+}
+
+/* Lazy loading placeholder */
+img[loading="lazy"] {
+  background: var(--dark-secondary);
 }
 
 /* ==========================================
-   TABLAS
+   TABLAS MEJORADAS
    ========================================== */
 
 table {
@@ -276,6 +399,8 @@ table {
   border-spacing: 0;
   width: 100%;
   margin: 0;
+  /* Mejorar legibilidad */
+  font-variant-numeric: tabular-nums;
 }
 
 th,
@@ -289,14 +414,24 @@ td {
 th {
   font-weight: 600;
   color: var(--white);
+  /* Mejorar accesibilidad */
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
 }
 
 td {
   color: var(--gray-light);
 }
 
+/* Tabla responsive */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ==========================================
-   ELEMENTOS INLINE
+   ELEMENTOS INLINE MEJORADOS
    ========================================== */
 
 strong,
@@ -315,6 +450,28 @@ small {
   color: var(--gray-medium);
 }
 
+mark {
+  background: rgba(220, 38, 38, 0.2);
+  color: var(--white);
+  padding: 0.1em 0.2em;
+  border-radius: var(--radius-sm);
+}
+
+del {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+ins {
+  text-decoration: underline;
+  color: var(--red-medium);
+}
+
+abbr[title] {
+  text-decoration: underline dotted;
+  cursor: help;
+}
+
 code,
 pre,
 kbd,
@@ -323,13 +480,17 @@ samp {
   font-size: 0.9em;
   background: rgba(42, 42, 42, 0.8);
   color: var(--red-soft);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   border: 1px solid rgba(220, 38, 38, 0.2);
+  /* Mejorar legibilidad */
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0;
 }
 
 code {
   padding: 0.3em 0.6em;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  word-wrap: break-word;
 }
 
 pre {
@@ -339,15 +500,26 @@ pre {
   white-space: pre;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   border-left: 4px solid var(--red-medium);
+  /* Mejorar scroll en móviles */
+  -webkit-overflow-scrolling: touch;
 }
 
 pre code {
   padding: 0;
   background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+kbd {
+  padding: 0.2em 0.5em;
+  border: 1px solid var(--gray-dark);
+  border-bottom: 2px solid var(--gray-dark);
+  box-shadow: inset 0 -1px 0 var(--gray-dark);
 }
 
 /* ==========================================
-   ELEMENTOS DE CITADO
+   ELEMENTOS DE CITADO MEJORADOS
    ========================================== */
 
 blockquote {
@@ -357,7 +529,7 @@ blockquote {
   background: rgba(26, 26, 26, 0.7);
   font-style: italic;
   color: var(--gray-light);
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
 }
@@ -366,14 +538,22 @@ blockquote::before {
   content: '"';
   position: absolute;
   top: 0.5rem;
-  left: -0.5rem;
+  left: 0.5rem;
   font-size: 3rem;
   color: var(--red-medium);
   opacity: 0.3;
+  line-height: 1;
 }
 
 blockquote p {
   margin: 0;
+}
+
+blockquote footer {
+  margin-top: 1rem;
+  font-style: normal;
+  font-size: 0.9em;
+  color: var(--gray-medium);
 }
 
 cite {
@@ -396,35 +576,57 @@ hr {
 }
 
 /* ==========================================
-   ELEMENTOS INTERACTIVOS
+   ELEMENTOS INTERACTIVOS MEJORADOS
    ========================================== */
 
 details {
   margin: 1rem 0;
+  border: 1px solid var(--gray-dark);
+  border-radius: var(--radius-lg);
+  background: rgba(26, 26, 26, 0.5);
 }
 
 summary {
   cursor: pointer;
   font-weight: 600;
   color: var(--white);
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--gray-dark);
-  transition: var(--transition);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  transition: var(--transition-fast);
+  user-select: none;
+  /* Mejorar área táctil */
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 
-summary:hover {
+summary:hover,
+summary:focus {
   color: var(--red-medium);
-  transform: translateX(5px);
-  text-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
+  background: rgba(42, 42, 42, 0.5);
+}
+
+/* Solo aplicamos text-shadow en dispositivos compatibles */
+@media (hover: hover) and (pointer: fine) {
+  summary:hover {
+    text-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
+  }
 }
 
 summary:focus-visible {
-  outline: 2px solid var(--red-medium);
-  outline-offset: 3px;
-  border-radius: 3px;
-  box-shadow: 
-    0 0 0 1px var(--red-medium),
-    var(--shadow-glow);
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--focus-shadow);
+}
+
+details[open] summary {
+  border-bottom: 1px solid var(--gray-dark);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+details > *:not(summary) {
+  padding: 1rem;
 }
 
 /* ==========================================
@@ -432,15 +634,44 @@ summary:focus-visible {
    ========================================== */
 
 ::selection {
-  background: var(--gradient-red);
+  background: var(--red-medium);
   color: var(--white);
   text-shadow: none;
 }
 
 ::-moz-selection {
-  background: var(--gradient-red);
+  background: var(--red-medium);
   color: var(--white);
   text-shadow: none;
+}
+
+/* ==========================================
+   SCROLLBARS PERSONALIZADOS
+   ========================================== */
+
+/* Webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-dark);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--red-medium);
+}
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-dark) var(--dark-secondary);
 }
 
 /* ==========================================
@@ -465,16 +696,95 @@ summary:focus-visible {
   left: 6px;
   background: var(--red-medium);
   color: var(--white);
-  padding: 8px;
-  border-radius: 4px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
   text-decoration: none;
   font-weight: 600;
   z-index: 10000;
-  transition: var(--transition);
+  transition: var(--transition-fast);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .skip-link:focus {
   top: 6px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* Utilidad para ocultar contenido visualmente pero mantener accesibilidad */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ==========================================
+   FOCUS MANAGEMENT GLOBAL
+   ========================================== */
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--focus-shadow);
+}
+
+/* Mejorar contraste en modo alto contraste */
+@media (prefers-contrast: high) {
+  :focus-visible {
+    outline-width: 3px;
+    outline-color: currentColor;
+  }
+}
+
+/* ==========================================
+   CONTENEDORES BASE
+   ========================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+/* Contenedor fluido */
+.container-fluid {
+  width: 100%;
+  padding: 0 var(--container-padding);
+}
+
+/* ==========================================
+   OPTIMIZACIONES RESPONSIVE
+   ========================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --container-padding: clamp(1rem, 3vw, 2rem);
+  }
+  
+  /* Mejorar legibilidad en móviles */
+  p {
+    line-height: 1.6;
+  }
+  
+  /* Ajustar tamaños táctiles */
+  button,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
 }
 
 /* ==========================================
@@ -505,18 +815,30 @@ summary:focus-visible {
   *::before,
   *::after {
     background: transparent !important;
-    color: black !important;
+    color: #000 !important;
     box-shadow: none !important;
     text-shadow: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+    page-break-after: avoid;
   }
   
   a,
   a:visited {
     text-decoration: underline;
+    color: #000 !important;
   }
   
   a[href]::after {
     content: " (" attr(href) ")";
+    font-size: 10pt;
   }
   
   abbr[title]::after {
@@ -538,23 +860,26 @@ summary:focus-visible {
     page-break-inside: avoid;
   }
   
-  /* CORREGIDO: Eliminamos orphans y widows porque no son compatibles con todos los navegadores */
   p,
   h2,
   h3 {
-    break-inside: avoid;
+    orphans: 3;
+    widows: 3;
+    page-break-inside: avoid;
   }
   
-  h2,
-  h3 {
-    page-break-after: avoid;
+  img {
+    max-width: 100% !important;
+  }
+  
+  .skip-link,
+  .sr-only {
+    display: none !important;
   }
 }
 
-/* CORREGIDO: Eliminamos la media query incorrecta @media (prefers-contrast: high) */
-
 /* ==========================================
-   DARK MODE SPECIFIC
+   DARK MODE ESPECÍFICO
    ========================================== */
 
 @media (prefers-color-scheme: dark) {
@@ -562,51 +887,68 @@ summary:focus-visible {
     background: var(--dark-primary);
     color: var(--white);
   }
-}
-
-/* ==========================================
-   PERFORMANCE OPTIMIZATIONS
-   ========================================== */
-
-/* CORREGIDO: Eliminamos loading: lazy porque no es una propiedad CSS válida */
-/* La carga diferida se maneja con el atributo loading="lazy" en HTML */
-
-/* ==========================================
-   FOCUS MANAGEMENT
-   ========================================== */
-
-:focus {
-  outline: none;
-}
-
-:focus-visible {
-  outline: 2px solid var(--red-medium);
-  outline-offset: 3px;
-  border-radius: 3px;
-  box-shadow: 
-    0 0 0 1px var(--red-medium),
-    0 0 20px rgba(220, 38, 38, 0.4);
-}
-
-/* ==========================================
-   CONTENEDORES BASE
-   ========================================== */
-
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-@media (min-width: 640px) {
-  .container {
-    padding: 0 2rem;
+  
+  img {
+    opacity: 0.9;
   }
 }
 
-@media (min-width: 1024px) {
-  .container {
-    padding: 0 3rem;
+/* ==========================================
+   HIGH CONTRAST MODE
+   ========================================== */
+
+@media (prefers-contrast: high) {
+  :root {
+    --red-medium: #ff0000;
+    --red-intense: #cc0000;
+    --white: #ffffff;
+    --gray-light: #ffffff;
+    --gray-medium: #cccccc;
+    --gray-dark: #666666;
   }
+  
+  a,
+  button {
+    border: 2px solid currentColor;
+  }
+  
+  img {
+    filter: contrast(150%);
+  }
+}
+
+/* ==========================================
+   UTILIDADES GENERALES
+   ========================================== */
+
+/* Clearfix */
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Text utilities */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-justify { text-align: justify; }
+
+/* Display utilities */
+.d-none { display: none; }
+.d-block { display: block; }
+.d-inline { display: inline; }
+.d-inline-block { display: inline-block; }
+.d-flex { display: flex; }
+.d-grid { display: grid; }
+
+/* Responsive display utilities */
+@media (max-width: 768px) {
+  .d-md-none { display: none; }
+  .d-md-block { display: block; }
+}
+
+@media (max-width: 480px) {
+  .d-sm-none { display: none; }
+  .d-sm-block { display: block; }
 }

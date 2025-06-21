@@ -16,21 +16,34 @@
   --gradient-red: linear-gradient(135deg, var(--red-intense), var(--red-medium));
   --shadow-glow: 0 8px 32px rgba(220, 38, 38, 0.3);
   --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Variables de animaciones */
+  --animation-duration-fast: 0.3s;
+  --animation-duration-normal: 0.6s;
+  --animation-duration-slow: 1s;
+  --animation-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --animation-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Z-index layers */
+  --z-scroll-progress: 9999;
+  --z-floating: 100;
+  --z-overlay: 10;
 }
 
 /* ==========================================
    SCROLL BEHAVIOR OPTIMIZADO
    ========================================== */
 
-/* Eliminamos scrollbars personalizados para evitar errores de compatibilidad */
-/* Los navegadores usarán sus scrollbars nativos por defecto */
-
-/* ==========================================
-   COMPORTAMIENTO SMOOTH SCROLL
-   ========================================== */
-
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Para navegación sticky */
+}
+
+/* Respeta preferencias del usuario */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* ==========================================
@@ -42,13 +55,15 @@ html {
   top: 0;
   left: 0;
   width: 0%;
-  height: 5px;
+  height: 4px;
   background: var(--gradient-red);
-  z-index: 9999;
+  z-index: var(--z-scroll-progress);
   transition: width 0.1s ease-out;
   box-shadow: 
     0 0 15px rgba(220, 38, 38, 0.6),
     0 0 30px rgba(220, 38, 38, 0.3);
+  will-change: width;
+  pointer-events: none;
 }
 
 .scroll-progress::after {
@@ -61,21 +76,29 @@ html {
   background: linear-gradient(90deg, transparent, var(--white));
   opacity: 0.4;
   animation: shimmer 2s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes shimmer {
-  0%, 100% { opacity: 0.4; transform: translateX(0); }
-  50% { opacity: 0.8; transform: translateX(10px); }
+  0%, 100% { 
+    opacity: 0.4; 
+    transform: translateX(0); 
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: translateX(10px); 
+  }
 }
 
 /* ==========================================
-   ELEMENTOS BÁSICOS DE ANIMACIÓN
+   SISTEMA BASE DE SCROLL REVEAL
    ========================================== */
 
 .scroll-reveal {
   opacity: 0;
   transform: translateY(50px);
-  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all var(--animation-duration-slow) var(--animation-easing);
+  will-change: transform, opacity;
 }
 
 .scroll-reveal.revealed {
@@ -84,13 +107,14 @@ html {
 }
 
 /* ==========================================
-   ANIMACIONES DE ENTRADA DESDE DIFERENTES DIRECCIONES
+   ANIMACIONES DE ENTRADA DIRECCIONALES
    ========================================== */
 
 .fade-in-up {
   opacity: 0;
-  transform: translateY(80px) scale(0.95);
-  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(60px) scale(0.98);
+  transition: all var(--animation-duration-slow) var(--animation-easing);
+  will-change: transform, opacity;
 }
 
 .fade-in-up.animated {
@@ -100,8 +124,9 @@ html {
 
 .fade-in-down {
   opacity: 0;
-  transform: translateY(-80px) scale(0.95);
-  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(-60px) scale(0.98);
+  transition: all var(--animation-duration-slow) var(--animation-easing);
+  will-change: transform, opacity;
 }
 
 .fade-in-down.animated {
@@ -111,24 +136,26 @@ html {
 
 .fade-in-left {
   opacity: 0;
-  transform: translateX(-80px) rotateY(-15deg);
-  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateX(-60px);
+  transition: all var(--animation-duration-slow) var(--animation-easing);
+  will-change: transform, opacity;
 }
 
 .fade-in-left.animated {
   opacity: 1;
-  transform: translateX(0) rotateY(0deg);
+  transform: translateX(0);
 }
 
 .fade-in-right {
   opacity: 0;
-  transform: translateX(80px) rotateY(15deg);
-  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateX(60px);
+  transition: all var(--animation-duration-slow) var(--animation-easing);
+  will-change: transform, opacity;
 }
 
 .fade-in-right.animated {
   opacity: 1;
-  transform: translateX(0) rotateY(0deg);
+  transform: translateX(0);
 }
 
 /* ==========================================
@@ -137,19 +164,21 @@ html {
 
 .scale-in {
   opacity: 0;
-  transform: scale(0.7) rotate(-5deg);
-  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: scale(0.8);
+  transition: all var(--animation-duration-slow) var(--animation-easing);
+  will-change: transform, opacity;
 }
 
 .scale-in.animated {
   opacity: 1;
-  transform: scale(1) rotate(0deg);
+  transform: scale(1);
 }
 
 .rotate-in {
   opacity: 0;
-  transform: rotate(-15deg) scale(0.8);
-  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: rotate(-10deg) scale(0.9);
+  transition: all var(--animation-duration-slow) var(--animation-easing);
+  will-change: transform, opacity;
 }
 
 .rotate-in.animated {
@@ -158,7 +187,7 @@ html {
 }
 
 /* ==========================================
-   ANIMACIONES CON DELAYS ESCALONADOS
+   DELAYS ESCALONADOS
    ========================================== */
 
 .stagger-1 { transition-delay: 0.1s; }
@@ -167,14 +196,17 @@ html {
 .stagger-4 { transition-delay: 0.4s; }
 .stagger-5 { transition-delay: 0.5s; }
 .stagger-6 { transition-delay: 0.6s; }
+.stagger-7 { transition-delay: 0.7s; }
+.stagger-8 { transition-delay: 0.8s; }
 
 /* ==========================================
-   ANIMACIONES DE TEXTO
+   ANIMACIONES DE TEXTO MEJORADAS
    ========================================== */
 
 .text-reveal {
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
+  display: inline-block;
 }
 
 .text-reveal::before {
@@ -186,42 +218,41 @@ html {
   height: 100%;
   background: var(--gradient-red);
   transform: translateX(-100%);
-  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.8s var(--animation-easing);
+  z-index: var(--z-overlay);
 }
 
 .text-reveal.animated::before {
   transform: translateX(100%);
 }
 
-.text-reveal span {
+.text-reveal .text-content {
   display: inline-block;
   opacity: 0;
   transform: translateY(100%);
-  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.8s var(--animation-easing);
 }
 
-.text-reveal.animated span {
+.text-reveal.animated .text-content {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.3s;
 }
 
 /* ==========================================
-   CONTADOR ANIMADO
+   CONTADOR ANIMADO MEJORADO
    ========================================== */
 
 .counter {
-  font-size: 2rem;
+  position: relative;
+  font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 800;
   color: var(--red-medium);
   display: inline-block;
+  font-variant-numeric: tabular-nums;
 }
 
-.counter[data-target] {
-  position: relative;
-}
-
-.counter[data-target]::after {
+.counter::after {
   content: '';
   position: absolute;
   bottom: -5px;
@@ -231,23 +262,24 @@ html {
   height: 3px;
   background: var(--gradient-red);
   transition: width 1s ease 1s;
+  border-radius: 2px;
 }
 
-.counter.animated[data-target]::after {
+.counter.animated::after {
   width: 100%;
 }
 
 /* ==========================================
-   BARRA DE PROGRESO ANIMADA
+   BARRA DE PROGRESO OPTIMIZADA
    ========================================== */
 
 .progress-bar {
+  position: relative;
   width: 100%;
   height: 8px;
   background: rgba(42, 42, 42, 0.6);
   border-radius: 10px;
   overflow: hidden;
-  position: relative;
   border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
@@ -255,11 +287,12 @@ html {
   height: 100%;
   background: var(--gradient-red);
   width: 0%;
-  transition: width 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: width 2s var(--animation-easing);
   position: relative;
   box-shadow: 
     0 0 15px rgba(220, 38, 38, 0.6),
     inset 0 2px 10px rgba(255, 255, 255, 0.2);
+  will-change: width;
 }
 
 .progress-fill::after {
@@ -275,8 +308,14 @@ html {
 }
 
 @keyframes progress-shimmer {
-  0%, 100% { opacity: 0.3; transform: translateX(15px); }
-  50% { opacity: 0.8; transform: translateX(5px); }
+  0%, 100% { 
+    opacity: 0.3; 
+    transform: translateX(15px); 
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: translateX(5px); 
+  }
 }
 
 .progress-bar.animated .progress-fill {
@@ -284,7 +323,7 @@ html {
 }
 
 /* ==========================================
-   ELEMENTOS QUE APARECEN AL SCROLL
+   REVEAL LINE EFFECT
    ========================================== */
 
 .reveal-line {
@@ -300,8 +339,8 @@ html {
   width: 0;
   height: 100%;
   background: var(--gradient-red);
-  transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  z-index: 2;
+  transition: width 1s var(--animation-easing);
+  z-index: var(--z-overlay);
 }
 
 .reveal-line.animated::before {
@@ -313,7 +352,7 @@ html {
   z-index: 1;
   opacity: 0;
   transform: translateX(-20px);
-  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.8s var(--animation-easing);
   transition-delay: 0.5s;
 }
 
@@ -323,34 +362,37 @@ html {
 }
 
 /* ==========================================
-   PARALLAX SUAVE
+   PARALLAX OPTIMIZADO
    ========================================== */
 
 .parallax-element {
   will-change: transform;
   transition: transform 0.1s ease-out;
+  transform: translateZ(0); /* Forzar aceleración GPU */
 }
 
 /* ==========================================
-   FLOATING ELEMENTOS
+   FLOATING EFFECTS
    ========================================== */
 
 .float-on-scroll {
-  transition: transform 0.3s ease-out;
+  transition: transform var(--animation-duration-normal) ease-out;
+  will-change: transform;
 }
 
 .float-on-scroll.floating {
-  transform: translateY(-10px);
+  transform: translateY(-10px) translateZ(0);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 /* ==========================================
-   GLOW EFFECT EN SCROLL
+   GLOW EFFECTS
    ========================================== */
 
 .glow-on-scroll {
   transition: all 0.5s ease;
   border: 1px solid transparent;
+  will-change: box-shadow, border-color;
 }
 
 .glow-on-scroll.glowing {
@@ -361,14 +403,18 @@ html {
 }
 
 /* ==========================================
-   ANIMACIÓN DE MÁQUINA DE ESCRIBIR
+   TYPEWRITER EFFECT MEJORADO
    ========================================== */
 
 .typewriter {
+  position: relative;
   overflow: hidden;
   border-right: 3px solid var(--red-medium);
   white-space: nowrap;
-  animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+  width: 0;
+  animation: 
+    typing 3s steps(40, end) forwards,
+    blink-caret 0.75s step-end infinite;
 }
 
 @keyframes typing {
@@ -382,11 +428,12 @@ html {
 }
 
 /* ==========================================
-   ELEMENTOS QUE SE DESVANECEN AL SCROLL
+   FADE OUT EFFECTS
    ========================================== */
 
 .fade-out-up {
   transition: all 0.5s ease-out;
+  will-change: transform, opacity;
 }
 
 .fade-out-up.fading {
@@ -395,32 +442,34 @@ html {
 }
 
 /* ==========================================
-   BOUNCING ELEMENTS
+   BOUNCE ANIMATIONS
    ========================================== */
 
 .bounce-in {
   opacity: 0;
-  transform: scale(0.3);
-  transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: scale(0.3) translateZ(0);
+  transition: all 0.8s var(--animation-easing-bounce);
+  will-change: transform, opacity;
 }
 
 .bounce-in.animated {
   opacity: 1;
-  transform: scale(1);
+  transform: scale(1) translateZ(0);
 }
 
 /* ==========================================
-   SLIDE REVEAL CARDS
+   SLIDE REVEAL
    ========================================== */
 
 .slide-reveal {
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
 }
 
 .slide-reveal .slide-content {
   transform: translateX(-100%);
-  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.8s var(--animation-easing);
+  will-change: transform;
 }
 
 .slide-reveal.animated .slide-content {
@@ -428,19 +477,21 @@ html {
 }
 
 /* ==========================================
-   FLIP ANIMATION
+   FLIP ANIMATIONS
    ========================================== */
 
 .flip-in {
   opacity: 0;
-  transform: rotateY(-90deg);
-  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: rotateY(-90deg) translateZ(0);
+  transition: all 0.8s var(--animation-easing);
   transform-origin: center;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
 }
 
 .flip-in.animated {
   opacity: 1;
-  transform: rotateY(0deg);
+  transform: rotateY(0deg) translateZ(0);
 }
 
 /* ==========================================
@@ -449,12 +500,13 @@ html {
 
 .morph-shape {
   border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 1s var(--animation-easing);
+  will-change: border-radius, transform;
 }
 
 .morph-shape.animated {
   border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
-  transform: scale(1.1);
+  transform: scale(1.05) translateZ(0);
 }
 
 /* ==========================================
@@ -463,13 +515,14 @@ html {
 
 .zoom-reveal {
   opacity: 0;
-  transform: scale(0);
-  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: scale(0) translateZ(0);
+  transition: all 0.8s var(--animation-easing);
+  will-change: transform, opacity;
 }
 
 .zoom-reveal.animated {
   opacity: 1;
-  transform: scale(1);
+  transform: scale(1) translateZ(0);
 }
 
 /* ==========================================
@@ -479,14 +532,78 @@ html {
 .blur-reveal {
   filter: blur(10px);
   opacity: 0;
-  transform: scale(1.1);
-  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: scale(1.05) translateZ(0);
+  transition: all 1s var(--animation-easing);
+  will-change: filter, transform, opacity;
 }
 
 .blur-reveal.animated {
   filter: blur(0px);
   opacity: 1;
-  transform: scale(1);
+  transform: scale(1) translateZ(0);
+}
+
+/* ==========================================
+   SPLIT TEXT ANIMATION
+   ========================================== */
+
+.split-text {
+  overflow: hidden;
+}
+
+.split-text .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%) rotateX(-90deg);
+  transition: all 0.6s var(--animation-easing);
+  transform-origin: center bottom;
+}
+
+.split-text.animated .char {
+  opacity: 1;
+  transform: translateY(0) rotateX(0deg);
+}
+
+.split-text .char:nth-child(1) { transition-delay: 0.1s; }
+.split-text .char:nth-child(2) { transition-delay: 0.15s; }
+.split-text .char:nth-child(3) { transition-delay: 0.2s; }
+.split-text .char:nth-child(4) { transition-delay: 0.25s; }
+.split-text .char:nth-child(5) { transition-delay: 0.3s; }
+/* Continuar según necesidades */
+
+/* ==========================================
+   LOADING SPINNER
+   ========================================== */
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(220, 38, 38, 0.3);
+  border-top: 3px solid var(--red-medium);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   PERFORMANCE OPTIMIZATIONS
+   ========================================== */
+
+/* Contenedor para elementos animados */
+.animation-container {
+  transform: translateZ(0);
+  will-change: auto;
+}
+
+/* Optimización para elementos que se mueven */
+.moving-element {
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 /* ==========================================
@@ -494,11 +611,19 @@ html {
    ========================================== */
 
 @media (max-width: 768px) {
+  :root {
+    --animation-duration-fast: 0.2s;
+    --animation-duration-normal: 0.4s;
+    --animation-duration-slow: 0.6s;
+  }
+  
+  .scroll-progress {
+    height: 3px;
+  }
+  
   .fade-in-up,
-  .fade-in-down,
-  .fade-in-left,
-  .fade-in-right {
-    transform: translateY(30px);
+  .fade-in-down {
+    transform: translateY(30px) scale(0.98);
   }
   
   .fade-in-left,
@@ -513,6 +638,24 @@ html {
   .rotate-in {
     transform: rotate(-5deg) scale(0.95);
   }
+  
+  .typewriter {
+    animation-duration: 2s;
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-progress {
+    height: 2px;
+  }
+  
+  .counter {
+    font-size: 1.5rem;
+  }
+  
+  .progress-bar {
+    height: 6px;
+  }
 }
 
 /* ==========================================
@@ -520,6 +663,15 @@ html {
    ========================================== */
 
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
   .scroll-reveal,
   .fade-in-up,
   .fade-in-down,
@@ -530,22 +682,59 @@ html {
   .bounce-in,
   .flip-in,
   .zoom-reveal,
-  .blur-reveal {
-    transition: none;
-    opacity: 1;
-    transform: none;
+  .blur-reveal,
+  .split-text .char {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
   }
   
   .typewriter {
-    animation: none;
-    border-right: none;
+    animation: none !important;
+    border-right: none !important;
+    width: 100% !important;
   }
   
-  .morph-shape {
-    transition: none;
+  .parallax-element {
+    transform: none !important;
   }
   
-  .progress-fill {
-    transition: none;
+  .scroll-progress::after,
+  .progress-fill::after {
+    animation: none !important;
   }
+}
+
+/* ==========================================
+   HIGH CONTRAST SUPPORT
+   ========================================== */
+
+@media (prefers-contrast: high) {
+  .scroll-progress {
+    border-bottom: 2px solid var(--white);
+  }
+  
+  .progress-bar {
+    border: 2px solid var(--red-medium);
+  }
+  
+  .glow-on-scroll.glowing {
+    border-width: 2px;
+  }
+}
+
+/* ==========================================
+   INTERSECTION OBSERVER UTILITIES
+   ========================================== */
+
+/* Clase para elementos que están siendo observados */
+.observing {
+  will-change: transform, opacity;
+}
+
+/* Clase para elementos que ya fueron animados */
+.animation-complete {
+  will-change: auto;
 }

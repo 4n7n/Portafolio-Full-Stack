@@ -17,6 +17,17 @@
   --gradient-dark: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
   --shadow-glow: 0 8px 32px rgba(220, 38, 38, 0.3);
   --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Variables específicas de modal */
+  --modal-z-index: 1000;
+  --modal-backdrop: rgba(10, 10, 10, 0.9);
+  --modal-border-radius: 20px;
+  --modal-padding: 2rem;
+  --modal-gap: 1rem;
+  --modal-max-width: 90vw;
+  --modal-max-height: 90vh;
+  --touch-target: 44px;
 }
 
 /* ==========================================
@@ -29,15 +40,19 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 10, 10, 0.9);
+  background: var(--modal-backdrop);
   backdrop-filter: blur(8px);
-  z-index: 1000;
+  z-index: var(--modal-z-index);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1rem;
   opacity: 0;
   visibility: hidden;
   transition: var(--transition);
+  isolation: isolate;
+  /* Prevenir scroll en body cuando modal está activo */
+  overscroll-behavior: contain;
 }
 
 .modal-overlay.active {
@@ -57,11 +72,21 @@
     radial-gradient(circle at 70% 30%, rgba(220, 38, 38, 0.03) 0%, transparent 50%);
   animation: modal-float 15s ease-in-out infinite alternate;
   z-index: -1;
+  pointer-events: none;
 }
 
 @keyframes modal-float {
-  0% { transform: translateY(0px) rotate(0deg); }
+  0% { transform: translateY(0) rotate(0deg); }
   100% { transform: translateY(-10px) rotate(1deg); }
+}
+
+/* Cerrar modal al hacer clic en el overlay */
+.modal-overlay[data-dismiss="true"] {
+  cursor: pointer;
+}
+
+.modal-container {
+  cursor: default;
 }
 
 /* ==========================================
@@ -69,24 +94,27 @@
    ========================================== */
 
 .modal-container {
+  position: relative;
   background: var(--gradient-dark);
-  border-radius: 20px;
+  border-radius: var(--modal-border-radius);
   border: 1px solid rgba(220, 38, 38, 0.15);
   box-shadow: 
     0 30px 80px rgba(0, 0, 0, 0.6),
     0 0 50px rgba(220, 38, 38, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -1px 0 rgba(220, 38, 38, 0.1);
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: var(--modal-max-width);
+  max-height: var(--modal-max-height);
+  width: 100%;
   overflow: hidden;
-  position: relative;
-  transform: scale(0.7) translateY(100px) rotateX(15deg);
+  transform: scale(0.7) translateY(100px);
   transition: var(--transition);
+  /* Asegurar que el modal esté en el centro */
+  margin: auto;
 }
 
 .modal-overlay.active .modal-container {
-  transform: scale(1) translateY(0) rotateX(0deg);
+  transform: scale(1) translateY(0);
 }
 
 .modal-container::before {
@@ -97,7 +125,8 @@
   width: 100%;
   height: 3px;
   background: var(--gradient-red);
-  border-radius: 2px;
+  border-radius: var(--modal-border-radius) var(--modal-border-radius) 0 0;
+  z-index: 1;
 }
 
 /* ==========================================
@@ -105,24 +134,35 @@
    ========================================== */
 
 .modal-header {
-  padding: 2rem 2rem 1rem 2rem;
+  position: relative;
+  padding: var(--modal-padding) var(--modal-padding) 1rem var(--modal-padding);
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgba(68, 68, 68, 0.3);
-  position: relative;
+  background: rgba(0, 0, 0, 0.2);
+  /* Prevenir que el título se desborde */
+  min-height: 0;
 }
 
 .modal-title {
-  font-size: 1.8rem;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
   font-weight: 700;
   color: var(--white);
   margin: 0;
+  padding-right: 1rem;
+  /* Manejar texto largo */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.3;
 }
 
 .modal-close {
-  width: 40px;
-  height: 40px;
+  position: relative;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
   background: rgba(42, 42, 42, 0.6);
   border: 2px solid var(--gray-dark);
   border-radius: 50%;
@@ -133,8 +173,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .modal-close::before {
@@ -151,17 +191,33 @@
   z-index: -1;
 }
 
-.modal-close:hover {
+.modal-close:hover,
+.modal-close:focus {
   color: var(--white);
   border-color: var(--red-medium);
-  transform: scale(1.15) rotate(180deg);
+  transform: scale(1.1) rotate(90deg);
   box-shadow: 
     var(--shadow-glow),
     0 0 25px rgba(220, 38, 38, 0.6);
+  outline: none;
 }
 
-.modal-close:hover::before {
+.modal-close:hover::before,
+.modal-close:focus::before {
   transform: scale(1);
+}
+
+.modal-close:focus {
+  outline: 2px solid var(--red-medium);
+  outline-offset: 2px;
+}
+
+/* Icono de cerrar con pseudo-elemento */
+.modal-close::after {
+  content: '×';
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 300;
 }
 
 /* ==========================================
@@ -169,20 +225,43 @@
    ========================================== */
 
 .modal-content {
-  padding: 2rem;
+  padding: var(--modal-padding);
   color: var(--gray-light);
   line-height: 1.6;
   max-height: 70vh;
   overflow-y: auto;
-  /* CORREGIDO: Eliminamos scrollbar personalizado que causaba el error */
+  overflow-x: hidden;
+  /* Mejorar scrolling en móviles */
+  -webkit-overflow-scrolling: touch;
+  /* Personalizar scrollbar de forma compatible */
+  scrollbar-width: thin;
+  scrollbar-color: var(--red-medium) var(--dark-secondary);
+}
+
+/* Webkit scrollbar (Chrome, Safari, Edge) */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: var(--dark-secondary);
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--red-medium);
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--red-intense);
 }
 
 .modal-content h3 {
   color: var(--white);
-  font-size: 1.3rem;
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
   font-weight: 600;
-  margin-bottom: 1rem;
-  margin-top: 1.5rem;
+  margin: 1.5rem 0 1rem 0;
+  line-height: 1.4;
 }
 
 .modal-content h3:first-child {
@@ -190,30 +269,46 @@
 }
 
 .modal-content p {
-  margin-bottom: 1rem;
+  margin: 0 0 1rem 0;
   font-size: 1rem;
+  line-height: 1.6;
+}
+
+.modal-content p:last-child {
+  margin-bottom: 0;
 }
 
 .modal-content ul {
   list-style: none;
-  padding-left: 0;
-  margin-bottom: 1.5rem;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
 }
 
 .modal-content li {
   position: relative;
   padding-left: 1.5rem;
   margin-bottom: 0.8rem;
-  transition: var(--transition);
+  transition: var(--transition-fast);
+  cursor: default;
+}
+
+.modal-content li:last-child {
+  margin-bottom: 0;
 }
 
 .modal-content li::before {
   content: '▸';
   position: absolute;
   left: 0;
+  top: 0;
   color: var(--red-medium);
   font-weight: bold;
-  transition: var(--transition);
+  transition: var(--transition-fast);
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-content li:hover {
@@ -238,15 +333,17 @@
   margin: 1rem 0;
   border: 1px solid rgba(220, 38, 38, 0.2);
   transition: var(--transition);
+  display: block;
+  cursor: zoom-in;
 }
 
 .modal-image:hover {
-  transform: scale(1.05) rotateY(2deg);
+  transform: scale(1.02);
   box-shadow: 
     var(--shadow-glow),
     0 15px 40px rgba(0, 0, 0, 0.4);
   border-color: var(--red-medium);
-  filter: brightness(1.1) contrast(1.1);
+  filter: brightness(1.05) contrast(1.05);
 }
 
 /* ==========================================
@@ -258,9 +355,11 @@
   flex-wrap: wrap;
   gap: 0.8rem;
   margin: 1.5rem 0;
+  align-items: center;
 }
 
 .modal-tech-tag {
+  position: relative;
   background: rgba(42, 42, 42, 0.6);
   color: var(--gray-light);
   padding: 0.5rem 1rem;
@@ -268,9 +367,12 @@
   font-size: 0.85rem;
   font-weight: 500;
   border: 1px solid var(--gray-dark);
-  transition: var(--transition);
-  position: relative;
+  transition: var(--transition-fast);
   overflow: hidden;
+  cursor: default;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
 }
 
 .modal-tech-tag::before {
@@ -288,7 +390,7 @@
 .modal-tech-tag:hover {
   color: var(--white);
   border-color: var(--red-medium);
-  transform: translateY(-3px) scale(1.08) rotate(1deg);
+  transform: translateY(-2px) scale(1.05);
   box-shadow: 
     0 6px 20px rgba(220, 38, 38, 0.4),
     0 0 15px rgba(220, 38, 38, 0.3);
@@ -303,14 +405,17 @@
    ========================================== */
 
 .modal-actions {
-  padding: 1rem 2rem 2rem 2rem;
+  padding: 1rem var(--modal-padding) var(--modal-padding) var(--modal-padding);
   display: flex;
-  gap: 1rem;
+  gap: var(--modal-gap);
   justify-content: flex-end;
   border-top: 1px solid rgba(68, 68, 68, 0.3);
+  background: rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
 }
 
 .modal-btn {
+  position: relative;
   padding: 0.8rem 1.5rem;
   border: none;
   border-radius: 25px;
@@ -323,9 +428,13 @@
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  position: relative;
   overflow: hidden;
+  min-height: var(--touch-target);
+  min-width: 120px;
+  white-space: nowrap;
+  font-family: inherit;
 }
 
 .modal-btn-primary {
@@ -343,10 +452,12 @@
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
   transition: left 0.5s;
+  pointer-events: none;
 }
 
-.modal-btn-primary:hover {
-  transform: translateY(-5px) scale(1.08);
+.modal-btn-primary:hover:not(:disabled),
+.modal-btn-primary:focus:not(:disabled) {
+  transform: translateY(-3px) scale(1.05);
   box-shadow: 
     0 20px 40px rgba(220, 38, 38, 0.6),
     0 8px 25px rgba(0, 0, 0, 0.4),
@@ -355,6 +466,11 @@
 
 .modal-btn-primary:hover::before {
   left: 100%;
+}
+
+.modal-btn-primary:focus {
+  outline: 2px solid var(--red-medium);
+  outline-offset: 2px;
 }
 
 .modal-btn-secondary {
@@ -375,10 +491,11 @@
   z-index: -1;
 }
 
-.modal-btn-secondary:hover {
+.modal-btn-secondary:hover:not(:disabled),
+.modal-btn-secondary:focus:not(:disabled) {
   color: var(--white);
   border-color: var(--gray-medium);
-  transform: translateY(-5px) scale(1.08);
+  transform: translateY(-3px) scale(1.05);
   box-shadow: 
     0 8px 25px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(136, 136, 136, 0.2);
@@ -388,13 +505,30 @@
   width: 100%;
 }
 
+.modal-btn-secondary:focus {
+  outline: 2px solid var(--gray-medium);
+  outline-offset: 2px;
+}
+
+/* Estados deshabilitados */
+.modal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.modal-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 /* ==========================================
    MODALES ESPECÍFICOS
    ========================================== */
 
 /* Modal de Proyecto */
 .modal-project {
-  width: 800px;
+  max-width: min(800px, var(--modal-max-width));
 }
 
 .modal-project .modal-content {
@@ -417,20 +551,28 @@
   border: 1px solid rgba(220, 38, 38, 0.2);
   transition: var(--transition);
   cursor: pointer;
+  display: block;
 }
 
-.project-gallery img:hover {
-  transform: scale(1.08) rotateY(5deg);
+.project-gallery img:hover,
+.project-gallery img:focus {
+  transform: scale(1.05);
   box-shadow: 
     var(--shadow-glow),
     0 10px 30px rgba(0, 0, 0, 0.4);
   border-color: var(--red-medium);
-  filter: brightness(1.1) contrast(1.1);
+  filter: brightness(1.05) contrast(1.05);
+  outline: none;
+}
+
+.project-gallery img:focus {
+  outline: 2px solid var(--red-medium);
+  outline-offset: 2px;
 }
 
 /* Modal de Contacto */
 .modal-contact {
-  width: 500px;
+  max-width: min(500px, var(--modal-max-width));
 }
 
 .modal-contact-form {
@@ -439,6 +581,10 @@
 
 .modal-form-group {
   margin-bottom: 1.5rem;
+}
+
+.modal-form-group:last-child {
+  margin-bottom: 0;
 }
 
 .modal-form-group label {
@@ -462,11 +608,14 @@
   font-size: 0.9rem;
   transition: var(--transition);
   outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
 .modal-form-group input::placeholder,
 .modal-form-group textarea::placeholder {
   color: var(--gray-medium);
+  opacity: 1;
 }
 
 .modal-form-group input:focus,
@@ -476,12 +625,13 @@
   box-shadow: 
     0 0 0 3px rgba(220, 38, 38, 0.15),
     0 4px 20px rgba(220, 38, 38, 0.1);
-  transform: translateY(-3px) scale(1.02);
+  transform: translateY(-2px);
 }
 
 .modal-form-group textarea {
   min-height: 100px;
   resize: vertical;
+  font-family: inherit;
 }
 
 /* ==========================================
@@ -489,49 +639,78 @@
    ========================================== */
 
 @media (max-width: 768px) {
+  :root {
+    --modal-padding: 1.5rem;
+    --modal-gap: 0.75rem;
+    --modal-border-radius: 15px;
+  }
+  
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+  
   .modal-container {
     max-width: 95vw;
     max-height: 95vh;
-    margin: 1rem;
   }
   
-  .modal-project {
-    width: 100%;
-  }
-  
+  .modal-project,
   .modal-contact {
-    width: 100%;
+    max-width: 100%;
   }
   
   .modal-header {
-    padding: 1.5rem;
+    padding: var(--modal-padding) var(--modal-padding) 1rem var(--modal-padding);
+    flex-wrap: wrap;
+    gap: 1rem;
   }
   
   .modal-content {
-    padding: 1.5rem;
+    padding: var(--modal-padding);
     max-height: 60vh;
   }
   
   .modal-actions {
-    padding: 1rem 1.5rem;
+    padding: 1rem var(--modal-padding) var(--modal-padding) var(--modal-padding);
     flex-direction: column;
+    align-items: stretch;
   }
   
   .modal-btn {
     width: 100%;
     justify-content: center;
-  }
-  
-  .modal-title {
-    font-size: 1.5rem;
+    min-width: auto;
   }
   
   .project-gallery {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .project-gallery img {
+    height: 200px;
+  }
+  
+  .modal-tech-tags {
+    gap: 0.6rem;
+  }
+  
+  .modal-tech-tag {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
+  :root {
+    --modal-padding: 1rem;
+    --modal-border-radius: 10px;
+  }
+  
+  .modal-overlay {
+    padding: 0;
+  }
+  
   .modal-container {
     max-width: 100vw;
     max-height: 100vh;
@@ -542,14 +721,102 @@
   .modal-header,
   .modal-content,
   .modal-actions {
-    padding: 1rem;
-  }
-  
-  .modal-title {
-    font-size: 1.3rem;
+    padding: var(--modal-padding);
   }
   
   .modal-content {
     max-height: 70vh;
   }
+  
+  .modal-close {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  .modal-form-group input,
+  .modal-form-group textarea {
+    font-size: 16px; /* Previene zoom en iOS */
+  }
+}
+
+/* ==========================================
+   OPTIMIZACIONES PARA DISPOSITIVOS TÁCTILES
+   ========================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  .modal-close:hover,
+  .modal-btn:hover,
+  .modal-tech-tag:hover,
+  .modal-image:hover,
+  .project-gallery img:hover {
+    transform: none;
+  }
+  
+  .modal-close:active,
+  .modal-btn:active {
+    transform: scale(0.95);
+  }
+  
+  .modal-tech-tag:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ==========================================
+   ACCESIBILIDAD
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal-container,
+  .modal-close,
+  .modal-btn,
+  .modal-tech-tag,
+  .modal-image,
+  .project-gallery img,
+  .modal-content li {
+    transition: none;
+  }
+  
+  .modal-overlay::before {
+    animation: none;
+  }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+  .modal-container {
+    border: 2px solid var(--red-intense);
+  }
+  
+  .modal-close,
+  .modal-btn-secondary {
+    border: 2px solid var(--gray-medium);
+  }
+  
+  .modal-tech-tag {
+    border: 2px solid var(--gray-dark);
+  }
+}
+
+/* Evitar scroll del body cuando modal está activo */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+/* Estados de validación para formularios */
+.modal-form-group input:invalid:not(:placeholder-shown),
+.modal-form-group textarea:invalid:not(:placeholder-shown) {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+}
+
+.modal-form-group input:valid:not(:placeholder-shown),
+.modal-form-group textarea:valid:not(:placeholder-shown) {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
 }

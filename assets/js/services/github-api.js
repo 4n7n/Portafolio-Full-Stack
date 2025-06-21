@@ -7,7 +7,8 @@ export class GitHubAPI {
       rateLimit: {
         remaining: null,
         reset: null,
-        limit: null
+        limit: null,
+        used: null
       },
       cache: {
         enabled: true,
@@ -16,6 +17,15 @@ export class GitHubAPI {
       },
       ...config
     };
+
+    // Validar configuración básica
+    if (this.config.token && typeof this.config.token !== 'string') {
+      throw new Error('Token debe ser una cadena de texto');
+    }
+    
+    if (this.config.username && typeof this.config.username !== 'string') {
+      throw new Error('Username debe ser una cadena de texto');
+    }
   }
 
   /**
@@ -25,6 +35,10 @@ export class GitHubAPI {
    * @returns {Promise}
    */
   async request(endpoint, options = {}) {
+    if (!endpoint || typeof endpoint !== 'string') {
+      throw new Error('Endpoint es requerido y debe ser una cadena');
+    }
+
     const url = `${this.config.baseURL}${endpoint}`;
     const cacheKey = `${url}${JSON.stringify(options)}`;
 
@@ -38,7 +52,7 @@ export class GitHubAPI {
 
     const headers = {
       'Accept': 'application/vnd.github.v3+json',
-      'User-Agent': `Portfolio-App`,
+      'User-Agent': 'Portfolio-App',
       ...options.headers
     };
 
@@ -57,6 +71,23 @@ export class GitHubAPI {
       // Actualizar información de rate limit
       this.updateRateLimit(response.headers);
 
+      if (response.status === 404) {
+        throw new Error('Recurso no encontrado');
+      }
+
+      if (response.status === 403) {
+        const remainingRequests = this.config.rateLimit.remaining;
+        if (remainingRequests === 0) {
+          const resetDate = new Date(this.config.rateLimit.reset * 1000);
+          throw new Error(`Rate limit excedido. Se restablece en: ${resetDate.toLocaleString()}`);
+        }
+        throw new Error('Acceso prohibido. Verifica tu token de acceso');
+      }
+
+      if (response.status === 401) {
+        throw new Error('Token de acceso inválido o expirado');
+      }
+
       if (!response.ok) {
         throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
       }
@@ -64,12 +95,15 @@ export class GitHubAPI {
       const data = await response.json();
 
       // Guardar en cache
-      if (this.config.cache.enabled) {
+      if (this.config.cache.enabled && response.status === 200) {
         this.setCachedData(cacheKey, data);
       }
 
       return data;
     } catch (error) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        throw new Error('Error de conexión con GitHub API');
+      }
       console.error('Error en petición a GitHub API:', error);
       throw error;
     }
@@ -82,26 +116,27 @@ export class GitHubAPI {
    */
   async getUser(username = null) {
     const user = username || this.config.username;
-    if (!user) {
-      throw new Error('Username no especificado');
+    if (!user || typeof user !== 'string') {
+      throw new Error('Username es requerido y debe ser una cadena');
     }
-    const data = await this.request(`/users/${user}`);
+
+    const data = await this.request(`/users/${encodeURIComponent(user)}`);
     
     return {
       username: data.login,
-      name: data.name,
-      bio: data.bio,
+      name: data.name || null,
+      bio: data.bio || null,
       avatar: data.avatar_url,
-      location: data.location,
-      website: data.blog,
-      company: data.company,
-      email: data.email,
-      followers: data.followers,
-      following: data.following,
-      publicRepos: data.public_repos,
+      location: data.location || null,
+      website: data.blog || null,
+      company: data.company || null,
+      email: data.email || null,
+      followers: data.followers || 0,
+      following: data.following || 0,
+      publicRepos: data.public_repos || 0,
       createdAt: data.created_at,
       updatedAt: data.updated_at,
-      twitterUsername: data.twitter_username,
+      twitterUsername: data.twitter_username || null,
       hireable: data.hireable
     };
   }
@@ -123,52 +158,69 @@ export class GitHubAPI {
       featured = false
     } = options;
 
-    if (!username) {
-      throw new Error('Username no especificado');
+    if (!username || typeof username !== 'string') {
+      throw new Error('Username es requerido y debe ser una cadena');
+    }
+
+    // Validar parámetros
+    const validTypes = ['owner', 'all', 'member'];
+    const validSorts = ['created', 'updated', 'pushed', 'full_name'];
+    const validDirections = ['asc', 'desc'];
+
+    if (!validTypes.includes(type)) {
+      throw new Error(`Tipo inválido. Debe ser uno de: ${validTypes.join(', ')}`);
+    }
+
+    if (!validSorts.includes(sort)) {
+      throw new Error(`Sort inválido. Debe ser uno de: ${validSorts.join(', ')}`);
+    }
+
+    if (!validDirections.includes(direction)) {
+      throw new Error(`Direction inválida. Debe ser: ${validDirections.join(' o ')}`);
     }
 
     const params = new URLSearchParams({
       type,
       sort,
       direction,
-      per_page: per_page.toString(),
-      page: page.toString()
+      per_page: Math.min(Math.max(per_page, 1), 100).toString(), // Limitar entre 1 y 100
+      page: Math.max(page, 1).toString()
     });
 
-    const data = await this.request(`/users/${username}/repos?${params}`);
+    const data = await this.request(`/users/${encodeURIComponent(username)}/repos?${params}`);
 
     let repositories = data.map(repo => ({
       id: repo.id,
       name: repo.name,
       fullName: repo.full_name,
-      description: repo.description,
+      description: repo.description || null,
       url: repo.html_url,
       cloneUrl: repo.clone_url,
       sshUrl: repo.ssh_url,
-      homepage: repo.homepage,
-      language: repo.language,
+      homepage: repo.homepage || null,
+      language: repo.language || null,
       languages: null, // Se carga por separado
-      size: repo.size,
-      stars: repo.stargazers_count,
-      watchers: repo.watchers_count,
-      forks: repo.forks_count,
-      issues: repo.open_issues_count,
+      size: repo.size || 0,
+      stars: repo.stargazers_count || 0,
+      watchers: repo.watchers_count || 0,
+      forks: repo.forks_count || 0,
+      issues: repo.open_issues_count || 0,
       license: repo.license ? repo.license.name : null,
-      isPrivate: repo.private,
-      isFork: repo.fork,
-      isArchived: repo.archived,
-      isDisabled: repo.disabled,
-      defaultBranch: repo.default_branch,
+      isPrivate: repo.private || false,
+      isFork: repo.fork || false,
+      isArchived: repo.archived || false,
+      isDisabled: repo.disabled || false,
+      defaultBranch: repo.default_branch || 'main',
       createdAt: repo.created_at,
       updatedAt: repo.updated_at,
-      pushedAt: repo.pushed_at,
+      pushedAt: repo.pushed_at || null,
       topics: repo.topics || [],
-      hasPages: repo.has_pages,
+      hasPages: repo.has_pages || false,
       pagesUrl: repo.has_pages ? `https://${username}.github.io/${repo.name}` : null
     }));
 
     // Filtrar repositorios excluidos
-    if (exclude.length > 0) {
+    if (Array.isArray(exclude) && exclude.length > 0) {
       repositories = repositories.filter(repo => 
         !exclude.includes(repo.name) && !exclude.includes(repo.fullName)
       );
@@ -194,22 +246,23 @@ export class GitHubAPI {
    * @returns {Promise}
    */
   async getRepositoryStats(repo, username = this.config.username) {
-    if (!username || !repo) {
-      throw new Error('Username y repositorio son obligatorios');
+    if (!username || !repo || typeof username !== 'string' || typeof repo !== 'string') {
+      throw new Error('Username y repositorio son obligatorios y deben ser cadenas');
     }
 
     try {
-      const [languages, commits, contributors] = await Promise.all([
+      const [languages, commits, contributors] = await Promise.allSettled([
         this.getRepositoryLanguages(repo, username),
         this.getRepositoryCommits(repo, username, { per_page: 1 }),
         this.getRepositoryContributors(repo, username)
       ]);
 
       return {
-        languages,
-        totalCommits: commits.length > 0 ? 'Unknown' : 0, // GitHub no proporciona count total fácilmente
-        contributors: contributors.length,
-        lastCommit: commits.length > 0 ? commits[0].commit.author.date : null
+        languages: languages.status === 'fulfilled' ? languages.value : {},
+        totalCommits: commits.status === 'fulfilled' && commits.value.length > 0 ? 'Unknown' : 0,
+        contributors: contributors.status === 'fulfilled' ? contributors.value.length : 0,
+        lastCommit: commits.status === 'fulfilled' && commits.value.length > 0 ? 
+          commits.value[0].commit.author.date : null
       };
     } catch (error) {
       console.warn(`Error obteniendo estadísticas para ${repo}:`, error);
@@ -229,7 +282,11 @@ export class GitHubAPI {
    * @returns {Promise}
    */
   async getRepositoryLanguages(repo, username = this.config.username) {
-    const data = await this.request(`/repos/${username}/${repo}/languages`);
+    if (!username || !repo) {
+      throw new Error('Username y repositorio son obligatorios');
+    }
+
+    const data = await this.request(`/repos/${encodeURIComponent(username)}/${encodeURIComponent(repo)}/languages`);
     
     // Calcular porcentajes
     const total = Object.values(data).reduce((sum, bytes) => sum + bytes, 0);
@@ -238,7 +295,7 @@ export class GitHubAPI {
     Object.entries(data).forEach(([language, bytes]) => {
       languages[language] = {
         bytes,
-        percentage: total > 0 ? ((bytes / total) * 100).toFixed(1) : 0
+        percentage: total > 0 ? parseFloat(((bytes / total) * 100).toFixed(1)) : 0
       };
     });
 
@@ -253,6 +310,10 @@ export class GitHubAPI {
    * @returns {Promise}
    */
   async getRepositoryCommits(repo, username = this.config.username, options = {}) {
+    if (!username || !repo) {
+      throw new Error('Username y repositorio son obligatorios');
+    }
+
     const {
       sha = null,
       path = null,
@@ -264,8 +325,8 @@ export class GitHubAPI {
     } = options;
 
     const params = new URLSearchParams({
-      per_page: per_page.toString(),
-      page: page.toString()
+      per_page: Math.min(Math.max(per_page, 1), 100).toString(),
+      page: Math.max(page, 1).toString()
     });
 
     if (sha) params.append('sha', sha);
@@ -274,7 +335,7 @@ export class GitHubAPI {
     if (since) params.append('since', since);
     if (until) params.append('until', until);
 
-    return await this.request(`/repos/${username}/${repo}/commits?${params}`);
+    return await this.request(`/repos/${encodeURIComponent(username)}/${encodeURIComponent(repo)}/commits?${params}`);
   }
 
   /**
@@ -284,7 +345,11 @@ export class GitHubAPI {
    * @returns {Promise}
    */
   async getRepositoryContributors(repo, username = this.config.username) {
-    return await this.request(`/repos/${username}/${repo}/contributors`);
+    if (!username || !repo) {
+      throw new Error('Username y repositorio son obligatorios');
+    }
+
+    return await this.request(`/repos/${encodeURIComponent(username)}/${encodeURIComponent(repo)}/contributors`);
   }
 
   /**
@@ -294,11 +359,27 @@ export class GitHubAPI {
    * @returns {Promise}
    */
   async getRepositoryReadme(repo, username = this.config.username) {
+    if (!username || !repo) {
+      throw new Error('Username y repositorio son obligatorios');
+    }
+
     try {
-      const data = await this.request(`/repos/${username}/${repo}/readme`);
+      const data = await this.request(`/repos/${encodeURIComponent(username)}/${encodeURIComponent(repo)}/readme`);
       
-      // Decodificar contenido base64
-      const content = atob(data.content.replace(/\s/g, ''));
+      // Decodificar contenido base64 de forma segura
+      let content = '';
+      try {
+        if (typeof window !== 'undefined' && window.atob) {
+          content = window.atob(data.content.replace(/\s/g, ''));
+        } else if (typeof Buffer !== 'undefined') {
+          content = Buffer.from(data.content, 'base64').toString('utf8');
+        } else {
+          content = 'Contenido no disponible en este entorno';
+        }
+      } catch (decodeError) {
+        console.warn('Error decodificando README:', decodeError);
+        content = 'Error decodificando contenido';
+      }
       
       return {
         content,
@@ -308,8 +389,11 @@ export class GitHubAPI {
         downloadUrl: data.download_url
       };
     } catch (error) {
-      console.warn(`README no encontrado para ${repo}`);
-      return null;
+      if (error.message.includes('404') || error.message.includes('no encontrado')) {
+        console.warn(`README no encontrado para ${repo}`);
+        return null;
+      }
+      throw error;
     }
   }
 
@@ -319,12 +403,12 @@ export class GitHubAPI {
    * @returns {Promise}
    */
   async getUserActivity(username = this.config.username) {
-    if (!username) {
-      throw new Error('Username no especificado');
+    if (!username || typeof username !== 'string') {
+      throw new Error('Username es requerido y debe ser una cadena');
     }
 
     try {
-      const events = await this.request(`/users/${username}/events/public?per_page=100`);
+      const events = await this.request(`/users/${encodeURIComponent(username)}/events/public?per_page=100`);
       
       const activity = {
         totalEvents: events.length,
@@ -337,23 +421,30 @@ export class GitHubAPI {
       };
 
       events.forEach(event => {
+        // Validar estructura del evento
+        if (!event || typeof event !== 'object') return;
+
         // Contar eventos por tipo
-        activity.eventsByType[event.type] = (activity.eventsByType[event.type] || 0) + 1;
+        if (event.type) {
+          activity.eventsByType[event.type] = (activity.eventsByType[event.type] || 0) + 1;
+        }
         
         // Repositorios activos
-        if (event.repo) {
+        if (event.repo && event.repo.name) {
           activity.repositoriesActive.add(event.repo.name);
         }
         
         // Última actividad
-        if (!activity.lastActivity || new Date(event.created_at) > new Date(activity.lastActivity)) {
+        if (event.created_at && (!activity.lastActivity || new Date(event.created_at) > new Date(activity.lastActivity))) {
           activity.lastActivity = event.created_at;
         }
         
         // Contar tipos específicos
         switch (event.type) {
           case 'PushEvent':
-            activity.commitCount += event.payload.commits ? event.payload.commits.length : 0;
+            if (event.payload && event.payload.commits) {
+              activity.commitCount += event.payload.commits.length;
+            }
             break;
           case 'IssuesEvent':
             activity.issueCount++;
@@ -369,7 +460,15 @@ export class GitHubAPI {
       return activity;
     } catch (error) {
       console.warn('Error obteniendo actividad del usuario:', error);
-      return null;
+      return {
+        totalEvents: 0,
+        eventsByType: {},
+        repositoriesActive: [],
+        lastActivity: null,
+        commitCount: 0,
+        issueCount: 0,
+        prCount: 0
+      };
     }
   }
 
@@ -380,6 +479,10 @@ export class GitHubAPI {
    * @returns {Promise}
    */
   async searchRepositories(query, options = {}) {
+    if (!query || typeof query !== 'string') {
+      throw new Error('Query de búsqueda es requerido y debe ser una cadena');
+    }
+
     const {
       sort = 'stars', // stars, forks, help-wanted-issues, updated
       order = 'desc', // asc, desc
@@ -389,7 +492,19 @@ export class GitHubAPI {
       user = null
     } = options;
 
-    let searchQuery = query;
+    // Validar parámetros
+    const validSorts = ['stars', 'forks', 'help-wanted-issues', 'updated'];
+    const validOrders = ['asc', 'desc'];
+
+    if (!validSorts.includes(sort)) {
+      throw new Error(`Sort inválido. Debe ser uno de: ${validSorts.join(', ')}`);
+    }
+
+    if (!validOrders.includes(order)) {
+      throw new Error(`Order inválido. Debe ser: ${validOrders.join(' o ')}`);
+    }
+
+    let searchQuery = query.trim();
     
     if (language) searchQuery += ` language:${language}`;
     if (user) searchQuery += ` user:${user}`;
@@ -398,29 +513,29 @@ export class GitHubAPI {
       q: searchQuery,
       sort,
       order,
-      per_page: per_page.toString(),
-      page: page.toString()
+      per_page: Math.min(Math.max(per_page, 1), 100).toString(),
+      page: Math.max(page, 1).toString()
     });
 
     const data = await this.request(`/search/repositories?${params}`);
     
     return {
-      totalCount: data.total_count,
-      incompleteResults: data.incomplete_results,
-      items: data.items.map(repo => ({
+      totalCount: data.total_count || 0,
+      incompleteResults: data.incomplete_results || false,
+      items: (data.items || []).map(repo => ({
         id: repo.id,
         name: repo.name,
         fullName: repo.full_name,
-        description: repo.description,
+        description: repo.description || null,
         url: repo.html_url,
-        language: repo.language,
-        stars: repo.stargazers_count,
-        forks: repo.forks_count,
+        language: repo.language || null,
+        stars: repo.stargazers_count || 0,
+        forks: repo.forks_count || 0,
         updatedAt: repo.updated_at,
         owner: {
-          username: repo.owner.login,
-          avatar: repo.owner.avatar_url,
-          url: repo.owner.html_url
+          username: repo.owner ? repo.owner.login : null,
+          avatar: repo.owner ? repo.owner.avatar_url : null,
+          url: repo.owner ? repo.owner.html_url : null
         }
       }))
     };
@@ -431,12 +546,25 @@ export class GitHubAPI {
    * @param {Headers} headers - Headers de respuesta
    */
   updateRateLimit(headers) {
+    if (!headers) return;
+
     this.config.rateLimit = {
-      limit: parseInt(headers.get('X-RateLimit-Limit')) || null,
-      remaining: parseInt(headers.get('X-RateLimit-Remaining')) || null,
-      reset: parseInt(headers.get('X-RateLimit-Reset')) || null,
-      used: parseInt(headers.get('X-RateLimit-Used')) || null
+      limit: this.parseHeaderInt(headers.get('X-RateLimit-Limit')),
+      remaining: this.parseHeaderInt(headers.get('X-RateLimit-Remaining')),
+      reset: this.parseHeaderInt(headers.get('X-RateLimit-Reset')),
+      used: this.parseHeaderInt(headers.get('X-RateLimit-Used'))
     };
+  }
+
+  /**
+   * Parsea un header como entero de forma segura
+   * @param {string} value - Valor del header
+   * @returns {number|null}
+   */
+  parseHeaderInt(value) {
+    if (!value) return null;
+    const parsed = parseInt(value, 10);
+    return isNaN(parsed) ? null : parsed;
   }
 
   /**
@@ -457,6 +585,10 @@ export class GitHubAPI {
    * @returns {boolean}
    */
   hasRemainingRequests(requestsNeeded = 1) {
+    if (typeof requestsNeeded !== 'number' || requestsNeeded < 0) {
+      return false;
+    }
+    
     return this.config.rateLimit.remaining === null || 
            this.config.rateLimit.remaining >= requestsNeeded;
   }
@@ -465,15 +597,20 @@ export class GitHubAPI {
    * Gestión de cache
    */
   getCachedData(key) {
+    if (!key || !this.config.cache.data) return null;
+    
     const cached = this.config.cache.data.get(key);
-    if (cached && Date.now() - cached.timestamp < this.config.cache.duration) {
+    if (cached && cached.timestamp && Date.now() - cached.timestamp < this.config.cache.duration) {
       return cached.data;
     }
+    
     this.config.cache.data.delete(key);
     return null;
   }
 
   setCachedData(key, data) {
+    if (!key || !this.config.cache.data) return;
+    
     this.config.cache.data.set(key, {
       data,
       timestamp: Date.now()
@@ -481,7 +618,9 @@ export class GitHubAPI {
   }
 
   clearCache() {
-    this.config.cache.data.clear();
+    if (this.config.cache.data) {
+      this.config.cache.data.clear();
+    }
   }
 }
 
@@ -494,7 +633,7 @@ let githubAPIInstance = null;
  * Obtiene la instancia de la API de GitHub
  */
 export function getGitHubAPI(config) {
-  if (!githubAPIInstance) {
+  if (!githubAPIInstance || config) {
     githubAPIInstance = new GitHubAPI(config);
   }
   return githubAPIInstance;
@@ -508,17 +647,26 @@ export const GitHubUtils = {
    * Formatea la fecha de GitHub
    */
   formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    if (!dateString) return 'Fecha no disponible';
+    
+    try {
+      return new Date(dateString).toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (error) {
+      console.warn('Error formateando fecha:', error);
+      return 'Fecha inválida';
+    }
   },
 
   /**
    * Formatea números grandes (K, M)
    */
   formatNumber(num) {
+    if (typeof num !== 'number' || isNaN(num)) return '0';
+    
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M';
     }
@@ -532,6 +680,8 @@ export const GitHubUtils = {
    * Obtiene el color asociado a un lenguaje
    */
   getLanguageColor(language) {
+    if (!language || typeof language !== 'string') return '#586069';
+    
     const colors = {
       JavaScript: '#f1e05a',
       TypeScript: '#2b7489',
@@ -549,7 +699,9 @@ export const GitHubUtils = {
       HTML: '#e34c26',
       CSS: '#1572B6',
       Vue: '#2c3e50',
-      React: '#61DAFB'
+      React: '#61DAFB',
+      Svelte: '#ff3e00',
+      Angular: '#dd0031'
     };
     return colors[language] || '#586069';
   },
@@ -558,34 +710,44 @@ export const GitHubUtils = {
    * Extrae temas/topics relevantes
    */
   extractRelevantTopics(topics) {
+    if (!Array.isArray(topics)) return [];
+    
     const techTopics = [
-      'javascript', 'typescript', 'react', 'vue', 'angular', 'nodejs',
-      'python', 'django', 'flask', 'java', 'spring', 'php', 'laravel',
+      'javascript', 'typescript', 'react', 'vue', 'angular', 'svelte', 'nodejs',
+      'python', 'django', 'flask', 'fastapi', 'java', 'spring', 'php', 'laravel',
       'csharp', 'dotnet', 'go', 'rust', 'swift', 'kotlin', 'dart',
       'flutter', 'mobile', 'web', 'api', 'frontend', 'backend',
       'fullstack', 'database', 'mongodb', 'postgresql', 'mysql',
-      'docker', 'kubernetes', 'aws', 'azure', 'gcp', 'devops'
+      'docker', 'kubernetes', 'aws', 'azure', 'gcp', 'devops',
+      'machine-learning', 'ai', 'data-science', 'blockchain'
     ];
 
-    return topics.filter(topic => 
-      techTopics.includes(topic.toLowerCase()) ||
-      topic.toLowerCase().includes('app') ||
-      topic.toLowerCase().includes('framework') ||
-      topic.toLowerCase().includes('library')
-    );
+    return topics.filter(topic => {
+      if (!topic || typeof topic !== 'string') return false;
+      const lowerTopic = topic.toLowerCase();
+      return techTopics.includes(lowerTopic) ||
+        lowerTopic.includes('app') ||
+        lowerTopic.includes('framework') ||
+        lowerTopic.includes('library') ||
+        lowerTopic.includes('tool');
+    });
   },
 
   /**
    * Calcula la puntuación de relevancia de un repositorio
    */
   calculateRepoScore(repo) {
+    if (!repo || typeof repo !== 'object') return 0;
+    
     let score = 0;
     
     // Puntuación por estrellas
-    score += Math.min(repo.stars * 2, 50);
+    const stars = repo.stars || 0;
+    score += Math.min(stars * 2, 50);
     
     // Puntuación por forks
-    score += Math.min(repo.forks * 3, 30);
+    const forks = repo.forks || 0;
+    score += Math.min(forks * 3, 30);
     
     // Penalización por ser fork
     if (repo.isFork) score -= 20;
@@ -600,12 +762,19 @@ export const GitHubUtils = {
     if (repo.homepage) score += 15;
     
     // Bonificación por topics relevantes
-    score += this.extractRelevantTopics(repo.topics).length * 5;
+    const relevantTopics = this.extractRelevantTopics(repo.topics || []);
+    score += relevantTopics.length * 5;
     
     // Bonificación por actividad reciente (último mes)
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-    if (new Date(repo.updatedAt) > oneMonthAgo) score += 10;
+    if (repo.updatedAt) {
+      try {
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        if (new Date(repo.updatedAt) > oneMonthAgo) score += 10;
+      } catch (error) {
+        console.warn('Error calculando actividad reciente:', error);
+      }
+    }
     
     return Math.max(score, 0);
   },
@@ -614,6 +783,8 @@ export const GitHubUtils = {
    * Ordena repositorios por relevancia
    */
   sortByRelevance(repositories) {
+    if (!Array.isArray(repositories)) return [];
+    
     return repositories
       .map(repo => ({
         ...repo,
@@ -626,6 +797,8 @@ export const GitHubUtils = {
    * Filtra repositorios destacados automáticamente
    */
   getAutoFeaturedRepos(repositories, maxCount = 6) {
+    if (!Array.isArray(repositories)) return [];
+    
     const sorted = this.sortByRelevance(repositories);
     return sorted
       .filter(repo => 
@@ -633,17 +806,19 @@ export const GitHubUtils = {
         !repo.isArchived && 
         repo.score > 10
       )
-      .slice(0, maxCount);
+      .slice(0, Math.max(maxCount, 1));
   },
 
   /**
    * Genera estadísticas del perfil
    */
   generateProfileStats(user, repositories) {
+    if (!Array.isArray(repositories)) repositories = [];
+    
     const stats = {
       totalRepos: repositories.length,
-      totalStars: repositories.reduce((sum, repo) => sum + repo.stars, 0),
-      totalForks: repositories.reduce((sum, repo) => sum + repo.forks, 0),
+      totalStars: repositories.reduce((sum, repo) => sum + (repo.stars || 0), 0),
+      totalForks: repositories.reduce((sum, repo) => sum + (repo.forks || 0), 0),
       languages: {},
       mostStarredRepo: null,
       newestRepo: null,
@@ -655,27 +830,35 @@ export const GitHubUtils = {
 
     // Calcular promedio de estrellas
     if (repositories.length > 0) {
-      stats.averageStars = (stats.totalStars / repositories.length).toFixed(1);
+      stats.averageStars = parseFloat((stats.totalStars / repositories.length).toFixed(1));
     }
 
     // Encontrar repositorios destacados
     if (repositories.length > 0) {
-      stats.mostStarredRepo = repositories.reduce((prev, current) => 
-        (prev.stars > current.stars) ? prev : current
-      );
+      try {
+        stats.mostStarredRepo = repositories.reduce((prev, current) => 
+          ((prev.stars || 0) > (current.stars || 0)) ? prev : current
+        );
 
-      stats.newestRepo = repositories.reduce((prev, current) => 
-        (new Date(prev.createdAt) > new Date(current.createdAt)) ? prev : current
-      );
+        stats.newestRepo = repositories.reduce((prev, current) => {
+          const prevDate = new Date(prev.createdAt || 0);
+          const currentDate = new Date(current.createdAt || 0);
+          return prevDate > currentDate ? prev : current;
+        });
 
-      stats.oldestRepo = repositories.reduce((prev, current) => 
-        (new Date(prev.createdAt) < new Date(current.createdAt)) ? prev : current
-      );
+        stats.oldestRepo = repositories.reduce((prev, current) => {
+          const prevDate = new Date(prev.createdAt || Date.now());
+          const currentDate = new Date(current.createdAt || Date.now());
+          return prevDate < currentDate ? prev : current;
+        });
+      } catch (error) {
+        console.warn('Error calculando estadísticas de repositorios:', error);
+      }
     }
 
     // Contar lenguajes
     repositories.forEach(repo => {
-      if (repo.language) {
+      if (repo.language && typeof repo.language === 'string') {
         stats.languages[repo.language] = (stats.languages[repo.language] || 0) + 1;
       }
     });

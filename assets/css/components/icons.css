@@ -158,6 +158,54 @@ img[src*="download.svg"] {
   height: 16px !important;
 }
 
+/* External Link SVG - Normalizar tamaño y posición */
+img[src*="external-link.svg"] {
+  width: 14px !important;
+  height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+  object-fit: contain !important;
+  margin-left: 4px !important;
+  vertical-align: middle !important;
+  opacity: 0.7 !important;
+  transition: all 0.3s ease !important;
+}
+
+.hero-btn img[src*="external-link.svg"] {
+  width: 16px !important;
+  height: 16px !important;
+  max-width: 16px !important;
+  max-height: 16px !important;
+  margin-left: 6px !important;
+}
+
+.project-link img[src*="external-link.svg"],
+.project-technologies img[src*="external-link.svg"] {
+  width: 14px !important;
+  height: 14px !important;
+  margin-left: 4px !important;
+}
+
+.contact-item img[src*="external-link.svg"],
+.social-contact-link img[src*="external-link.svg"] {
+  width: 12px !important;
+  height: 12px !important;
+  margin-left: 3px !important;
+  opacity: 0.6 !important;
+}
+
+.timeline-content img[src*="external-link.svg"] {
+  width: 12px !important;
+  height: 12px !important;
+  margin-left: 3px !important;
+  opacity: 0.6 !important;
+}
+
+img[src*="external-link.svg"]:hover {
+  opacity: 1 !important;
+  transform: translateX(1px) translateY(-1px) !important;
+}
+
 /* ==========================================
    CERTIFICACIÓN BADGE - COMPACTO
    ========================================== */
@@ -523,6 +571,37 @@ img[src*="download.svg"] {
     max-height: 14px !important;
   }
   
+  /* External Link responsive tablet */
+  img[src*="external-link.svg"] {
+    width: 12px !important;
+    height: 12px !important;
+    max-width: 12px !important;
+    max-height: 12px !important;
+    margin-left: 3px !important;
+  }
+  
+  .hero-btn img[src*="external-link.svg"] {
+    width: 14px !important;
+    height: 14px !important;
+    max-width: 14px !important;
+    max-height: 14px !important;
+    margin-left: 4px !important;
+  }
+  
+  .project-link img[src*="external-link.svg"],
+  .project-technologies img[src*="external-link.svg"] {
+    width: 12px !important;
+    height: 12px !important;
+    margin-left: 3px !important;
+  }
+  
+  .contact-item img[src*="external-link.svg"],
+  .social-contact-link img[src*="external-link.svg"] {
+    width: 10px !important;
+    height: 10px !important;
+    margin-left: 2px !important;
+  }
+  
   .tech-grid {
     grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
     gap: 0.8rem;
@@ -661,6 +740,38 @@ img[src*="download.svg"] {
     height: 12px !important;
     max-width: 12px !important;
     max-height: 12px !important;
+  }
+  
+  /* External Link responsive mobile */
+  img[src*="external-link.svg"] {
+    width: 10px !important;
+    height: 10px !important;
+    max-width: 10px !important;
+    max-height: 10px !important;
+    margin-left: 2px !important;
+  }
+  
+  .hero-btn img[src*="external-link.svg"] {
+    width: 12px !important;
+    height: 12px !important;
+    max-width: 12px !important;
+    max-height: 12px !important;
+    margin-left: 3px !important;
+  }
+  
+  .project-link img[src*="external-link.svg"],
+  .project-technologies img[src*="external-link.svg"] {
+    width: 10px !important;
+    height: 10px !important;
+    margin-left: 2px !important;
+  }
+  
+  .contact-item img[src*="external-link.svg"],
+  .social-contact-link img[src*="external-link.svg"],
+  .timeline-content img[src*="external-link.svg"] {
+    width: 8px !important;
+    height: 8px !important;
+    margin-left: 2px !important;
   }
   
   .certification-badge {

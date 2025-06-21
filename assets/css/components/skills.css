@@ -17,12 +17,16 @@
   --gradient-dark: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
   --shadow-glow: 0 8px 32px rgba(220, 38, 38, 0.3);
   --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Variables responsive */
   --container-padding: 2rem;
   --section-padding: 4rem 0;
   --card-padding: 2.5rem;
   --grid-gap: 3rem;
+  --skill-icon-size: 60px;
+  --progress-height: 8px;
+  --touch-target: 44px;
 }
 
 /* ==========================================
@@ -38,11 +42,12 @@
    ========================================== */
 
 .skills {
+  position: relative;
   background: var(--dark-primary);
   color: var(--white);
   padding: var(--section-padding);
-  position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
 .skills::before {
@@ -56,21 +61,22 @@
     radial-gradient(circle at 35% 65%, rgba(220, 38, 38, 0.08) 0%, transparent 50%),
     radial-gradient(circle at 65% 35%, rgba(220, 38, 38, 0.06) 0%, transparent 50%);
   animation: float 26s ease-in-out infinite alternate;
-  z-index: 1;
+  z-index: -1;
   will-change: transform;
+  pointer-events: none;
 }
 
 @keyframes float {
-  0% { transform: translateY(0px) rotate(0deg); }
+  0% { transform: translateY(0) rotate(0deg); }
   100% { transform: translateY(-20px) rotate(2deg); }
 }
 
 .skills-container {
+  position: relative;
+  z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--container-padding);
-  position: relative;
-  z-index: 2;
   width: 100%;
 }
 
@@ -84,6 +90,7 @@
 }
 
 .skills-title {
+  position: relative;
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 800;
   background: var(--gradient-red);
@@ -91,8 +98,9 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 1rem;
-  position: relative;
   line-height: 1.2;
+  /* Fallback para navegadores sin soporte */
+  color: var(--red-medium);
 }
 
 .skills-title::after {
@@ -151,6 +159,7 @@
 }
 
 .skill-category {
+  position: relative;
   background: var(--gradient-dark);
   padding: var(--card-padding);
   border-radius: 20px;
@@ -159,10 +168,10 @@
     0 15px 35px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: var(--transition);
-  position: relative;
   overflow: hidden;
   width: 100%;
   min-width: 0;
+  cursor: default;
 }
 
 .skill-category::before {
@@ -175,10 +184,12 @@
   background: var(--gradient-red);
   transform: scaleX(0);
   transition: transform 0.3s ease;
+  border-radius: 20px 20px 0 0;
 }
 
-.skill-category:hover {
-  transform: translateY(-10px) scale(1.02);
+.skill-category:hover,
+.skill-category:focus-within {
+  transform: translateY(-8px) scale(1.01);
   box-shadow: 
     var(--shadow-glow),
     0 25px 60px rgba(0, 0, 0, 0.4),
@@ -186,7 +197,8 @@
   border-color: var(--red-medium);
 }
 
-.skill-category:hover::before {
+.skill-category:hover::before,
+.skill-category:focus-within::before {
   transform: scaleX(1);
 }
 
@@ -198,11 +210,13 @@
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
+  gap: 1rem;
 }
 
 .category-icon {
-  width: 60px;
-  height: 60px;
+  position: relative;
+  width: var(--skill-icon-size);
+  height: var(--skill-icon-size);
   background: var(--gradient-red);
   border-radius: 50%;
   display: flex;
@@ -210,14 +224,14 @@
   justify-content: center;
   font-size: 1.5rem;
   color: var(--white);
-  margin-right: 1rem;
   transition: var(--transition);
   box-shadow: var(--shadow-glow);
   flex-shrink: 0;
 }
 
-.skill-category:hover .category-icon {
-  transform: scale(1.15) rotate(10deg);
+.skill-category:hover .category-icon,
+.skill-category:focus-within .category-icon {
+  transform: scale(1.1) rotate(10deg);
   box-shadow: 
     var(--shadow-glow),
     0 10px 30px rgba(220, 38, 38, 0.6);
@@ -229,6 +243,7 @@
   color: var(--white);
   margin: 0;
   line-height: 1.3;
+  word-wrap: break-word;
 }
 
 /* ==========================================
@@ -242,14 +257,15 @@
 }
 
 .skill-item {
+  position: relative;
   margin-bottom: 1.5rem;
   padding: 1rem;
   background: rgba(42, 42, 42, 0.4);
   border-radius: 12px;
   border: 1px solid rgba(220, 38, 38, 0.1);
   transition: var(--transition);
-  position: relative;
   overflow: hidden;
+  cursor: default;
 }
 
 .skill-item:last-child {
@@ -265,10 +281,12 @@
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.1), transparent);
   transition: left 0.5s ease;
+  pointer-events: none;
 }
 
-.skill-item:hover {
-  transform: translateX(8px) scale(1.02);
+.skill-item:hover,
+.skill-item:focus-within {
+  transform: translateX(5px) scale(1.01);
   background: rgba(42, 42, 42, 0.8);
   border-color: var(--red-medium);
   box-shadow: var(--shadow-glow);
@@ -297,10 +315,12 @@
   color: var(--white);
   margin: 0;
   min-width: 0;
-  word-break: break-word;
+  word-wrap: break-word;
+  flex: 1;
 }
 
 .skill-level {
+  position: relative;
   background: var(--gradient-red);
   color: var(--white);
   padding: 0.3rem 0.8rem;
@@ -312,10 +332,12 @@
   box-shadow: 
     0 4px 15px rgba(220, 38, 38, 0.4),
     inset 0 1px 5px rgba(255, 255, 255, 0.2);
-  position: relative;
   overflow: hidden;
   flex-shrink: 0;
   white-space: nowrap;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
 }
 
 .skill-level::before {
@@ -327,6 +349,7 @@
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   transition: left 0.5s ease;
+  pointer-events: none;
 }
 
 .skill-item:hover .skill-level::before {
@@ -354,12 +377,12 @@
    ========================================== */
 
 .skill-progress {
+  position: relative;
   width: 100%;
-  height: 8px;
+  height: var(--progress-height);
   background: rgba(42, 42, 42, 0.6);
   border-radius: 10px;
   overflow: hidden;
-  position: relative;
   border: 1px solid rgba(220, 38, 38, 0.2);
   margin-bottom: 0.5rem;
 }
@@ -374,6 +397,7 @@
     0 0 20px rgba(220, 38, 38, 0.7),
     inset 0 3px 15px rgba(255, 255, 255, 0.3);
   border-radius: 10px;
+  will-change: width;
 }
 
 .skill-progress-fill::after {
@@ -386,6 +410,7 @@
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
   transform: translateX(15px);
   animation: skill-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes skill-shimmer {
@@ -407,7 +432,7 @@
   font-size: 0.9rem;
   color: var(--gray-light);
   line-height: 1.5;
-  margin-top: 0.5rem;
+  margin: 0.5rem 0 0 0;
 }
 
 /* ==========================================
@@ -415,6 +440,7 @@
    ========================================== */
 
 .skills-chart-wrapper {
+  position: relative;
   background: var(--gradient-dark);
   border-radius: 20px;
   padding: var(--card-padding);
@@ -423,7 +449,6 @@
     0 15px 35px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: var(--transition);
-  position: relative;
   overflow: hidden;
   width: 100%;
   min-width: 0;
@@ -439,10 +464,12 @@
   background: var(--gradient-red);
   transform: scaleX(0);
   transition: transform 0.3s ease;
+  border-radius: 20px 20px 0 0;
 }
 
-.skills-chart-wrapper:hover {
-  transform: translateY(-10px) scale(1.02);
+.skills-chart-wrapper:hover,
+.skills-chart-wrapper:focus-within {
+  transform: translateY(-8px) scale(1.01);
   box-shadow: 
     var(--shadow-glow),
     0 25px 60px rgba(0, 0, 0, 0.4),
@@ -450,7 +477,8 @@
   border-color: var(--red-medium);
 }
 
-.skills-chart-wrapper:hover::before {
+.skills-chart-wrapper:hover::before,
+.skills-chart-wrapper:focus-within::before {
   transform: scaleX(1);
 }
 
@@ -459,6 +487,7 @@
   height: auto !important;
   max-height: 400px;
   filter: drop-shadow(0 4px 15px rgba(220, 38, 38, 0.3));
+  display: block;
 }
 
 /* ==========================================
@@ -477,7 +506,9 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
+  /* Fallback para navegadores sin soporte */
+  color: var(--red-medium);
 }
 
 .chart-header p {
@@ -500,6 +531,7 @@
 }
 
 .chart-btn {
+  position: relative;
   background: rgba(42, 42, 42, 0.6);
   color: var(--white);
   border: 1px solid rgba(220, 38, 38, 0.2);
@@ -509,16 +541,27 @@
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  position: relative;
   overflow: hidden;
   white-space: nowrap;
+  min-height: var(--touch-target);
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.chart-btn:hover {
+.chart-btn:hover,
+.chart-btn:focus {
   background: var(--gradient-red);
   border-color: var(--red-medium);
   transform: translateY(-2px);
   box-shadow: var(--shadow-glow);
+  outline: none;
+}
+
+.chart-btn:focus {
+  outline: 2px solid var(--red-medium);
+  outline-offset: 2px;
 }
 
 .chart-btn.active {
@@ -567,14 +610,15 @@
 }
 
 .skill-card {
+  position: relative;
   background: rgba(42, 42, 42, 0.4);
   border-radius: 15px;
   padding: 1.5rem;
   text-align: center;
   border: 1px solid rgba(220, 38, 38, 0.1);
   transition: var(--transition);
-  position: relative;
   overflow: hidden;
+  cursor: default;
 }
 
 .skill-card::before {
@@ -586,10 +630,12 @@
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.1), transparent);
   transition: left 0.5s ease;
+  pointer-events: none;
 }
 
-.skill-card:hover {
-  transform: translateY(-8px) scale(1.05);
+.skill-card:hover,
+.skill-card:focus-within {
+  transform: translateY(-5px) scale(1.02);
   background: rgba(42, 42, 42, 0.8);
   border-color: var(--red-medium);
   box-shadow: var(--shadow-glow);
@@ -600,8 +646,9 @@
 }
 
 .skill-icon {
-  width: 60px;
-  height: 60px;
+  position: relative;
+  width: var(--skill-icon-size);
+  height: var(--skill-icon-size);
   margin: 0 auto 1rem;
   border-radius: 50%;
   display: flex;
@@ -612,16 +659,17 @@
   background: rgba(220, 38, 38, 0.1);
 }
 
-.skill-card:hover .skill-icon {
-  transform: scale(1.1) rotate(10deg);
+.skill-card:hover .skill-icon,
+.skill-card:focus-within .skill-icon {
+  transform: scale(1.05) rotate(10deg);
   border-color: var(--red-medium);
   box-shadow: var(--shadow-glow);
 }
 
 .skill-progress-circle {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: var(--skill-icon-size);
+  height: var(--skill-icon-size);
   margin: 1rem auto;
 }
 
@@ -635,6 +683,10 @@
   fill: none;
   stroke-width: 4;
   stroke-linecap: round;
+}
+
+.progress-background {
+  stroke: rgba(42, 42, 42, 0.6);
 }
 
 .progress-stroke {
@@ -651,18 +703,20 @@
   font-size: 0.9rem;
   font-weight: 700;
   color: var(--red-medium);
+  margin: 0;
 }
 
 .skill-card .skill-name {
   font-size: 1rem;
   font-weight: 600;
   color: var(--white);
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
 }
 
 .skill-experience {
   font-size: 0.8rem;
   color: var(--gray-medium);
+  margin: 0;
 }
 
 /* ==========================================
@@ -676,14 +730,16 @@
   border: 1px solid rgba(220, 38, 38, 0.1);
   transition: var(--transition);
   margin-bottom: 1rem;
+  cursor: default;
 }
 
 .skill-bar-item:last-child {
   margin-bottom: 0;
 }
 
-.skill-bar-item:hover {
-  transform: translateX(8px);
+.skill-bar-item:hover,
+.skill-bar-item:focus-within {
+  transform: translateX(5px);
   border-color: var(--red-medium);
   box-shadow: 0 4px 15px rgba(220, 38, 38, 0.2);
 }
@@ -698,12 +754,12 @@
 }
 
 .skill-bar {
+  position: relative;
   width: 100%;
   height: 6px;
   background: rgba(42, 42, 42, 0.6);
   border-radius: 10px;
   overflow: hidden;
-  position: relative;
   margin-bottom: 0.5rem;
 }
 
@@ -715,6 +771,7 @@
   transition: width 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
   width: 0%;
+  will-change: width;
 }
 
 /* ==========================================
@@ -737,30 +794,34 @@
   padding: 1.5rem 1rem;
   border: 1px solid rgba(220, 38, 38, 0.1);
   transition: var(--transition);
+  cursor: default;
 }
 
 .stat-item:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   border-color: var(--red-medium);
   box-shadow: var(--shadow-glow);
 }
 
 .stat-number {
   display: block;
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 800;
   background: var(--gradient-red);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
   line-height: 1;
+  /* Fallback para navegadores sin soporte */
+  color: var(--red-medium);
 }
 
 .stat-label {
   font-size: 0.9rem;
   color: var(--gray-medium);
   font-weight: 500;
+  margin: 0;
 }
 
 /* ==========================================
@@ -787,6 +848,7 @@
     --section-padding: 3rem 0;
     --card-padding: 1.5rem;
     --grid-gap: 1.5rem;
+    --skill-icon-size: 50px;
   }
   
   .skills-header {
@@ -802,10 +864,6 @@
     flex-direction: column;
     text-align: center;
     gap: 1rem;
-  }
-  
-  .category-icon {
-    margin-right: 0;
   }
   
   .chart-controls {
@@ -846,6 +904,7 @@
   :root {
     --container-padding: 1rem;
     --card-padding: 1.25rem;
+    --skill-icon-size: 45px;
   }
   
   .skills-grid {
@@ -855,16 +914,6 @@
   .skill-card {
     padding: 1rem;
   }
-  
-  .skill-icon {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .skill-progress-circle {
-    width: 50px;
-    height: 50px;
-  }
 }
 
 /* Móvil */
@@ -872,10 +921,7 @@
   :root {
     --section-padding: 2rem 0;
     --card-padding: 1rem;
-  }
-  
-  .skills::before {
-    animation: none;
+    --skill-icon-size: 40px;
   }
   
   .chart-stats {
@@ -887,21 +933,11 @@
   }
   
   .skill-item:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
   }
   
   .skill-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .category-icon {
-    width: 50px;
-    height: 50px;
-    font-size: 1.25rem;
-  }
-  
-  .stat-number {
-    font-size: 1.5rem;
+    transform: translateY(-3px);
   }
 }
 
@@ -920,19 +956,20 @@
   }
 }
 
-/* Optimizaciones para pantallas táctiles */
+/* ==========================================
+   OPTIMIZACIONES PARA DISPOSITIVOS TÁCTILES
+   ========================================== */
+
 @media (hover: none) and (pointer: coarse) {
   .skill-category:hover,
   .skill-item:hover,
   .skill-card:hover,
-  .chart-btn:hover {
+  .chart-btn:hover,
+  .stat-item:hover {
     transform: none;
   }
   
-  .skill-category:active {
-    transform: scale(0.98);
-  }
-  
+  .skill-category:active,
   .skill-item:active,
   .skill-card:active {
     transform: scale(0.98);
@@ -944,7 +981,10 @@
   }
 }
 
-/* Reducir animaciones para usuarios que prefieren menos movimiento */
+/* ==========================================
+   ACCESIBILIDAD
+   ========================================== */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -954,15 +994,81 @@
     transition-duration: 0.01ms !important;
   }
   
-  .skills::before {
-    animation: none;
-  }
-  
+  .skills::before,
   .skills-title::after {
     animation: none;
   }
   
-  .skill-shimmer {
+  .skill-shimmer,
+  .skill-progress-fill::after {
     animation: none;
   }
+  
+  .chart-view {
+    animation: none;
+  }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+  .skills {
+    background: #000000;
+  }
+  
+  .skill-category,
+  .skills-chart-wrapper,
+  .skill-item,
+  .skill-card,
+  .chart-btn,
+  .stat-item {
+    border: 2px solid var(--red-medium);
+  }
+  
+  .skill-progress,
+  .skill-bar {
+    border: 2px solid var(--gray-dark);
+  }
+}
+
+/* Focus para navegación por teclado */
+.skill-category:focus-within,
+.skills-chart-wrapper:focus-within,
+.skill-item:focus-within,
+.skill-card:focus-within {
+  outline: 2px solid var(--red-medium);
+  outline-offset: 2px;
+}
+
+.chart-btn:focus {
+  outline: 2px solid var(--red-medium);
+  outline-offset: 2px;
+}
+
+/* Estados de error para elementos que fallan */
+.skill-progress-fill[style*="width: 0%"] {
+  background: rgba(220, 38, 38, 0.3);
+}
+
+.skill-card .skill-icon:empty::before {
+  content: '?';
+  font-size: 1.2rem;
+  color: var(--gray-medium);
+}
+
+/* Optimizaciones de performance */
+.skill-progress-fill,
+.progress-stroke,
+.skill-fill {
+  will-change: width;
+}
+
+.skill-category,
+.skill-item,
+.skill-card {
+  will-change: transform;
+}
+
+/* Cleanup después de animaciones */
+.animation-complete {
+  will-change: auto;
 }

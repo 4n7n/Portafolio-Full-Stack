@@ -57,29 +57,23 @@
      GRADIENTES
      ========================================== */
   
-  /* Gradientes Rojos Mejorados */
+  /* Gradientes Rojos */
   --gradient-red: linear-gradient(135deg, var(--red-intense), var(--red-medium));
   --gradient-red-vertical: linear-gradient(180deg, var(--red-intense), var(--red-medium));
   --gradient-red-radial: radial-gradient(circle, var(--red-medium), var(--red-intense));
   --gradient-red-soft: linear-gradient(135deg, var(--red-200), var(--red-300));
   --gradient-red-intense: linear-gradient(135deg, var(--red-700), var(--red-600));
-  --gradient-red-glow: linear-gradient(135deg, var(--red-intense), var(--red-medium)), 
-                       radial-gradient(circle, rgba(220,38,38,0.4), transparent);
-  --gradient-red-animated: linear-gradient(45deg, var(--red-600), var(--red-500), var(--red-600));
   
-  /* Gradientes Oscuros Mejorados */
+  /* Gradientes Oscuros */
   --gradient-dark: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
   --gradient-dark-vertical: linear-gradient(180deg, var(--dark-primary), var(--dark-secondary));
   --gradient-dark-soft: linear-gradient(135deg, var(--dark-secondary), var(--dark-tertiary));
   --gradient-dark-intense: linear-gradient(135deg, var(--dark-primary), var(--dark-quaternary));
-  --gradient-dark-glow: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary)), 
-                        radial-gradient(circle, rgba(26,26,26,0.8), transparent);
   
-  /* Gradientes Combinados Avanzados */
+  /* Gradientes Combinados */
   --gradient-red-dark: linear-gradient(135deg, var(--red-intense), var(--dark-secondary));
   --gradient-overlay: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(10, 10, 10, 0.9));
   --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-  --gradient-mesh: conic-gradient(from 0deg, var(--red-intense), var(--dark-secondary), var(--red-medium), var(--dark-primary));
   --gradient-shimmer: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
   
   /* ==========================================
@@ -94,25 +88,21 @@
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
   --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);
   
-  /* Sombras con Glow Rojo Mejoradas */
+  /* Sombras con Glow Rojo */
   --shadow-glow-xs: 0 2px 4px rgba(220, 38, 38, 0.15);
   --shadow-glow-sm: 0 4px 8px rgba(220, 38, 38, 0.2);
   --shadow-glow-md: 0 8px 16px rgba(220, 38, 38, 0.25);
   --shadow-glow-lg: 0 16px 32px rgba(220, 38, 38, 0.3);
   --shadow-glow-xl: 0 24px 48px rgba(220, 38, 38, 0.35);
   --shadow-glow-2xl: 0 32px 64px rgba(220, 38, 38, 0.4);
-  --shadow-glow-3xl: 0 40px 80px rgba(220, 38, 38, 0.5);
   
-  /* Sombras Combinadas Avanzadas */
+  /* Sombras Alias */
   --shadow-glow: var(--shadow-glow-lg);
   --shadow-glow-intense: var(--shadow-glow-xl);
-  --shadow-glow-extreme: var(--shadow-glow-3xl);
   --shadow-subtle: var(--shadow-md);
   --shadow-dramatic: var(--shadow-2xl);
-  --shadow-multi: var(--shadow-lg), var(--shadow-glow-sm);
-  --shadow-layered: var(--shadow-xl), var(--shadow-glow-md), inset 0 1px 0 rgba(255,255,255,0.1);
   
-  /* Sombras Internas Mejoradas */
+  /* Sombras Internas */
   --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.15);
   --shadow-inset-glow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
   --shadow-inset-red: inset 0 1px 0 rgba(220, 38, 38, 0.3);
@@ -130,7 +120,7 @@
   --duration-slow: 600ms;
   --duration-slower: 1000ms;
   
-  /* Easing Functions Avanzadas */
+  /* Easing Functions */
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -140,7 +130,7 @@
   --ease-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
   --ease-circ: cubic-bezier(0.075, 0.82, 0.165, 1);
   
-  /* Transiciones Comunes Mejoradas */
+  /* Transiciones Comunes */
   --transition-fast: all var(--duration-fast) var(--ease-out);
   --transition-normal: all var(--duration-normal) var(--ease-out);
   --transition-medium: all var(--duration-medium) var(--ease-in-out);
@@ -148,7 +138,7 @@
   --transition-elastic: all var(--duration-medium) var(--ease-elastic);
   --transition-smooth: all var(--duration-medium) var(--ease-back);
   
-  /* Transiciones Específicas Avanzadas */
+  /* Transiciones Específicas */
   --transition-glow: all var(--duration-slow) var(--ease-bounce);
   --transition-transform: transform var(--duration-medium) var(--ease-out);
   --transition-color: color var(--duration-fast) var(--ease-out);
@@ -158,20 +148,19 @@
   --transition-fade: opacity var(--duration-medium) var(--ease-in-out);
   --transition-bg: background-color var(--duration-normal) var(--ease-out);
   
-  /* Alias Principal Mejorado */
+  /* Alias Principal */
   --transition: var(--transition-medium);
   
   /* ==========================================
-     TIPOGRAFÍA - ACTUALIZADA CON NUEVAS FUENTES
+     TIPOGRAFÍA
      ========================================== */
   
-  /* Font Families - Usando las fuentes descargadas */
+  /* Font Families */
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-heading: 'Square One', 'Inter', sans-serif;
-  --font-body: 'Roboto Condensed', 'Inter', sans-serif;
-  --font-code: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
-  --font-alternative: 'Fira Code', 'JetBrains Mono', monospace;
-  --font-display: 'Square One', 'Inter', sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-code: 'SF Mono', Consolas, 'Liberation Mono', Menlo, Monaco, 'Courier New', monospace;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   
   /* Font Weights */
   --font-weight-thin: 100;
@@ -218,7 +207,7 @@
      SUPERFICIES Y MATERIALES
      ========================================== */
   
-  /* Superficies Principales Mejoradas */
+  /* Superficies Principales */
   --surface-primary: var(--dark-primary);
   --surface-secondary: var(--dark-secondary);
   --surface-tertiary: var(--dark-tertiary);
@@ -226,7 +215,7 @@
   --surface-interactive: rgba(42, 42, 42, 0.8);
   --surface-hover: rgba(52, 52, 52, 0.9);
   
-  /* Overlays Mejorados */
+  /* Overlays */
   --surface-overlay-light: rgba(255, 255, 255, 0.08);
   --surface-overlay-medium: rgba(255, 255, 255, 0.12);
   --surface-overlay-strong: rgba(255, 255, 255, 0.25);
@@ -234,7 +223,7 @@
   --surface-overlay-darker: rgba(0, 0, 0, 0.85);
   --surface-overlay-red: rgba(220, 38, 38, 0.1);
   
-  /* Glass Effects Mejorados */
+  /* Glass Effects */
   --surface-glass-light: rgba(26, 26, 26, 0.7);
   --surface-glass-medium: rgba(26, 26, 26, 0.85);
   --surface-glass-strong: rgba(26, 26, 26, 0.95);
@@ -253,7 +242,7 @@
   --text-accent: var(--red-medium);
   --text-accent-hover: var(--red-intense);
   
-  /* Efectos de Texto Mejorados */
+  /* Efectos de Texto */
   --text-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.6);
   --text-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.6);
   --text-shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.6);
@@ -262,7 +251,6 @@
   --text-glow-red-intense: 0 0 20px rgba(220, 38, 38, 0.8);
   --text-glow-white: 0 0 10px rgba(255, 255, 255, 0.6);
   --text-glow-soft: 0 0 15px rgba(220, 38, 38, 0.4);
-  --text-outline: -1px -1px 0 var(--dark-primary), 1px -1px 0 var(--dark-primary), -1px 1px 0 var(--dark-primary), 1px 1px 0 var(--dark-primary);
   
   /* ==========================================
      BORDES Y CONTORNOS
@@ -274,7 +262,7 @@
   --border-width-thick: 3px;
   --border-width-thicker: 4px;
   
-  /* Colores de Bordes Mejorados */
+  /* Colores de Bordes */
   --border-transparent: transparent;
   --border-primary: rgba(220, 38, 38, 0.4);
   --border-primary-hover: rgba(220, 38, 38, 0.6);
@@ -282,8 +270,6 @@
   --border-tertiary: rgba(68, 68, 68, 0.3);
   --border-subtle: rgba(68, 68, 68, 0.15);
   --border-strong: rgba(220, 38, 38, 0.8);
-  --border-glow: linear-gradient(135deg, rgba(220, 38, 38, 0.5), rgba(220, 38, 38, 0.2));
-  --border-animated: linear-gradient(45deg, var(--red-600), var(--red-500), var(--red-600));
   
   /* Border Radius */
   --radius-none: 0;
@@ -362,7 +348,7 @@
      EFECTOS ESPECIALES
      ========================================== */
   
-  /* Blur Effects Mejorados */
+  /* Blur Effects */
   --blur-none: 0;
   --blur-xs: 2px;
   --blur-sm: 4px;
@@ -371,9 +357,8 @@
   --blur-xl: 24px;
   --blur-2xl: 40px;
   --blur-3xl: 64px;
-  --blur-extreme: 100px;
   
-  /* Backdrop Filters Mejorados */
+  /* Backdrop Filters */
   --backdrop-blur-xs: blur(2px);
   --backdrop-blur-sm: blur(4px);
   --backdrop-blur-md: blur(8px);
@@ -400,26 +385,60 @@
   
   /* Estados de Éxito */
   --success-50: #f0fdf4;
-  --success-500: #10b981;
-  --success-600: #059669;
+  --success-100: #dcfce7;
+  --success-200: #bbf7d0;
+  --success-300: #86efac;
+  --success-400: #4ade80;
+  --success-500: #22c55e;
+  --success-600: #16a34a;
+  --success-700: #15803d;
+  --success-800: #166534;
+  --success-900: #14532d;
   
   /* Estados de Advertencia */
   --warning-50: #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-200: #fde68a;
+  --warning-300: #fcd34d;
+  --warning-400: #fbbf24;
   --warning-500: #f59e0b;
   --warning-600: #d97706;
+  --warning-700: #b45309;
+  --warning-800: #92400e;
+  --warning-900: #78350f;
   
   /* Estados de Error */
   --error-50: #fef2f2;
+  --error-100: #fee2e2;
+  --error-200: #fecaca;
+  --error-300: #fca5a5;
+  --error-400: #f87171;
   --error-500: #ef4444;
   --error-600: #dc2626;
+  --error-700: #b91c1c;
+  --error-800: #991b1b;
+  --error-900: #7f1d1d;
   
   /* Estados de Información */
   --info-50: #eff6ff;
+  --info-100: #dbeafe;
+  --info-200: #bfdbfe;
+  --info-300: #93c5fd;
+  --info-400: #60a5fa;
   --info-500: #3b82f6;
   --info-600: #2563eb;
+  --info-700: #1d4ed8;
+  --info-800: #1e40af;
+  --info-900: #1e3a8a;
+  
+  /* Alias de Estados */
+  --color-success: var(--success-500);
+  --color-warning: var(--warning-500);
+  --color-error: var(--error-500);
+  --color-info: var(--info-500);
   
   /* ==========================================
-     VARIABLES CALCULADAS
+     VARIABLES CALCULADAS Y RESPONSIVE
      ========================================== */
   
   /* Ratios y Proporciones */
@@ -429,9 +448,75 @@
   --ratio-portrait: 0.75;
   --ratio-widescreen: 1.777;
   
-  /* Valores Responsivos */
-  --fluid-min-width: 320;
-  --fluid-max-width: 1200;
-  --fluid-screen: 100vw;
-  --fluid-bp: calc((var(--fluid-screen) - var(--fluid-min-width) * 1px) / (var(--fluid-max-width) - var(--fluid-min-width)));
+  /* Fluid Typography (Clamp values) */
+  --fluid-text-xs: clamp(0.7rem, 0.95vw, 0.75rem);
+  --fluid-text-sm: clamp(0.8rem, 1.1vw, 0.875rem);
+  --fluid-text-base: clamp(0.9rem, 1.25vw, 1rem);
+  --fluid-text-lg: clamp(1rem, 1.4vw, 1.125rem);
+  --fluid-text-xl: clamp(1.1rem, 1.55vw, 1.25rem);
+  --fluid-text-2xl: clamp(1.3rem, 1.8vw, 1.5rem);
+  --fluid-text-3xl: clamp(1.6rem, 2.2vw, 1.875rem);
+  --fluid-text-4xl: clamp(1.9rem, 2.6vw, 2.25rem);
+  --fluid-text-5xl: clamp(2.4rem, 3.2vw, 3rem);
+  
+  /* Fluid Spacing */
+  --fluid-space-xs: clamp(0.5rem, 1vw, 0.75rem);
+  --fluid-space-sm: clamp(0.75rem, 1.5vw, 1rem);
+  --fluid-space-md: clamp(1rem, 2vw, 1.5rem);
+  --fluid-space-lg: clamp(1.5rem, 3vw, 2rem);
+  --fluid-space-xl: clamp(2rem, 4vw, 3rem);
+  --fluid-space-2xl: clamp(3rem, 6vw, 4rem);
+  
+  /* Container Queries (usando vw como aproximación) */
+  --container-padding: clamp(1rem, 4vw, 2rem);
+  --section-gap: clamp(2rem, 6vw, 4rem);
+  
+  /* ==========================================
+     VARIABLES DE PERFORMANCE
+     ========================================== */
+  
+  /* Will-change optimization hints */
+  --will-change-transform: transform;
+  --will-change-opacity: opacity;
+  --will-change-auto: auto;
+  
+  /* GPU acceleration helpers */
+  --gpu-hack: translateZ(0);
+  --gpu-transform: translate3d(0, 0, 0);
+  
+  /* ==========================================
+     VARIABLES DE ACCESIBILIDAD
+     ========================================== */
+  
+  /* Focus rings */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--red-medium);
+  --focus-ring: var(--focus-ring-width) solid var(--focus-ring-color);
+  
+  /* Touch targets */
+  --touch-target-min: 44px;
+  --touch-target-comfortable: 48px;
+  
+  /* High contrast mode support */
+  --high-contrast-border: 1px solid ButtonText;
+  --high-contrast-bg: ButtonFace;
+  --high-contrast-text: ButtonText;
+  
+  /* ==========================================
+     VARIABLES DE UTILIDAD
+     ========================================== */
+  
+  /* Aspect ratios para usar con aspect-ratio */
+  --aspect-square: 1 / 1;
+  --aspect-video: 16 / 9;
+  --aspect-photo: 4 / 3;
+  --aspect-portrait: 3 / 4;
+  --aspect-wide: 21 / 9;
+  
+  /* Grid template patterns */
+  --grid-auto: repeat(auto-fit, minmax(250px, 1fr));
+  --grid-responsive: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+  --grid-sidebar: minmax(250px, 1fr) 3fr;
+  --grid-holy-grail: 1fr 3fr 1fr;
 }

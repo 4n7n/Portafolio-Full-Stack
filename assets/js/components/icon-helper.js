@@ -6,14 +6,17 @@ import { TECHNOLOGIES_CONFIG } from '../config/technologies-config.js';
  */
 export class IconHelper {
     constructor() {
-        this.iconsData = ICONS_DATA;
-        this.techConfig = TECHNOLOGIES_CONFIG;
+        this.iconsData = ICONS_DATA || {};
+        this.techConfig = TECHNOLOGIES_CONFIG || { stack: {} };
+        this.isInitialized = false;
     }
 
     /**
      * Crear icono social con enlace
      */
     createSocialIcon(platform, url, size = 40) {
+        if (!platform || !url) return null;
+        
         const iconData = getIcon('social', platform);
         if (!iconData) return null;
 
@@ -22,8 +25,7 @@ export class IconHelper {
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.className = `social-icon ${platform}`;
-        link.style.width = `${size}px`;
-        link.style.height = `${size}px`;
+        link.style.cssText = `width: ${size}px; height: ${size}px; display: inline-flex; align-items: center; justify-content: center;`;
         link.innerHTML = iconData;
         link.title = `Visitar ${platform}`;
 
@@ -34,38 +36,36 @@ export class IconHelper {
      * Crear icono de tecnología con tooltip
      */
     createTechIcon(techName, size = 60, showTooltip = true) {
-        const tech = TECHNOLOGIES_CONFIG.stack;
+        if (!techName) return null;
+        
+        const tech = this.techConfig.stack;
         let techData = null;
 
         // Buscar en todas las categorías
-        Object.values(tech).forEach(category => {
-            const found = category.technologies.find(t => 
-                t.name.toLowerCase() === techName.toLowerCase()
-            );
-            if (found) techData = found;
-        });
+        try {
+            Object.values(tech).forEach(category => {
+                if (category && category.technologies) {
+                    const found = category.technologies.find(t => 
+                        t && t.name && t.name.toLowerCase() === techName.toLowerCase()
+                    );
+                    if (found) techData = found;
+                }
+            });
+        } catch (error) {
+            console.warn(`Error buscando tecnología ${techName}:`, error);
+            return null;
+        }
 
         if (!techData) return null;
 
         const container = document.createElement('div');
         container.className = `tech-icon ${techName.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
-        container.style.width = `${size}px`;
-        container.style.height = `${size}px`;
-        container.innerHTML = techData.icon;
+        container.style.cssText = `width: ${size}px; height: ${size}px; position: relative;`;
+        container.innerHTML = techData.icon || '';
 
-        if (showTooltip) {
-            container.title = `${techData.name} - ${techData.level}% - ${techData.experience}`;
-            
-            // Tooltip personalizado
-            const tooltip = document.createElement('div');
-            tooltip.className = 'tech-tooltip';
-            tooltip.innerHTML = `
-                <strong>${techData.name}</strong><br>
-                Nivel: ${techData.level}%<br>
-                Experiencia: ${techData.experience}<br>
-                <small>${techData.description}</small>
-            `;
-            container.appendChild(tooltip);
+        if (showTooltip && techData.name) {
+            const tooltipText = `${techData.name}${techData.level ? ` - ${techData.level}%` : ''}${techData.experience ? ` - ${techData.experience}` : ''}`;
+            container.title = tooltipText;
         }
 
         return container;
@@ -75,15 +75,16 @@ export class IconHelper {
      * Crear icono de contacto
      */
     createContactIcon(type, value, size = 50) {
+        if (!type) return null;
+        
         const iconData = getIcon('contact', type);
         if (!iconData) return null;
 
         const container = document.createElement('div');
         container.className = `contact-icon ${type}`;
-        container.style.width = `${size}px`;
-        container.style.height = `${size}px`;
+        container.style.cssText = `width: ${size}px; height: ${size}px;`;
         container.innerHTML = iconData;
-        container.title = value;
+        if (value) container.title = value;
 
         return container;
     }
@@ -92,11 +93,14 @@ export class IconHelper {
      * Crear botón con icono
      */
     createIconButton(iconCategory, iconName, text = '', onClick = null) {
+        if (!iconCategory || !iconName) return null;
+        
         const iconData = getIcon(iconCategory, iconName);
         if (!iconData) return null;
 
         const button = document.createElement('button');
         button.className = text ? 'btn btn-icon' : 'btn-icon-only';
+        button.type = 'button';
         
         const iconSpan = document.createElement('span');
         iconSpan.className = 'icon';
@@ -110,7 +114,7 @@ export class IconHelper {
             button.appendChild(textSpan);
         }
 
-        if (onClick) {
+        if (typeof onClick === 'function') {
             button.addEventListener('click', onClick);
         }
 
@@ -122,19 +126,22 @@ export class IconHelper {
      */
     renderTechGrid(containerSelector, category = null) {
         const container = document.querySelector(containerSelector);
-        if (!container) return;
+        if (!container) return false;
 
         const technologies = category 
-            ? TECHNOLOGIES_CONFIG.stack[category]?.technologies || []
+            ? this.techConfig.stack[category]?.technologies || []
             : this.getAllTechnologies();
+
+        if (technologies.length === 0) return false;
 
         const grid = document.createElement('div');
         grid.className = 'tech-grid';
 
         technologies.forEach(tech => {
+            if (!tech || !tech.name) return;
+            
             const techElement = this.createTechIcon(tech.name, 60, true);
             if (techElement) {
-                // Agregar información adicional
                 const techCard = document.createElement('div');
                 techCard.className = 'tech-card';
                 
@@ -144,8 +151,8 @@ export class IconHelper {
                 techInfo.className = 'tech-info';
                 techInfo.innerHTML = `
                     <h4>${tech.name}</h4>
-                    <div class="tech-level">${tech.level}%</div>
-                    <div class="tech-experience">${tech.experience}</div>
+                    ${tech.level ? `<div class="tech-level">${tech.level}%</div>` : ''}
+                    ${tech.experience ? `<div class="tech-experience">${tech.experience}</div>` : ''}
                 `;
                 
                 techCard.appendChild(techInfo);
@@ -154,6 +161,7 @@ export class IconHelper {
         });
 
         container.appendChild(grid);
+        return true;
     }
 
     /**
@@ -161,32 +169,53 @@ export class IconHelper {
      */
     renderSocialIcons(containerSelector, socialLinks) {
         const container = document.querySelector(containerSelector);
-        if (!container) return;
+        if (!container || !Array.isArray(socialLinks)) return false;
 
         const socialGrid = document.createElement('div');
         socialGrid.className = 'social-icons';
 
         socialLinks.forEach(link => {
-            const socialIcon = this.createSocialIcon(link.platform, link.url, link.size);
+            if (!link || !link.platform || !link.url) return;
+            
+            const socialIcon = this.createSocialIcon(link.platform, link.url, link.size || 40);
             if (socialIcon) {
                 socialGrid.appendChild(socialIcon);
             }
         });
 
-        container.appendChild(socialGrid);
+        if (socialGrid.children.length > 0) {
+            container.appendChild(socialGrid);
+            return true;
+        }
+        
+        return false;
     }
 
     /**
      * Agregar iconos flotantes
      */
     addFloatingIcons(icons) {
+        if (!Array.isArray(icons) || icons.length === 0) return;
+
+        // Remover existentes
         const existing = document.querySelector('.floating-icons');
         if (existing) existing.remove();
 
         const container = document.createElement('div');
         container.className = 'floating-icons';
+        container.style.cssText = `
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        `;
 
         icons.forEach(iconConfig => {
+            if (!iconConfig || !iconConfig.category || !iconConfig.name) return;
+            
             const button = this.createIconButton(
                 iconConfig.category, 
                 iconConfig.name, 
@@ -196,12 +225,24 @@ export class IconHelper {
             
             if (button) {
                 button.className = 'floating-icon';
-                button.title = iconConfig.title;
+                button.style.cssText = `
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    border: none;
+                    background: var(--primary-color, #ef4444);
+                    color: white;
+                    cursor: pointer;
+                    transition: transform 0.2s ease;
+                `;
+                if (iconConfig.title) button.title = iconConfig.title;
                 container.appendChild(button);
             }
         });
 
-        document.body.appendChild(container);
+        if (container.children.length > 0) {
+            document.body.appendChild(container);
+        }
     }
 
     /**
@@ -209,10 +250,18 @@ export class IconHelper {
      */
     getAllTechnologies() {
         const allTechs = [];
-        Object.values(TECHNOLOGIES_CONFIG.stack).forEach(category => {
-            allTechs.push(...category.technologies);
-        });
-        return allTechs.sort((a, b) => b.level - a.level);
+        
+        try {
+            Object.values(this.techConfig.stack).forEach(category => {
+                if (category && category.technologies && Array.isArray(category.technologies)) {
+                    allTechs.push(...category.technologies.filter(tech => tech && tech.name));
+                }
+            });
+        } catch (error) {
+            console.warn('Error obteniendo tecnologías:', error);
+        }
+        
+        return allTechs.sort((a, b) => (b.level || 0) - (a.level || 0));
     }
 
     /**
@@ -220,6 +269,8 @@ export class IconHelper {
      */
     animateIcons(selector, animation = 'pulse') {
         const icons = document.querySelectorAll(selector);
+        if (icons.length === 0) return;
+
         icons.forEach((icon, index) => {
             setTimeout(() => {
                 icon.classList.add(`icon-${animation}`);
@@ -231,21 +282,17 @@ export class IconHelper {
      * Actualizar iconos dinámicamente
      */
     updateIconColors(theme = 'dark') {
-        const icons = document.querySelectorAll('.icon svg');
+        const icons = document.querySelectorAll('.icon svg, .social-icon svg, .tech-icon svg');
         const colorMap = {
-            dark: {
-                primary: '#ef4444',
-                secondary: '#e5e5e5'
-            },
-            light: {
-                primary: '#dc2626',
-                secondary: '#333333'
-            }
+            dark: { primary: '#ef4444', secondary: '#e5e5e5' },
+            light: { primary: '#dc2626', secondary: '#333333' }
         };
+
+        const colors = colorMap[theme] || colorMap.dark;
 
         icons.forEach(icon => {
             if (!icon.hasAttribute('data-preserve-color')) {
-                icon.style.fill = colorMap[theme].secondary;
+                icon.style.fill = colors.secondary;
             }
         });
     }
@@ -254,21 +301,24 @@ export class IconHelper {
      * Crear indicador de nivel de skill
      */
     createSkillIndicator(level) {
+        const numLevel = parseInt(level) || 0;
         const indicator = document.createElement('div');
         indicator.className = 'skill-level-indicator';
         
-        const levelClass = level >= 80 ? 'expert' : 
-                          level >= 60 ? 'advanced' : 
-                          level >= 40 ? 'intermediate' : 'beginner';
+        const levelClass = numLevel >= 80 ? 'expert' : 
+                          numLevel >= 60 ? 'advanced' : 
+                          numLevel >= 40 ? 'intermediate' : 'beginner';
         
         indicator.classList.add(levelClass);
+        
+        const dotsCount = Math.ceil(numLevel / 20);
+        const dots = Array.from({length: 5}, (_, i) => 
+            `<div class="skill-dot ${i < dotsCount ? 'filled' : ''}"></div>`
+        ).join('');
+        
         indicator.innerHTML = `
-            <div class="skill-dots">
-                ${Array.from({length: 5}, (_, i) => 
-                    `<div class="skill-dot ${i < Math.ceil(level/20) ? 'filled' : ''}"></div>`
-                ).join('')}
-            </div>
-            <span class="skill-percentage">${level}%</span>
+            <div class="skill-dots">${dots}</div>
+            <span class="skill-percentage">${numLevel}%</span>
         `;
         
         return indicator;
@@ -278,25 +328,38 @@ export class IconHelper {
      * Crear badge de tecnología
      */
     createTechBadge(techName, small = false) {
+        if (!techName) return null;
+        
         const tech = this.getAllTechnologies().find(t => 
-            t.name.toLowerCase() === techName.toLowerCase()
+            t && t.name && t.name.toLowerCase() === techName.toLowerCase()
         );
         
         if (!tech) return null;
 
         const badge = document.createElement('span');
-        badge.className = `tech-badge ${small ? 'small' : ''} ${tech.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
-        badge.style.background = `${tech.color}20`;
-        badge.style.color = tech.color;
-        badge.style.border = `1px solid ${tech.color}40`;
+        const className = tech.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        badge.className = `tech-badge ${small ? 'small' : ''} ${className}`;
         
-        if (!small) {
+        const color = tech.color || '#6b7280';
+        badge.style.cssText = `
+            background: ${color}20;
+            color: ${color};
+            border: 1px solid ${color}40;
+            padding: ${small ? '4px 8px' : '6px 12px'};
+            border-radius: 12px;
+            font-size: ${small ? '0.75rem' : '0.875rem'};
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        `;
+        
+        if (!small && tech.icon) {
             badge.innerHTML = `
-                <span class="tech-badge-icon">${tech.icon}</span>
+                <span class="tech-badge-icon" style="width: 16px; height: 16px;">${tech.icon}</span>
                 <span class="tech-badge-text">${tech.name}</span>
             `;
         } else {
-            badge.innerHTML = tech.name;
+            badge.textContent = tech.name;
         }
         
         return badge;
@@ -307,10 +370,11 @@ export class IconHelper {
      */
     renderProjectTechBadges(containerSelector, technologies) {
         const container = document.querySelector(containerSelector);
-        if (!container) return;
+        if (!container || !Array.isArray(technologies)) return false;
 
         const badgesContainer = document.createElement('div');
         badgesContainer.className = 'tech-badges';
+        badgesContainer.style.cssText = 'display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;';
 
         technologies.forEach(techName => {
             const badge = this.createTechBadge(techName, true);
@@ -319,75 +383,51 @@ export class IconHelper {
             }
         });
 
-        container.appendChild(badgesContainer);
-    }
-
-    /**
-     * Crear tooltip interactivo
-     */
-    createTooltip(element, content, position = 'top') {
-        const tooltip = document.createElement('div');
-        tooltip.className = `tooltip tooltip-${position}`;
-        tooltip.innerHTML = content;
-        tooltip.style.opacity = '0';
-        tooltip.style.pointerEvents = 'none';
+        if (badgesContainer.children.length > 0) {
+            container.appendChild(badgesContainer);
+            return true;
+        }
         
-        element.style.position = 'relative';
-        element.appendChild(tooltip);
-
-        element.addEventListener('mouseenter', () => {
-            tooltip.style.opacity = '1';
-        });
-
-        element.addEventListener('mouseleave', () => {
-            tooltip.style.opacity = '0';
-        });
-
-        return tooltip;
+        return false;
     }
 
     /**
      * Inicializar todos los iconos del portfolio
      */
     initPortfolioIcons() {
-        // Iconos sociales
-        const socialData = [
-            { platform: 'github', url: 'https://github.com/anthony-bonilla', size: 40 },
-            { platform: 'linkedin', url: 'https://linkedin.com/in/anthony-bonilla-paredes', size: 40 },
-            { platform: 'instagram', url: 'https://instagram.com/anthony_bonilla', size: 40 },
-            { platform: 'email', url: 'mailto:anthonybonillaparedes7@gmail.com', size: 40 }
-        ];
+        if (this.isInitialized) return;
 
-        this.renderSocialIcons('.social-icons-container', socialData);
+        try {
+            // Iconos sociales básicos
+            const socialData = [
+                { platform: 'github', url: 'https://github.com/anthony-bonilla', size: 40 },
+                { platform: 'linkedin', url: 'https://linkedin.com/in/anthony-bonilla-paredes', size: 40 },
+                { platform: 'email', url: 'mailto:anthonybonillaparedes7@gmail.com', size: 40 }
+            ];
 
-        // Iconos flotantes
-        const floatingIcons = [
-            {
-                category: 'ui',
-                name: 'arrow_down',
-                title: 'Scroll hacia abajo',
-                onClick: () => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })
-            }
-        ];
+            this.renderSocialIcons('.social-icons-container', socialData);
 
-        this.addFloatingIcons(floatingIcons);
+            // Animar iconos después de un delay
+            setTimeout(() => {
+                this.animateIcons('.social-icon', 'bounce');
+                this.animateIcons('.tech-icon', 'pulse');
+            }, 1000);
 
-        // Animar iconos al cargar
-        setTimeout(() => {
-            this.animateIcons('.social-icon', 'bounce');
-            this.animateIcons('.tech-icon', 'pulse');
-        }, 1000);
-
-        console.log('✅ Portfolio icons initialized');
+            this.isInitialized = true;
+            console.log('✅ Portfolio icons initialized');
+            
+        } catch (error) {
+            console.warn('⚠️ Error inicializando iconos:', error);
+        }
     }
 
     /**
      * Actualizar tema de iconos
      */
-    updateTheme(theme) {
+    updateTheme(theme = 'dark') {
         this.updateIconColors(theme);
         
-        // Actualizar variables CSS si es necesario
+        // Actualizar variables CSS
         const root = document.documentElement;
         if (theme === 'dark') {
             root.style.setProperty('--icon-color', '#e5e5e5');
@@ -397,28 +437,47 @@ export class IconHelper {
             root.style.setProperty('--icon-hover-color', '#dc2626');
         }
     }
+
+    /**
+     * Limpiar iconos flotantes
+     */
+    cleanup() {
+        const floating = document.querySelector('.floating-icons');
+        if (floating) floating.remove();
+        this.isInitialized = false;
+    }
 }
 
 // Instancia global para usar en toda la aplicación
 export const iconHelper = new IconHelper();
 
-// Funciones de utilidad exportadas
+// Funciones de utilidad exportadas - con validación básica
 export function createIcon(category, name, size = 24, className = '') {
+    if (!category || !name) return null;
     return createIconElement(category, name, size, className);
 }
 
 export function getTechIcon(techName) {
+    if (!techName) return null;
     return iconHelper.createTechIcon(techName);
 }
 
 export function getSocialIcon(platform, url) {
+    if (!platform || !url) return null;
     return iconHelper.createSocialIcon(platform, url);
 }
 
-// Auto-inicialización cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', () => {
-    iconHelper.initPortfolioIcons();
-});
+// Auto-inicialización cuando el DOM esté listo - con verificación
+if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            iconHelper.initPortfolioIcons();
+        });
+    } else {
+        // DOM ya está listo
+        setTimeout(() => iconHelper.initPortfolioIcons(), 100);
+    }
+}
 
 // Exportar por defecto
 export default IconHelper;

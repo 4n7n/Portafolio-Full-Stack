@@ -5,8 +5,7 @@ import { DOMHelpers } from '../utils/dom-helpers.js';
 import { PORTFOLIO_CONFIG } from '../config/portfolio-config.js';
 
 export class ContactForm {
-  constructor(formSelector = '#contactForm') { // Corregido: usar #contactForm
-    // Manejar caso donde DOMHelpers no esté disponible
+  constructor(formSelector = '#contactForm') {
     this.form = DOMHelpers?.select ? DOMHelpers.select(formSelector) : document.querySelector(formSelector);
     this.submitButton = null;
     this.loadingSpinner = null;
@@ -14,6 +13,7 @@ export class ContactForm {
     this.emailService = null;
     this.isSubmitting = false;
     this.formSelector = formSelector;
+    this.eventListeners = []; // Para limpiar listeners en destroy
 
     // Validar que se encontró el formulario
     if (!this.form) {
@@ -39,7 +39,7 @@ export class ContactForm {
       this.setupValidator();
       this.setupEmailService();
       this.setupEventListeners();
-      this.setupHoneypot(); // Protección anti-spam
+      this.setupHoneypot();
       
       console.log('✅ ContactForm: Inicializado correctamente');
       return true;
@@ -81,17 +81,73 @@ export class ContactForm {
    */
   setupValidator() {
     try {
-      this.validator = new FormValidator(this.form, ValidationRules.contact, {
-        showErrors: true,
-        validateOnBlur: true,
-        validateOnInput: true,
-        errorClass: 'error',
-        successClass: 'success'
-      });
-      console.log('✅ ContactForm: Validador configurado');
+      if (typeof FormValidator !== 'undefined' && ValidationRules?.contact) {
+        this.validator = new FormValidator(this.form, ValidationRules.contact, {
+          showErrors: true,
+          validateOnBlur: true,
+          validateOnInput: true,
+          errorClass: 'error',
+          successClass: 'success'
+        });
+        console.log('✅ ContactForm: Validador configurado');
+      } else {
+        console.warn('⚠️ FormValidator o ValidationRules no disponibles');
+        this.setupBasicValidation();
+      }
     } catch (error) {
       console.warn('⚠️ Error al configurar validador:', error);
+      this.setupBasicValidation();
     }
+  }
+
+  /**
+   * Configuración básica de validación como fallback
+   */
+  setupBasicValidation() {
+    this.validator = {
+      validate: () => {
+        const requiredFields = this.form.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+          if (!field.value.trim()) {
+            field.classList.add('error');
+            isValid = false;
+          } else {
+            field.classList.remove('error');
+          }
+        });
+        
+        return isValid;
+      },
+      getValidatedData: () => {
+        const formData = new FormData(this.form);
+        const data = {};
+        for (let [key, value] of formData.entries()) {
+          data[key] = value;
+        }
+        return data;
+      },
+      clearErrors: () => {
+        this.form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+      },
+      hasErrors: () => {
+        return this.form.querySelectorAll('.error').length > 0;
+      },
+      validateField: (fieldName) => {
+        const field = this.form.querySelector(`[name="${fieldName}"]`);
+        if (field && field.hasAttribute('required')) {
+          if (!field.value.trim()) {
+            field.classList.add('error');
+            return false;
+          } else {
+            field.classList.remove('error');
+            return true;
+          }
+        }
+        return true;
+      }
+    };
   }
 
   /**
@@ -99,20 +155,25 @@ export class ContactForm {
    */
   setupEmailService() {
     try {
-      if (typeof getEmailService === 'function') {
-        this.emailService = getEmailService(PORTFOLIO_CONFIG?.contact);
+      if (typeof getEmailService === 'function' && PORTFOLIO_CONFIG?.contact) {
+        this.emailService = getEmailService(PORTFOLIO_CONFIG.contact);
       } else {
         console.warn('⚠️ ContactForm: getEmailService no disponible');
         // Fallback básico
         this.emailService = {
           send: async (data) => {
             console.log('📧 Simulando envío de email:', data);
+            // Simular delay de red
+            await new Promise(resolve => setTimeout(resolve, 1500));
             return { success: true, message: 'Email simulado enviado' };
           }
         };
       }
     } catch (error) {
       console.warn('⚠️ Error al configurar servicio de email:', error);
+      this.emailService = {
+        send: async () => ({ success: false, message: 'Servicio de email no disponible' })
+      };
     }
   }
 
@@ -120,8 +181,10 @@ export class ContactForm {
    * Configura los event listeners
    */
   setupEventListeners() {
-    // Envío del formulario
-    this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+    // Envío del formulario - usar arrow function para mantener contexto
+    const handleSubmit = (e) => this.handleSubmit(e);
+    this.form.addEventListener('submit', handleSubmit);
+    this.eventListeners.push({ element: this.form, event: 'submit', handler: handleSubmit });
 
     // Contador de caracteres para textarea
     const messageField = this.form.querySelector('[name="message"]');
@@ -151,7 +214,8 @@ export class ContactForm {
       name: 'website',
       style: 'position: absolute; left: -9999px; visibility: hidden;',
       tabindex: '-1',
-      autocomplete: 'off'
+      autocomplete: 'off',
+      'aria-hidden': 'true'
     });
     this.form.appendChild(honeypot);
   }
@@ -166,13 +230,19 @@ export class ContactForm {
     
     // Fallback manual
     const element = document.createElement(tag);
-    if (options.className) element.className = options.className;
-    if (options.innerHTML) element.innerHTML = options.innerHTML;
-    if (options.style) element.style.cssText = options.style;
-    if (options.tabindex) element.tabIndex = options.tabindex;
-    if (options.autocomplete) element.autocomplete = options.autocomplete;
-    if (options.type) element.type = options.type;
-    if (options.name) element.name = options.name;
+    
+    Object.keys(options).forEach(key => {
+      if (key === 'className') {
+        element.className = options[key];
+      } else if (key === 'innerHTML') {
+        element.innerHTML = options[key];
+      } else if (key === 'style') {
+        element.style.cssText = options[key];
+      } else {
+        element.setAttribute(key, options[key]);
+      }
+    });
+    
     return element;
   }
 
@@ -180,7 +250,7 @@ export class ContactForm {
    * Configura contador de caracteres
    */
   setupCharacterCounter(textarea) {
-    const maxLength = textarea.getAttribute('maxlength') || 1000;
+    const maxLength = parseInt(textarea.getAttribute('maxlength')) || 1000;
     
     // Solo añadir si no existe ya
     if (textarea.parentNode.querySelector('.character-counter')) return;
@@ -193,30 +263,37 @@ export class ContactForm {
 
     textarea.parentNode.appendChild(counter);
 
-    textarea.addEventListener('input', () => {
+    const updateCounter = () => {
       const current = textarea.value.length;
       counter.textContent = `${current}/${maxLength}`;
       
       if (current > maxLength * 0.9) {
         counter.style.color = '#f59e0b';
+      } else if (current > maxLength * 0.8) {
+        counter.style.color = '#ef4444';
       } else {
         counter.style.color = '#6b7280';
       }
-    });
+    };
+
+    textarea.addEventListener('input', updateCounter);
+    this.eventListeners.push({ element: textarea, event: 'input', handler: updateCounter });
   }
 
   /**
    * Configura auto-resize para textarea
    */
   setupAutoResize(textarea) {
-    textarea.addEventListener('input', () => {
+    const autoResize = () => {
       textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 'px';
-    });
+      textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px'; // Máximo 200px
+    };
+
+    textarea.addEventListener('input', autoResize);
+    this.eventListeners.push({ element: textarea, event: 'input', handler: autoResize });
     
     // Aplicar resize inicial
-    textarea.style.height = 'auto';
-    textarea.style.height = textarea.scrollHeight + 'px';
+    autoResize();
   }
 
   /**
@@ -226,17 +303,17 @@ export class ContactForm {
     // Validación de email con sugerencias
     const emailField = this.form.querySelector('[name="email"]');
     if (emailField) {
-      emailField.addEventListener('blur', () => {
-        this.validateEmailWithSuggestions(emailField);
-      });
+      const validateEmail = () => this.validateEmailWithSuggestions(emailField);
+      emailField.addEventListener('blur', validateEmail);
+      this.eventListeners.push({ element: emailField, event: 'blur', handler: validateEmail });
     }
 
     // Validación de teléfono con formato (si existe)
     const phoneField = this.form.querySelector('[name="phone"]');
     if (phoneField) {
-      phoneField.addEventListener('input', () => {
-        this.formatPhoneNumber(phoneField);
-      });
+      const formatPhone = () => this.formatPhoneNumber(phoneField);
+      phoneField.addEventListener('input', formatPhone);
+      this.eventListeners.push({ element: phoneField, event: 'input', handler: formatPhone });
     }
   }
 
@@ -245,7 +322,7 @@ export class ContactForm {
    */
   validateEmailWithSuggestions(emailField) {
     const email = emailField.value.trim();
-    if (!email || email.includes('@')) return;
+    if (!email || !email.includes('@')) return;
 
     const commonDomains = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com'];
     const emailParts = email.split('@');
@@ -261,7 +338,7 @@ export class ContactForm {
   }
 
   /**
-   * Encuentra el dominio más cercano
+   * Encuentra el dominio más cercano usando distancia de Levenshtein
    */
   findClosestDomain(domain, domains) {
     let closest = null;
@@ -282,27 +359,19 @@ export class ContactForm {
    * Calcula distancia de Levenshtein
    */
   levenshteinDistance(str1, str2) {
-    const matrix = [];
+    const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
 
-    for (let i = 0; i <= str2.length; i++) {
-      matrix[i] = [i];
-    }
+    for (let i = 0; i <= str1.length; i++) matrix[0][i] = i;
+    for (let j = 0; j <= str2.length; j++) matrix[j][0] = j;
 
-    for (let j = 0; j <= str1.length; j++) {
-      matrix[0][j] = j;
-    }
-
-    for (let i = 1; i <= str2.length; i++) {
-      for (let j = 1; j <= str1.length; j++) {
-        if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-          matrix[i][j] = matrix[i - 1][j - 1];
-        } else {
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j - 1] + 1,
-            matrix[i][j - 1] + 1,
-            matrix[i - 1][j] + 1
-          );
-        }
+    for (let j = 1; j <= str2.length; j++) {
+      for (let i = 1; i <= str1.length; i++) {
+        const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+        matrix[j][i] = Math.min(
+          matrix[j][i - 1] + 1,     // deletion
+          matrix[j - 1][i] + 1,     // insertion
+          matrix[j - 1][i - 1] + indicator // substitution
+        );
       }
     }
 
@@ -324,26 +393,31 @@ export class ContactForm {
     });
     
     suggestionEl.innerHTML = `
-      ¿Quisiste decir <button type="button" class="suggestion-link" style="color: #3b82f6; text-decoration: underline; background: none; border: none; cursor: pointer;">${suggestion}</button>?
+      ¿Quisiste decir <button type="button" class="suggestion-link" style="color: #3b82f6; text-decoration: underline; background: none; border: none; cursor: pointer; padding: 0;">${suggestion}</button>?
     `;
 
     emailField.parentNode.appendChild(suggestionEl);
 
     const suggestionLink = suggestionEl.querySelector('.suggestion-link');
-    suggestionLink.addEventListener('click', () => {
+    const handleSuggestionClick = () => {
       emailField.value = suggestion;
       suggestionEl.remove();
-      if (this.validator) {
+      if (this.validator && this.validator.validateField) {
         this.validator.validateField('email');
       }
-    });
+    };
+
+    suggestionLink.addEventListener('click', handleSuggestionClick);
 
     // Auto-hide después de 10 segundos
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       if (suggestionEl.parentNode) {
         suggestionEl.remove();
       }
     }, 10000);
+
+    // Limpiar timeout si se remueve manualmente
+    suggestionEl.timeoutId = timeoutId;
   }
 
   /**
@@ -353,7 +427,7 @@ export class ContactForm {
     let value = phoneField.value.replace(/\D/g, ''); // Solo números
     
     // Formato español: +34 XXX XXX XXX
-    if (value.startsWith('34')) {
+    if (value.startsWith('34') && value.length > 2) {
       value = value.substring(2);
     }
     
@@ -377,11 +451,14 @@ export class ContactForm {
   async handleSubmit(e) {
     e.preventDefault();
 
-    if (this.isSubmitting) return;
+    if (this.isSubmitting) {
+      console.log('Form submission already in progress');
+      return;
+    }
 
     // Verificar honeypot
     const honeypot = this.form.querySelector('[name="website"]');
-    if (honeypot && honeypot.value) {
+    if (honeypot && honeypot.value.trim()) {
       this.showNotification('Error: Envío detectado como spam', 'error');
       return;
     }
@@ -440,9 +517,41 @@ export class ContactForm {
           notify.info('Info', message);
       }
     } else {
-      // Fallback simple
-      alert(message);
+      // Fallback más elegante que alert
+      console.log(`${type.toUpperCase()}: ${message}`);
+      // Crear notificación simple en el DOM
+      this.createSimpleNotification(message, type);
     }
+  }
+
+  /**
+   * Crea una notificación simple en el DOM
+   */
+  createSimpleNotification(message, type) {
+    const notification = this.createElement('div', {
+      className: `notification notification-${type}`,
+      style: `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 16px;
+        border-radius: 4px;
+        color: white;
+        z-index: 1000;
+        max-width: 300px;
+        background-color: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+      `
+    });
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
+    // Auto-remove después de 5 segundos
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 5000);
   }
 
   /**
@@ -474,7 +583,7 @@ export class ContactForm {
   handleSuccess() {
     // Limpiar formulario
     this.form.reset();
-    if (this.validator) {
+    if (this.validator && this.validator.clearErrors) {
       this.validator.clearErrors();
     }
 
@@ -531,17 +640,27 @@ export class ContactForm {
    * Métodos públicos para control externo
    */
   reset() {
+    if (!this.form) return;
+    
     this.form.reset();
-    if (this.validator) {
+    if (this.validator && this.validator.clearErrors) {
       this.validator.clearErrors();
     }
+    
+    // Reset textareas
+    const textareas = this.form.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+      textarea.style.height = 'auto';
+    });
   }
 
   setFieldValue(fieldName, value) {
+    if (!this.form) return;
+    
     const field = this.form.querySelector(`[name="${fieldName}"]`);
     if (field) {
       field.value = value;
-      if (this.validator) {
+      if (this.validator && this.validator.validateField) {
         this.validator.validateField(fieldName);
       }
     }
@@ -559,25 +678,46 @@ export class ContactForm {
    * Destructor
    */
   destroy() {
-    if (this.form) {
-      // Limpiar event listeners añadidos
-      this.form.removeEventListener('submit', this.handleSubmit);
-    }
+    // Limpiar todos los event listeners
+    this.eventListeners.forEach(({ element, event, handler }) => {
+      element.removeEventListener(event, handler);
+    });
+    this.eventListeners = [];
+
+    // Limpiar timeouts de sugerencias
+    const suggestions = this.form?.querySelectorAll('.email-suggestion');
+    suggestions?.forEach(suggestion => {
+      if (suggestion.timeoutId) {
+        clearTimeout(suggestion.timeoutId);
+      }
+    });
+
+    // Limpiar referencias
+    this.form = null;
+    this.submitButton = null;
+    this.loadingSpinner = null;
+    this.validator = null;
+    this.emailService = null;
   }
 }
 
-// Auto-inicialización inteligente si existe el formulario en el DOM
+// Auto-inicialización inteligente
 const autoInitContactForm = () => {
-  // Buscar formularios con IDs comunes
   const formSelectors = ['#contactForm', '#contact-form', '.contact-form'];
   
   for (const selector of formSelectors) {
     const form = document.querySelector(selector);
     if (form && !form._contactFormInstance) {
       console.log(`🎯 Auto-inicializando ContactForm para ${selector}...`);
-      form._contactFormInstance = new ContactForm(selector);
-      window.contactFormInstance = form._contactFormInstance;
-      break;
+      try {
+        form._contactFormInstance = new ContactForm(selector);
+        if (typeof window !== 'undefined') {
+          window.contactFormInstance = form._contactFormInstance;
+        }
+        break;
+      } catch (error) {
+        console.error(`Error al auto-inicializar ContactForm:`, error);
+      }
     }
   }
 };
