@@ -301,7 +301,6 @@ img[src*="external-link.svg"]:hover {
   justify-content: center;
   position: absolute;
   left: -22px;
-  top: 0;
   border: 3px solid var(--bg-primary, #1a1a1a);
   padding: 8px;
 }
