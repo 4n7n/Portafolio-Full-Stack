@@ -212,16 +212,15 @@ img[src*="external-link.svg"]:hover {
 
 .certification-badge {
   position: absolute;
-  bottom: -8px;
-  right: -8px;
+  bottom: 10px;
+  right: -10px;
   background: rgba(42, 42, 42, 0.95);
   border: 2px solid var(--red-medium, #ef4444);
   border-radius: 8px;
   padding: 6px 8px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  backdrop-filter: blur(10px);
+  gap: 5px;
 }
 
 .cert-logo {

@@ -67,37 +67,52 @@ body {
 }
 
 /* Tamaños de contenedor por breakpoint */
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 0.5rem; /* Padding mínimo solo para evitar que toque los bordes */
+}
+
 @media (min-width: 640px) {
   .container {
-    max-width: 640px;
-    padding: 0 var(--spacing-lg);
+    max-width: 100%;
+    padding: 0 0.75rem;
   }
 }
 
 @media (min-width: 768px) {
   .container {
-    max-width: 768px;
+    max-width: 100%;
+    padding: 0 1rem;
   }
 }
 
 @media (min-width: 1024px) {
   .container {
-    max-width: 1024px;
-    padding: 0 2rem;
+    max-width: 100%;
+    padding: 0 1rem;
   }
 }
 
 @media (min-width: 1280px) {
   .container {
-    max-width: 1280px;
-    padding: 0 2.5rem;
+    max-width: 100%;
+    padding: 0 1.25rem;
   }
 }
 
 @media (min-width: 1536px) {
   .container {
-    max-width: 1536px;
-    padding: 0 3rem;
+    max-width: 100%;
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .container {
+    max-width: 100%;
+    padding: 0 2rem;
   }
 }
 

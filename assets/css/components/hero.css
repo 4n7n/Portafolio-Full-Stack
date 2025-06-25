@@ -440,13 +440,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: calc(100% + 40px);
-  max-width: 440px;
   height: calc(100% + 40px);
-  max-height: 440px;
+  max-height: 500px;
   aspect-ratio: 1;
-  border: 2px solid var(--red-intense);
-  border-radius: 50%;
+  border: 5px solid var(--red-intense);
+  border-radius: 100%;
   opacity: 0;
   animation: hero-ring 5s ease-in-out infinite;
   z-index: 2;
@@ -531,8 +529,8 @@
 
 .hero-scroll {
   position: absolute;
-  bottom: 2rem;
-  left: 50%;
+  bottom: 1rem;
+  left: 5%;
   transform: translateX(-50%);
   animation: fade-in-up 1s ease-out 1.5s both;
   z-index: 10;
@@ -555,8 +553,8 @@
 
 .scroll-indicator::before {
   content: '';
-  width: 4px;
-  height: 8px;
+  width: 5px;
+  height: 10px;
   background: var(--red-medium);
   border-radius: var(--radius-sm);
   animation: scroll-bounce 2s ease-in-out infinite;
