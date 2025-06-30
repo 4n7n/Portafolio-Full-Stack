@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Proyectos MERN Stack de Anthony Bonilla - Aplicaciones Full Stack desarrolladas con React, Node.js, Express y MongoDB">
+    <meta name="keywords" content="proyectos, portfolio, MERN stack, react, nodejs, express, mongodb, full stack, aplicaciones web">
+    <meta name="author" content="Anthony Bonilla Paredes">
+    
+    <title>Proyectos - Anthony Bonilla | Portfolio MERN Stack</title>
+    
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="./assets/css/main.css">
+</head>
+
+<body data-gaming-theme="blue" class="font-loading">
+    <!-- Indicador de progreso de scroll -->
+    <div class="scroll-progress"></div>
+    
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="./assets/images/profile/Anthony_Bonilla.jpg" alt="Anthony Bonilla">
+                <span>Anthony Bonilla</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="about.html">Sobre Mí</a></li>
+                <li><a href="skills.html">Habilidades</a></li>
+                <li><a href="experience.html">Experiencia</a></li>
+                <li><a href="projects.html" class="active">Proyectos</a></li>
+                <li><a href="contact.html">Contacto</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Contenido principal -->
+    <main>
+        <!-- Hero Section -->
+        <section class="page-hero">
+            <div class="container">
+                <div class="page-hero-content">
+                    <h1 class="page-title font-heading">Proyectos MERN Stack</h1>
+                    <p class="page-subtitle">Aplicaciones desarrolladas durante mi formación</p>
+                    <div class="breadcrumb">
+                        <a href="index.html">Inicio</a>
+                        <span>/</span>
+                        <span>Proyectos</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sección Proyectos -->
+        <section id="projects" class="section-padding">
+            <div class="container">
+                <div class="projects-intro">
+                    <h2 class="font-heading">Mi Portfolio de Desarrollo</h2>
+                    <p class="font-body">
+                        Durante mi formación en <strong>The Bridge Digital Talent Accelerator</strong>, 
+                        he desarrollado múltiples proyectos que demuestran mi dominio del stack MERN. 
+                        Cada proyecto implementa buenas prácticas, código limpio y tecnologías modernas.
+                    </p>
+                    
+                    <div class="projects-stats">
+                        <div class="project-stat">
+                            <span class="stat-number" data-count="15">0</span>
+                            <span class="stat-label">Proyectos Completados</span>
+                        </div>
+                        <div class="project-stat">
+                            <span class="stat-number" data-count="8">0</span>
+                            <span class="stat-label">Tecnologías Utilizadas</span>
+                        </div>
+                        <div class="project-stat">
+                            <span class="stat-number" data-count="100">0</span>
+                            <span class="stat-label">% Funcionales</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filtros de Proyectos -->
+                <div class="project-filters">
+                    <button class="filter-btn active" data-filter="all">Todos los Proyectos</button>
+                    <button class="filter-btn" data-filter="frontend">Frontend</button>
+                    <button class="filter-btn" data-filter="backend">Backend</button>
+                    <button class="filter-btn" data-filter="fullstack">Full Stack</button>
+                </div>
+                
+                <!-- Grid de Proyectos -->
+                <div class="projects-grid">
+                    <!-- Proyecto 1: DOM/News Manager -->
+                    <div class="project-card featured" data-category="frontend">
+                        <div class="project-image">
+                            <img src="./assets/images/projects/DOM/News-Manager.jpg" alt="Gestor de Noticias" class="project-main-image">
+                            <div class="project-overlay">
+                                <div class="project-actions">
+                                    <a href="https://github.com/4n7n/Custom-DOM-Gr" class="btn btn-small" target="_blank" rel="noopener noreferrer">
+                                        <img src="./assets/images/icons/ui/external-link.svg" alt="View">
+                                        Ver Demo
+                                    </a>
+                                    <a href="https://github.com/4n7n/Custom-DOM-Gr" class="btn btn-small btn-secondary" target="_blank" rel="noopener noreferrer">
+                                        <img src="./assets/images/icons/social/github.svg" alt="Code">
+                                        Código
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="project-badge">Frontend</div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title font-heading">Gestor de Noticias</h3>
+                            <p class="project-description font-body">
+                                Aplicación web moderna para navegar y gestionar artículos de noticias 
+                                con búsqueda avanzada, filtrado por categorías, modo oscuro y diseño 
+                                completamente responsive implementado con CSS Grid y Flexbox.
+                            </p>
+                            
+                            <div class="project-features">
+                                <h4>Características Principales:</h4>
+                                <ul>
+                                    <li>✅ Búsqueda en tiempo real</li>
+                                    <li>✅ Filtros por categoría</li>
+                                    <li>✅ Modo oscuro/claro</li>
+                                    <li>✅ Diseño responsive</li>
+                                    <li>✅ Animaciones CSS</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="project-technologies">
+                                <img src="./assets/images/technologies/frontend/html5.svg" alt="HTML5" title="HTML5">
+                                <img src="./assets/images/technologies/frontend/css.svg" alt="CSS3" title="CSS3">
+                                <img src="./assets/images/technologies/frontend/javascript.svg" alt="JavaScript" title="JavaScript">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Proyecto 2: Backend Management System -->
+                    <div class="project-card featured" data-category="backend">
+                        <div class="project-image">
+                            <img src="./assets/images/projects/BACKEND/Management-System.jpg" alt="Sistema de Turnos" class="project-main-image">
+                            <div class="project-overlay">
+                                <div class="project-actions">
+                                    <a href="https://github.com/4n7n/Custom-Backend-In" class="btn btn-small" target="_blank" rel="noopener noreferrer">
+                                        <img src="./assets/images/icons/ui/external-link.svg" alt="View">
+                                        Ver Demo
+                                    </a>
+                                    <a href="https://github.com/4n7n/Custom-Backend-In" class="btn btn-small btn-secondary" target="_blank" rel="noopener noreferrer">
+                                        <img src="./assets/images/icons/social/github.svg" alt="Code">
+                                        Código
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="project-badge">Backend</div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title font-heading">Sistema de Gestión de Turnos</h3>
+                            <p class="project-description font-body">
+                                Sistema web completo para gestión de turnos y servicios con 
+                                autenticación de usuarios, panel administrativo, API REST y 
+                                arquitectura MVC. Desarrollado con Node.js, Express y MySQL.
+                            </p>
+                            
+                            <div class="project-features">
+                                <h4>Funcionalidades:</h4>
+                                <ul>
+                                    <li>🔐 Autenticación JWT</li>
+                                    <li>👤 Panel de administración</li>
+                                    <li>📅 Gestión de turnos</li>
+                                    <li>🗄️ Base de datos MySQL</li>
+                                    <li>🐳 Dockerización</li>
+                                    <li>📄 Templates Pug</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="project-technologies">
+                                <img src="./assets/images/technologies/backend/nodedotjs.svg" alt="Node.js" title="Node.js">
+                                <img src="./assets/images/technologies/backend/express.svg" alt="Express" title="Express">
+                                <img src="./assets/images/technologies/databases/mysql.svg" alt="MySQL" title="MySQL">
+                                <img src="./assets/images/technologies/devops/docker.svg" alt="Docker" title="Docker">
+                                <img src="./assets/images/technologies/tools/pug.svg" alt="Pug" title="Pug">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Proyecto 3: Frontend React App -->
+                    <div class="project-card featured" data-category="fullstack">
+                        <div class="project-image">
+                            <img src="./assets/images/projects/FRONTED/Create-Ideal.jpg" alt="Generador de Clientes" class="project-main-image">
+                            <div class="project-overlay">
+                                <div class="project-actions">
+                                    <a href="https://github.com/4n7n/Custom-React-Gr" class="btn btn-small" target="_blank" rel="noopener noreferrer">
+                                        <img src="./assets/images/icons/ui/external-link.svg" alt="View">
+                                        Ver Demo
+                                    </a>
+                                    <a href="https://github.com/4n7n/Custom-React-Gr" class="btn btn-small btn-secondary" target="_blank" rel="noopener noreferrer">
+                                        <img src="./assets/images/icons/social/github.svg" alt="Code">
+                                        Código
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="project-badge">Full Stack</div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title font-heading">Generador de Clientes</h3>
+                            <p class="project-description font-body">
+                                Aplicación React para gestión y análisis de perfiles de clientes 
+                                con gráficos interactivos, generador de perfiles aleatorios, 
+                                tema oscuro/claro y almacenamiento local persistente.
+                            </p>
+                            
+                            <div class="project-features">
+                                <h4>Capacidades:</h4>
+                                <ul>
+                                    <li>📊 Gráficos interactivos</li>
+                                    <li>🎲 Generador aleatorio</li>
+                                    <li>💾 Local Storage</li>
+                                    <li>🎨 Sistema de temas</li>
+                                    <li>📱 Responsive design</li>
+                                    <li>⚡ Hooks de React</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="project-technologies">
+                                <img src="./assets/images/technologies/frontend/react.svg" alt="React" title="React">
+                                <img src="./assets/images/technologies/frontend/chartdotjs.svg" alt="Chart.js" title="Chart.js">
+                                <img src="./assets/images/technologies/frontend/javascript.svg" alt="JavaScript" title="JavaScript">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Proyectos Adicionales -->
+                    <div class="project-card" data-category="frontend">
+                        <div class="project-image">
+                            <div class="project-placeholder">
+                                <img src="./assets/images/technologies/frontend/html5.svg" alt="HTML Project">
+                            </div>
+                            <div class="project-badge">Frontend</div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title font-heading">Portfolio Responsive</h3>
+                            <p class="project-description font-body">
+                                Sitio web personal completamente responsive con animaciones CSS, 
+                                navegación suave y optimización para SEO. Implementa Grid Layout 
+                                y técnicas avanzadas de CSS.
+                            </p>
+                            <div class="project-technologies">
+                                <img src="./assets/images/technologies/frontend/html5.svg" alt="HTML5" title="HTML5">
+                                <img src="./assets/images/technologies/frontend/css.svg" alt="CSS3" title="CSS3">
+                                <img src="./assets/images/technologies/frontend/javascript.svg" alt="JavaScript" title="JavaScript">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-category="backend">
+                        <div class="project-image">
+                            <div class="project-placeholder">
+                                <img src="./assets/images/technologies/backend/nodedotjs.svg" alt="Node.js Project">
+                            </div>
+                            <div class="project-badge">Backend</div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title font-heading">API REST E-commerce</h3>
+                            <p class="project-description font-body">
+                                API completa para e-commerce con autenticación JWT, gestión de productos, 
+                                carrito de compras, y sistema de pagos. Documentada con Swagger.
+                            </p>
+                            <div class="project-technologies">
+                                <img src="./assets/images/technologies/backend/nodedotjs.svg" alt="Node.js" title="Node.js">
+                                <img src="./assets/images/technologies/backend/express.svg" alt="Express" title="Express">
+                                <img src="./assets/images/technologies/databases/mongodb.svg" alt="MongoDB" title="MongoDB">
+                                <img src="./assets/images/technologies/tools/swagger.svg" alt="Swagger" title="Swagger">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-category="fullstack">
+                        <div class="project-image">
+                            <div class="project-placeholder">
+                                <img src="./assets/images/technologies/frontend/react.svg" alt="MERN Project">
+                            </div>
+                            <div class="project-badge">Full Stack</div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title font-heading">Red Social MERN</h3>
+                            <p class="project-description font-body">
+                                Aplicación de red social completa con React frontend, Node.js backend, 
+                                autenticación, posts, likes, comentarios y chat en tiempo real.
+                            </p>
+                            <div class="project-technologies">
+                                <img src="./assets/images/technologies/frontend/react.svg" alt="React" title="React">
+                                <img src="./assets/images/technologies/backend/nodedotjs.svg" alt="Node.js" title="Node.js">
+                                <img src="./assets/images/technologies/backend/express.svg" alt="Express" title="Express">
+                                <img src="./assets/images/technologies/databases/mongodb.svg" alt="MongoDB" title="MongoDB">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sección de Tecnologías Utilizadas -->
+                <div class="technologies-overview">
+                    <h3 class="font-heading">Tecnologías en mis Proyectos</h3>
+                    <p class="font-body">
+                        Stack tecnológico completo utilizado en el desarrollo de aplicaciones
+                    </p>
+                    <div class="tech-summary">
+                        <div class="tech-category-summary">
+                            <h4>Frontend</h4>
+                            <div class="tech-list">
+                                <span>React</span>
+                                <span>JavaScript ES6+</span>
+                                <span>HTML5</span>
+                                <span>CSS3</span>
+                                <span>SASS</span>
+                                <span>Chart.js</span>
+                            </div>
+                        </div>
+                        <div class="tech-category-summary">
+                            <h4>Backend</h4>
+                            <div class="tech-list">
+                                <span>Node.js</span>
+                                <span>Express.js</span>
+                                <span>JWT</span>
+                                <span>Bcrypt</span>
+                                <span>Swagger</span>
+                            </div>
+                        </div>
+                        <div class="tech-category-summary">
+                            <h4>Bases de Datos</h4>
+                            <div class="tech-list">
+                                <span>MongoDB</span>
+                                <span>MySQL</span>
+                                <span>Sequelize</span>
+                            </div>
+                        </div>
+                        <div class="tech-category-summary">
+                            <h4>DevOps</h4>
+                            <div class="tech-list">
+                                <span>Docker</span>
+                                <span>Git/GitHub</span>
+                                <span>Heroku</span>
+                                <span>Firebase</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h3 class="font-heading">¿Te gusta lo que ves?</h3>
+                    <p class="font-body">Contacta conmigo para discutir tu próximo proyecto</p>
+                    <div class="cta-buttons">
+                        <a href="contact.html" class="btn btn-primary">
+                            <img src="./assets/images/icons/contact/chat.svg" alt="Contact">
+                            Contactar
+                        </a>
+                        <a href="./assets/images/documents/cv-es.pdf" class="btn btn-outline" target="_blank">
+                            <img src="./assets/images/icons/ui/download-button.svg" alt="Download">
+                            Descargar CV
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-info">
+                        <div class="footer-logo">
+                            <img src="./assets/images/profile/Anthony_Bonilla.jpg" alt="Anthony Bonilla">
+                            <span>Anthony Bonilla</span>
+                        </div>
+                        <p>Full Stack Developer especializado en MERN Stack</p>
+                        <div class="footer-cert">
+                            <img src="./assets/images/institutions/The_Bridge.svg" alt="The Bridge">
+                            <span>Certificado por The Bridge</span>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-links">
+                        <h4>Navegación</h4>
+                        <ul>
+                            <li><a href="index.html">Inicio</a></li>
+                            <li><a href="about.html">Sobre mí</a></li>
+                            <li><a href="skills.html">Habilidades</a></li>
+                            <li><a href="experience.html">Experiencia</a></li>
+                            <li><a href="projects.html">Proyectos</a></li>
+                            <li><a href="contact.html">Contacto</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-social">
+                        <h4>Sígueme</h4>
+                        <div class="contact-social">
+                            <a href="https://github.com/4n7n" class="social-contact-link" target="_blank" rel="noopener noreferrer">
+                                <img src="./assets/images/icons/social/github.svg" alt="GitHub">
+                                <span>GitHub</span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/anthony-bonilla-paredes-b31090333/" class="social-contact-link" target="_blank" rel="noopener noreferrer">
+                                <img src="./assets/images/icons/social/linkedin.svg" alt="LinkedIn">
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="mailto:anthonybonillaparedes7@gmail.com" class="social-contact-link">
+                                <img src="./assets/images/icons/social/gmail.svg" alt="Gmail">
+                                <span>Gmail</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Anthony Bonilla Paredes. Todos los derechos reservados.</p>
+                    <p>Desarrollado - Full Stack MERN</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- JavaScript principal -->
+    <script type="module" src="./assets/js/app.js"></script>
+</body>
+</html>

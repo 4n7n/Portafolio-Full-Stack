@@ -88,26 +88,10 @@
 }
 
 /* ==========================================
-   ICONOS ESPECÍFICOS PROBLEMÁTICOS
+   ICONOS SOCIALES - NORMALIZADOS
    ========================================== */
 
-/* Chat SVG - Forzar tamaño específico */
-img[src*="chat.svg"] {
-  width: 16px !important;
-  height: 16px !important;
-  max-width: 16px !important;
-  max-height: 16px !important;
-  object-fit: contain !important;
-}
-
-.hero-btn img[src*="chat.svg"] {
-  width: 18px !important;
-  height: 18px !important;
-  max-width: 18px !important;
-  max-height: 18px !important;
-}
-
-/* GitHub SVG - Normalizar tamaño */
+/* GitHub */
 img[src*="github.svg"] {
   width: 18px !important;
   height: 18px !important;
@@ -123,12 +107,81 @@ img[src*="github.svg"] {
   max-height: 20px !important;
 }
 
-.project-technologies img[src*="github.svg"] {
+/* LinkedIn */
+img[src*="linkedin.svg"] {
   width: 18px !important;
   height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  object-fit: contain !important;
 }
 
-/* Calendar SVG - Controlar tamaño */
+.social-link img[src*="linkedin.svg"] {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Gmail */
+img[src*="gmail.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  object-fit: contain !important;
+}
+
+.social-link img[src*="gmail.svg"] {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Discord */
+img[src*="discord.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  object-fit: contain !important;
+}
+
+.social-link img[src*="discord.svg"] {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Instagram */
+img[src*="instagram.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  object-fit: contain !important;
+}
+
+.social-link img[src*="instagram.svg"] {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* X (Twitter) */
+img[src*="/x.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  object-fit: contain !important;
+}
+
+.social-link img[src*="/x.svg"] {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* ==========================================
+   ICONOS DE CONTACTO - NORMALIZADOS
+   ========================================== */
+
+/* Calendar */
 img[src*="calendar.svg"] {
   width: 16px !important;
   height: 16px !important;
@@ -137,12 +190,88 @@ img[src*="calendar.svg"] {
   object-fit: contain !important;
 }
 
-.timeline-period img[src*="calendar.svg"] {
+/* Chat */
+img[src*="chat.svg"] {
   width: 16px !important;
   height: 16px !important;
+  max-width: 16px !important;
+  max-height: 16px !important;
+  object-fit: contain !important;
 }
 
-/* Download SVG - Reducir tamaño */
+.hero-btn img[src*="chat.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+}
+
+/* Phone */
+img[src*="phone.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  object-fit: contain !important;
+}
+
+/* Placeholder (Location) */
+img[src*="placeholder.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  object-fit: contain !important;
+}
+
+/* ==========================================
+   ICONOS UI - NORMALIZADOS
+   ========================================== */
+
+/* Bottom Arrow */
+img[src*="bottom-arrow.svg"] {
+  width: 16px !important;
+  height: 16px !important;
+  max-width: 16px !important;
+  max-height: 16px !important;
+  object-fit: contain !important;
+}
+
+/* Right Arrow */
+img[src*="right-arrow.svg"] {
+  width: 16px !important;
+  height: 16px !important;
+  max-width: 16px !important;
+  max-height: 16px !important;
+  object-fit: contain !important;
+}
+
+.hero-btn img[src*="right-arrow.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+}
+
+/* Close X */
+img[src*="close-x.svg"] {
+  width: 14px !important;
+  height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+  object-fit: contain !important;
+}
+
+/* Dark Mode */
+img[src*="dark-mode.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  object-fit: contain !important;
+}
+
+/* Download Button */
 img[src*="download-button.svg"],
 img[src*="download.svg"] {
   width: 16px !important;
@@ -152,13 +281,7 @@ img[src*="download.svg"] {
   object-fit: contain !important;
 }
 
-.btn img[src*="download-button.svg"],
-.btn img[src*="download.svg"] {
-  width: 16px !important;
-  height: 16px !important;
-}
-
-/* External Link SVG - Normalizar tamaño y posición */
+/* External Link */
 img[src*="external-link.svg"] {
   width: 14px !important;
   height: 14px !important;
@@ -171,39 +294,219 @@ img[src*="external-link.svg"] {
   transition: all 0.3s ease !important;
 }
 
-.hero-btn img[src*="external-link.svg"] {
+img[src*="external-link.svg"]:hover {
+  opacity: 1 !important;
+  transform: translateX(1px) translateY(-1px) !important;
+}
+
+/* Menu */
+img[src*="menu.svg"] {
+  width: 20px !important;
+  height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  object-fit: contain !important;
+}
+
+/* ==========================================
+   ICONOS DE INSTITUCIONES - NORMALIZADOS
+   ========================================== */
+
+/* The Bridge */
+img[src*="The_Bridge.svg"] {
+  width: 22px !important;
+  height: 22px !important;
+  max-width: 22px !important;
+  max-height: 22px !important;
+  object-fit: contain !important;
+}
+
+.cert-logo[src*="The_Bridge.svg"] {
   width: 16px !important;
   height: 16px !important;
   max-width: 16px !important;
   max-height: 16px !important;
-  margin-left: 6px !important;
 }
 
-.project-link img[src*="external-link.svg"],
-.project-technologies img[src*="external-link.svg"] {
-  width: 14px !important;
-  height: 14px !important;
-  margin-left: 4px !important;
+/* BBK */
+img[src*="BBK.svg"] {
+  width: 22px !important;
+  height: 22px !important;
+  max-width: 22px !important;
+  max-height: 22px !important;
+  object-fit: contain !important;
 }
 
-.contact-item img[src*="external-link.svg"],
-.social-contact-link img[src*="external-link.svg"] {
-  width: 12px !important;
-  height: 12px !important;
-  margin-left: 3px !important;
-  opacity: 0.6 !important;
+/* ==========================================
+   TECNOLOGÍAS FRONTEND - UNIFORMES
+   ========================================== */
+
+img[src*="html5.svg"],
+img[src*="css.svg"],
+img[src*="javascript.svg"],
+img[src*="react.svg"],
+img[src*="reactrouter.svg"],
+img[src*="sass.svg"],
+img[src*="chartdotjs.svg"],
+img[src*="bootstrap.svg"],
+img[src*="webpack.svg"],
+img[src*="babel.svg"],
+img[src*="d3.svg"] {
+  width: 28px !important;
+  height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  object-fit: contain !important;
 }
 
-.timeline-content img[src*="external-link.svg"] {
-  width: 12px !important;
-  height: 12px !important;
-  margin-left: 3px !important;
-  opacity: 0.6 !important;
+/* ==========================================
+   TECNOLOGÍAS BACKEND - UNIFORMES
+   ========================================== */
+
+img[src*="nodedotjs.svg"],
+img[src*="express.svg"],
+img[src*="npm.svg"],
+img[src*="jsonwebtokens.svg"],
+img[src*="bcrypt.svg"],
+img[src*="nodemon.svg"] {
+  width: 28px !important;
+  height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  object-fit: contain !important;
 }
 
-img[src*="external-link.svg"]:hover {
-  opacity: 1 !important;
-  transform: translateX(1px) translateY(-1px) !important;
+/* ==========================================
+   TECNOLOGÍAS DATABASES - UNIFORMES
+   ========================================== */
+
+img[src*="mongodb.svg"],
+img[src*="mysql.svg"],
+img[src*="sequelize.svg"] {
+  width: 28px !important;
+  height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  object-fit: contain !important;
+}
+
+/* ==========================================
+   TECNOLOGÍAS DEVOPS - UNIFORMES
+   ========================================== */
+
+img[src*="docker.svg"],
+img[src*="firebase.svg"],
+img[src*="heroku.svg"],
+img[src*="jenkins.svg"],
+img[src*="kubernetes.svg"] {
+  width: 28px !important;
+  height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  object-fit: contain !important;
+}
+
+/* ==========================================
+   TECNOLOGÍAS TOOLS - UNIFORMES
+   ========================================== */
+
+img[src*="git.svg"],
+img[src*="gnubash.svg"],
+img[src*="jest.svg"],
+img[src*="postman.svg"],
+img[src*="pug.svg"],
+img[src*="ssh.svg"],
+img[src*="swagger.svg"],
+img[src*="virtualbox.svg"],
+img[src*="vscode.svg"] {
+  width: 28px !important;
+  height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  object-fit: contain !important;
+}
+
+/* ==========================================
+   CONTEXTOS ESPECÍFICOS - TIMELINE
+   ========================================== */
+
+.timeline-skills img[src*="react.svg"],
+.timeline-skills img[src*="nodedotjs.svg"],
+.timeline-skills img[src*="express.svg"],
+.timeline-skills img[src*="mongodb.svg"],
+.timeline-skills img[src*="docker.svg"],
+.timeline-skills img[src*="html5.svg"],
+.timeline-skills img[src*="css.svg"],
+.timeline-skills img[src*="chartdotjs.svg"],
+.timeline-skills img[src*="sass.svg"],
+.timeline-skills img[src*="jsonwebtokens.svg"],
+.timeline-skills img[src*="swagger.svg"],
+.timeline-skills img[src*="heroku.svg"],
+.timeline-skills img[src*="jest.svg"],
+.timeline-skills img[src*="javascript.svg"],
+.timeline-skills img[src*="git.svg"],
+.timeline-skills img[src*="vscode.svg"],
+.timeline-skills img[src*="postman.svg"],
+.timeline-skills img[src*="mysql.svg"],
+.timeline-skills img[src*="firebase.svg"],
+.timeline-skills img[src*="pug.svg"],
+.timeline-skills img[src*="npm.svg"],
+.timeline-skills img[src*="bcrypt.svg"],
+.timeline-skills img[src*="nodemon.svg"],
+.timeline-skills img[src*="sequelize.svg"],
+.timeline-skills img[src*="jenkins.svg"],
+.timeline-skills img[src*="kubernetes.svg"],
+.timeline-skills img[src*="gnubash.svg"],
+.timeline-skills img[src*="ssh.svg"],
+.timeline-skills img[src*="virtualbox.svg"],
+.timeline-skills img[src*="bootstrap.svg"],
+.timeline-skills img[src*="webpack.svg"],
+.timeline-skills img[src*="babel.svg"],
+.timeline-skills img[src*="d3.svg"],
+.timeline-skills img[src*="reactrouter.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+}
+
+/* ==========================================
+   CONTEXTOS ESPECÍFICOS - PROYECTOS
+   ========================================== */
+
+.project-technologies img[src*="react.svg"],
+.project-technologies img[src*="nodedotjs.svg"],
+.project-technologies img[src*="express.svg"],
+.project-technologies img[src*="mongodb.svg"],
+.project-technologies img[src*="docker.svg"],
+.project-technologies img[src*="chartdotjs.svg"],
+.project-technologies img[src*="css.svg"],
+.project-technologies img[src*="javascript.svg"],
+.project-technologies img[src*="html5.svg"],
+.project-technologies img[src*="mysql.svg"],
+.project-technologies img[src*="pug.svg"],
+.project-technologies img[src*="sass.svg"],
+.project-technologies img[src*="bootstrap.svg"],
+.project-technologies img[src*="jest.svg"],
+.project-technologies img[src*="npm.svg"],
+.project-technologies img[src*="jsonwebtokens.svg"],
+.project-technologies img[src*="bcrypt.svg"],
+.project-technologies img[src*="nodemon.svg"],
+.project-technologies img[src*="sequelize.svg"],
+.project-technologies img[src*="firebase.svg"],
+.project-technologies img[src*="heroku.svg"],
+.project-technologies img[src*="git.svg"],
+.project-technologies img[src*="vscode.svg"],
+.project-technologies img[src*="postman.svg"],
+.project-technologies img[src*="swagger.svg"],
+.project-technologies img[src*="webpack.svg"],
+.project-technologies img[src*="babel.svg"],
+.project-technologies img[src*="d3.svg"],
+.project-technologies img[src*="reactrouter.svg"] {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
 }
 
 /* ==========================================
@@ -236,7 +539,7 @@ img[src*="external-link.svg"]:hover {
 }
 
 /* ==========================================
-   ICONOS DE TECNOLOGÍAS - UNIFORMES
+   TECNOLOGÍAS GRID - UNIFORMES
    ========================================== */
 
 .tech-grid {
@@ -269,8 +572,6 @@ img[src*="external-link.svg"]:hover {
 }
 
 .tech-item img {
-  width: 28px;
-  height: 28px;
   transition: transform 0.3s ease;
   flex-shrink: 0;
 }
@@ -287,7 +588,7 @@ img[src*="external-link.svg"]:hover {
 }
 
 /* ==========================================
-   ICONOS EN TIMELINE - PROPORCIONADOS
+   TIMELINE - PROPORCIONAL
    ========================================== */
 
 .timeline-marker {
@@ -320,8 +621,6 @@ img[src*="external-link.svg"]:hover {
 }
 
 .timeline-skills img {
-  width: 18px;
-  height: 18px;
   opacity: 0.8;
   transition: all 0.3s ease;
   flex-shrink: 0;
@@ -333,7 +632,7 @@ img[src*="external-link.svg"]:hover {
 }
 
 /* ==========================================
-   ICONOS EN PROYECTOS - BALANCEADOS
+   PROYECTOS - BALANCEADOS
    ========================================== */
 
 .project-main-icon {
@@ -342,6 +641,13 @@ img[src*="external-link.svg"]:hover {
   margin: 1.5rem auto;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
   flex-shrink: 0;
+}
+
+.project-main-image {
+  width: 100% !important;
+  height: 200px !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
 }
 
 .project-technologies {
@@ -354,8 +660,6 @@ img[src*="external-link.svg"]:hover {
 }
 
 .project-technologies img {
-  width: 18px;
-  height: 18px;
   opacity: 0.8;
   transition: all 0.3s ease;
   flex-shrink: 0;
@@ -367,7 +671,7 @@ img[src*="external-link.svg"]:hover {
 }
 
 /* ==========================================
-   ICONOS DE CONTACTO - CONSISTENTES
+   CONTACTO - CONSISTENTE
    ========================================== */
 
 .contact-details {
@@ -432,7 +736,7 @@ img[src*="external-link.svg"]:hover {
 }
 
 /* ==========================================
-   CERTIFICACIÓN SHOWCASE - EQUILIBRADO
+   CERTIFICACIÓN SHOWCASE
    ========================================== */
 
 .certification-showcase {
@@ -476,7 +780,17 @@ img[src*="external-link.svg"]:hover {
 }
 
 /* ==========================================
-   SCROLL INDICATOR - REFINADO
+   CV DOWNLOAD SECTION
+   ========================================== */
+
+.cv-download {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(220, 38, 38, 0.1);
+}
+
+/* ==========================================
+   SCROLL INDICATOR
    ========================================== */
 
 .scroll-indicator {
@@ -501,7 +815,139 @@ img[src*="external-link.svg"]:hover {
 }
 
 /* ==========================================
-   RESPONSIVE - PROPORCIONAL + ICONOS ESPECÍFICOS
+   FOOTER STYLES
+   ========================================== */
+
+.footer {
+  background: rgba(26, 26, 26, 0.95);
+  border-top: 1px solid rgba(220, 38, 38, 0.1);
+  padding: 2rem 0 1rem;
+  margin-top: 4rem;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.footer-logo img {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.footer-logo span {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--gray-light, #e5e5e5);
+}
+
+.footer-cert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.footer-cert img {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.footer-cert span {
+  font-size: 0.9rem;
+  color: var(--gray-medium, #9ca3af);
+}
+
+.footer-links h4 {
+  color: var(--gray-light, #e5e5e5);
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-links ul li a {
+  color: var(--gray-medium, #9ca3af);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.footer-links ul li a:hover {
+  color: var(--red-medium, #ef4444);
+}
+
+.footer-social h4 {
+  color: var(--gray-light, #e5e5e5);
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.social-links a {
+  width: 36px;
+  height: 36px;
+  background: rgba(42, 42, 42, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.social-links a:hover {
+  background: var(--gradient-red, linear-gradient(135deg, #dc2626, #ef4444));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.social-links a img {
+  width: 18px !important;
+  height: 18px !important;
+  filter: brightness(0.8);
+}
+
+.social-links a:hover img {
+  filter: brightness(1.2);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(42, 42, 42, 0.5);
+  color: var(--gray-medium, #9ca3af);
+  font-size: 0.9rem;
+}
+
+.footer-bottom p {
+  margin: 0.25rem 0;
+}
+
+/* ==========================================
+   RESPONSIVE - TABLET (768px)
    ========================================== */
 
 @media (max-width: 768px) {
@@ -534,70 +980,45 @@ img[src*="external-link.svg"]:hover {
     max-height: 16px;
   }
   
-  /* Iconos específicos en tablet */
-  img[src*="chat.svg"] {
-    width: 14px !important;
-    height: 14px !important;
-    max-width: 14px !important;
-    max-height: 14px !important;
-  }
-  
-  .hero-btn img[src*="chat.svg"] {
-    width: 16px !important;
-    height: 16px !important;
-  }
-  
-  img[src*="github.svg"] {
-    width: 16px !important;
-    height: 16px !important;
-    max-width: 16px !important;
-    max-height: 16px !important;
-  }
-  
-  img[src*="calendar.svg"] {
-    width: 14px !important;
-    height: 14px !important;
-    max-width: 14px !important;
-    max-height: 14px !important;
-  }
-  
-  img[src*="download-button.svg"],
-  img[src*="download.svg"] {
-    width: 14px !important;
-    height: 14px !important;
-    max-width: 14px !important;
-    max-height: 14px !important;
-  }
-  
-  /* External Link responsive tablet */
-  img[src*="external-link.svg"] {
-    width: 12px !important;
-    height: 12px !important;
-    max-width: 12px !important;
-    max-height: 12px !important;
-    margin-left: 3px !important;
-  }
-  
-  .hero-btn img[src*="external-link.svg"] {
-    width: 14px !important;
-    height: 14px !important;
-    max-width: 14px !important;
-    max-height: 14px !important;
-    margin-left: 4px !important;
-  }
-  
-  .project-link img[src*="external-link.svg"],
-  .project-technologies img[src*="external-link.svg"] {
-    width: 12px !important;
-    height: 12px !important;
-    margin-left: 3px !important;
-  }
-  
-  .contact-item img[src*="external-link.svg"],
-  .social-contact-link img[src*="external-link.svg"] {
-    width: 10px !important;
-    height: 10px !important;
-    margin-left: 2px !important;
+  /* Tecnologías responsive - TODAS las categorías */
+  img[src*="html5.svg"],
+  img[src*="css.svg"],
+  img[src*="javascript.svg"],
+  img[src*="react.svg"],
+  img[src*="reactrouter.svg"],
+  img[src*="sass.svg"],
+  img[src*="chartdotjs.svg"],
+  img[src*="bootstrap.svg"],
+  img[src*="webpack.svg"],
+  img[src*="babel.svg"],
+  img[src*="d3.svg"],
+  img[src*="nodedotjs.svg"],
+  img[src*="express.svg"],
+  img[src*="npm.svg"],
+  img[src*="jsonwebtokens.svg"],
+  img[src*="bcrypt.svg"],
+  img[src*="nodemon.svg"],
+  img[src*="mongodb.svg"],
+  img[src*="mysql.svg"],
+  img[src*="sequelize.svg"],
+  img[src*="docker.svg"],
+  img[src*="firebase.svg"],
+  img[src*="heroku.svg"],
+  img[src*="jenkins.svg"],
+  img[src*="kubernetes.svg"],
+  img[src*="git.svg"],
+  img[src*="gnubash.svg"],
+  img[src*="jest.svg"],
+  img[src*="postman.svg"],
+  img[src*="pug.svg"],
+  img[src*="ssh.svg"],
+  img[src*="swagger.svg"],
+  img[src*="virtualbox.svg"],
+  img[src*="vscode.svg"] {
+    width: 24px !important;
+    height: 24px !important;
+    max-width: 24px !important;
+    max-height: 24px !important;
   }
   
   .tech-grid {
@@ -608,15 +1029,6 @@ img[src*="external-link.svg"]:hover {
   .tech-item {
     padding: 0.6rem;
     min-height: 70px;
-  }
-  
-  .tech-item img {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .tech-item span {
-    font-size: 10px;
   }
   
   .timeline-marker {
@@ -632,8 +1044,13 @@ img[src*="external-link.svg"]:hover {
   }
   
   .timeline-skills img {
-    width: 16px;
-    height: 16px;
+    width: 16px !important;
+    height: 16px !important;
+  }
+  
+  .project-technologies img {
+    width: 16px !important;
+    height: 16px !important;
   }
   
   .certification-showcase {
@@ -657,9 +1074,8 @@ img[src*="external-link.svg"]:hover {
     height: 40px !important;
   }
   
-  .project-technologies img {
-    width: 16px;
-    height: 16px;
+  .project-main-image {
+    height: 160px !important;
   }
   
   .cert-institution img,
@@ -667,7 +1083,42 @@ img[src*="external-link.svg"]:hover {
     width: 20px;
     height: 20px;
   }
+  
+  /* Footer responsive tablet */
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  
+  .footer-logo img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  .footer-cert img {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  .social-links {
+    justify-content: center;
+  }
+  
+  .social-links a {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .social-links a img {
+    width: 16px !important;
+    height: 16px !important;
+  }
 }
+
+/* ==========================================
+   RESPONSIVE - MOBILE (480px)
+   ========================================== */
 
 @media (max-width: 480px) {
   .hero-social {
@@ -700,76 +1151,45 @@ img[src*="external-link.svg"]:hover {
     max-height: 14px;
   }
   
-  /* Iconos específicos en móvil */
-  img[src*="chat.svg"] {
-    width: 12px !important;
-    height: 12px !important;
-    max-width: 12px !important;
-    max-height: 12px !important;
-  }
-  
-  .hero-btn img[src*="chat.svg"] {
-    width: 14px !important;
-    height: 14px !important;
-  }
-  
-  img[src*="github.svg"] {
-    width: 14px !important;
-    height: 14px !important;
-    max-width: 14px !important;
-    max-height: 14px !important;
-  }
-  
-  .social-link img[src*="github.svg"] {
-    width: 16px !important;
-    height: 16px !important;
-  }
-  
-  img[src*="calendar.svg"] {
-    width: 12px !important;
-    height: 12px !important;
-    max-width: 12px !important;
-    max-height: 12px !important;
-  }
-  
-  img[src*="download-button.svg"],
-  img[src*="download.svg"] {
-    width: 12px !important;
-    height: 12px !important;
-    max-width: 12px !important;
-    max-height: 12px !important;
-  }
-  
-  /* External Link responsive mobile */
-  img[src*="external-link.svg"] {
-    width: 10px !important;
-    height: 10px !important;
-    max-width: 10px !important;
-    max-height: 10px !important;
-    margin-left: 2px !important;
-  }
-  
-  .hero-btn img[src*="external-link.svg"] {
-    width: 12px !important;
-    height: 12px !important;
-    max-width: 12px !important;
-    max-height: 12px !important;
-    margin-left: 3px !important;
-  }
-  
-  .project-link img[src*="external-link.svg"],
-  .project-technologies img[src*="external-link.svg"] {
-    width: 10px !important;
-    height: 10px !important;
-    margin-left: 2px !important;
-  }
-  
-  .contact-item img[src*="external-link.svg"],
-  .social-contact-link img[src*="external-link.svg"],
-  .timeline-content img[src*="external-link.svg"] {
-    width: 8px !important;
-    height: 8px !important;
-    margin-left: 2px !important;
+  /* Tecnologías mobile - TODAS las categorías */
+  img[src*="html5.svg"],
+  img[src*="css.svg"],
+  img[src*="javascript.svg"],
+  img[src*="react.svg"],
+  img[src*="reactrouter.svg"],
+  img[src*="sass.svg"],
+  img[src*="chartdotjs.svg"],
+  img[src*="bootstrap.svg"],
+  img[src*="webpack.svg"],
+  img[src*="babel.svg"],
+  img[src*="d3.svg"],
+  img[src*="nodedotjs.svg"],
+  img[src*="express.svg"],
+  img[src*="npm.svg"],
+  img[src*="jsonwebtokens.svg"],
+  img[src*="bcrypt.svg"],
+  img[src*="nodemon.svg"],
+  img[src*="mongodb.svg"],
+  img[src*="mysql.svg"],
+  img[src*="sequelize.svg"],
+  img[src*="docker.svg"],
+  img[src*="firebase.svg"],
+  img[src*="heroku.svg"],
+  img[src*="jenkins.svg"],
+  img[src*="kubernetes.svg"],
+  img[src*="git.svg"],
+  img[src*="gnubash.svg"],
+  img[src*="jest.svg"],
+  img[src*="postman.svg"],
+  img[src*="pug.svg"],
+  img[src*="ssh.svg"],
+  img[src*="swagger.svg"],
+  img[src*="virtualbox.svg"],
+  img[src*="vscode.svg"] {
+    width: 20px !important;
+    height: 20px !important;
+    max-width: 20px !important;
+    max-height: 20px !important;
   }
   
   .certification-badge {
@@ -795,15 +1215,6 @@ img[src*="external-link.svg"]:hover {
     min-height: 60px;
   }
   
-  .tech-item img {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .tech-item span {
-    font-size: 9px;
-  }
-  
   .timeline-marker {
     width: 36px;
     height: 36px;
@@ -817,8 +1228,13 @@ img[src*="external-link.svg"]:hover {
   }
   
   .timeline-skills img {
-    width: 14px;
-    height: 14px;
+    width: 14px !important;
+    height: 14px !important;
+  }
+  
+  .project-technologies img {
+    width: 14px !important;
+    height: 14px !important;
   }
   
   .contact-details {
@@ -850,9 +1266,8 @@ img[src*="external-link.svg"]:hover {
     margin: 1rem auto;
   }
   
-  .project-technologies img {
-    width: 14px;
-    height: 14px;
+  .project-main-image {
+    height: 140px !important;
   }
   
   .cert-institution img,
@@ -869,5 +1284,228 @@ img[src*="external-link.svg"]:hover {
   .scroll-indicator img {
     width: 14px;
     height: 14px;
+  }
+  
+  /* Iconos sociales en mobile */
+  img[src*="github.svg"],
+  img[src*="linkedin.svg"],
+  img[src*="gmail.svg"],
+  img[src*="discord.svg"],
+  img[src*="instagram.svg"],
+  img[src*="/x.svg"] {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  
+  .social-link img[src*="github.svg"],
+  .social-link img[src*="linkedin.svg"],
+  .social-link img[src*="gmail.svg"],
+  .social-link img[src*="discord.svg"],
+  .social-link img[src*="instagram.svg"],
+  .social-link img[src*="/x.svg"] {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  
+  /* Iconos UI en mobile */
+  img[src*="calendar.svg"],
+  img[src*="chat.svg"],
+  img[src*="phone.svg"],
+  img[src*="placeholder.svg"],
+  img[src*="bottom-arrow.svg"],
+  img[src*="right-arrow.svg"] {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  
+  .hero-btn img[src*="chat.svg"],
+  .hero-btn img[src*="right-arrow.svg"] {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  
+  /* Instituciones en mobile */
+  img[src*="The_Bridge.svg"],
+  img[src*="BBK.svg"] {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  .cert-logo[src*="The_Bridge.svg"] {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  
+  /* Footer responsive mobile */
+  .footer {
+    padding: 1.5rem 0 1rem;
+    margin-top: 3rem;
+  }
+  
+  .footer-content {
+    gap: 1.2rem;
+  }
+  
+  .footer-logo img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .footer-logo span {
+    font-size: 1.1rem;
+  }
+  
+  .footer-cert img {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  
+  .footer-cert span {
+    font-size: 0.8rem;
+  }
+  
+  .social-links a {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .social-links a img {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  
+  .footer-bottom {
+    font-size: 0.8rem;
+    padding-top: 1.5rem;
+  }
+}
+
+/* ==========================================
+   ANIMACIONES ADICIONALES
+   ========================================== */
+
+/* Animación para iconos de tecnologías */
+@keyframes techFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+.tech-item:hover img {
+  animation: techFloat 0.6s ease-in-out;
+}
+
+/* Animación para iconos sociales */
+@keyframes socialPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.social-link:hover {
+  animation: socialPulse 0.4s ease-in-out;
+}
+
+/* Animación para botones */
+@keyframes buttonShine {
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.btn:hover::after {
+  animation: buttonShine 0.6s ease-in-out;
+}
+
+/* ==========================================
+   FILTROS Y EFECTOS ESPECIALES
+   ========================================== */
+
+/* Efecto glow para iconos importantes */
+.timeline-marker img,
+.cert-logo {
+  filter: drop-shadow(0 0 6px rgba(220, 38, 38, 0.3));
+}
+
+/* Efecto hover para todas las tecnologías */
+.tech-item:hover img,
+.timeline-skills img:hover,
+.project-technologies img:hover {
+  filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.4));
+}
+
+/* Efecto de saturación para iconos sociales */
+.social-link img,
+.social-contact-link img {
+  filter: grayscale(0.2) brightness(0.9);
+  transition: filter 0.3s ease;
+}
+
+.social-link:hover img,
+.social-contact-link:hover img {
+  filter: grayscale(0) brightness(1.1) saturate(1.2);
+}
+
+/* ==========================================
+   ACCESIBILIDAD Y SOPORTE
+   ========================================== */
+
+/* Reducir animaciones para usuarios que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator {
+    animation: none;
+  }
+  
+  .tech-item:hover img {
+    animation: none;
+    transform: scale(1.05);
+  }
+  
+  .social-link:hover {
+    animation: none;
+  }
+  
+  .btn::after {
+    display: none;
+  }
+}
+
+/* Mejora de contraste para modo alto contraste */
+@media (prefers-contrast: high) {
+  .tech-item,
+  .social-link,
+  .contact-item {
+    border-width: 2px;
+  }
+  
+  .timeline-marker {
+    border-width: 4px;
+  }
+}
+
+/* Soporte para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+  .tech-item:hover,
+  .social-link:hover,
+  .timeline-skills img:hover,
+  .project-technologies img:hover {
+    transform: none;
+    animation: none;
+  }
+  
+  .tech-item:active,
+  .social-link:active {
+    transform: scale(0.95);
   }
 }
