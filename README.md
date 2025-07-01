@@ -3,18 +3,18 @@
 > **Enterprise-level Full Stack Developer Portfolio**  
 > Modern, responsive, and accessible web portfolio showcasing professional development expertise
 
-[![Portfolio Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com)
+[![Portfolio Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/4n7n/Portafolio-Full-Stack)
 [![Version](https://img.shields.io/badge/Version-1.0.0-blue)](./CHANGELOG.md)
 [![Lighthouse](https://img.shields.io/badge/Lighthouse-95%2B-brightgreen)](https://developers.google.com/web/tools/lighthouse)
 [![WCAG](https://img.shields.io/badge/WCAG-2.1%20AA-blue)](https://www.w3.org/WAI/WCAG21/quickref/)
 [![Mobile](https://img.shields.io/badge/Mobile-Optimized-green)](https://developers.google.com/web/fundamentals/design-and-ux/responsive)
 
 ![Desktop Hero](./assets/images/screenshots/desktop/desktop-1--hero.png)
-![Desktop Hero](./assets/images/screenshots/desktop/desktop-2--about.png)
-![Desktop Hero](./assets/images/screenshots/desktop/desktop-3--skills.png)
-![Desktop Hero](./assets/images/screenshots/desktop/desktop-4--experience.png)
-![Desktop Hero](./assets/images/screenshots/desktop/desktop-5--projects.png)
-![Desktop Hero](./assets/images/screenshots/desktop/desktop-6--contact.png)
+![Desktop About](./assets/images/screenshots/desktop/desktop-2--about.png)
+![Desktop Skills](./assets/images/screenshots/desktop/desktop-3--skills.png)
+![Desktop Experience](./assets/images/screenshots/desktop/desktop-4--experience.png)
+![Desktop Projects](./assets/images/screenshots/desktop/desktop-5--projects.png)
+![Desktop Contact](./assets/images/screenshots/desktop/desktop-6--contact.png)
 
 ---
 
@@ -183,21 +183,43 @@ Bash, SSH, VirtualBox
 ## 📱 Screenshots
 
 ### 🖥️ Desktop Experience
-![Desktop Hero](./assets/images/screenshots/desktop-hero.png)
+![Desktop Hero](./assets/images/screenshots/desktop/desktop-1--hero.png)
 *Professional hero section with dynamic typing effects and social integration*
 
-![Desktop Skills](./assets/images/screenshots/desktop-skills.png)
+![Desktop About](./assets/images/screenshots/desktop/desktop-2--about.png)
 *Interactive skills showcase with 165+ technology icons and progress indicators*
 
-![Desktop Projects](./assets/images/screenshots/desktop-projects.png)
+![Desktop Skills](./assets/images/screenshots/desktop/desktop-3--skills.png)
+*Project portfolio with real applications and GitHub integration*
+
+![Desktop Experience](./assets/images/screenshots/desktop/desktop-4--experience.png)
+*Professional hero section with dynamic typing effects and social integration*
+
+![Desktop Projects](./assets/images/screenshots/desktop/desktop-5--projects.png)
+*Interactive skills showcase with 165+ technology icons and progress indicators*
+
+![Desktop Contact](./assets/images/screenshots/desktop/desktop-6--contact.png)
 *Project portfolio with real applications and GitHub integration*
 
 ### 📱 Mobile Experience
-![Mobile Navigation](./assets/images/screenshots/mobile-navigation.png)
-*Touch-optimized navigation with off-canvas menu*
+![Mobile Hero](./assets/images/screenshots/mobile/mobile-1--hero.png)
+*Professional hero section with dynamic typing effects and social integration*
 
-![Mobile Contact](./assets/images/screenshots/mobile-contact.png)
-*Mobile-first contact form with validation and social links*
+![Mobile About](./assets/images/screenshots/mobile/mobile-2--about.png)
+*Interactive skills showcase with 165+ technology icons and progress indicators*
+
+![Mobile Skills](./assets/images/screenshots/mobile/mobile-3--skills.png)
+*Project portfolio with real applications and GitHub integration*
+
+![Mobile Experience](./assets/images/screenshots/mobile/mobile-4--experience.png)
+*Professional hero section with dynamic typing effects and social integration*
+
+![Mobile Projects](./assets/images/screenshots/mobile/mobile-5--projects.png)
+*Interactive skills showcase with 165+ technology icons and progress indicators*
+
+![Mobile Contact](./assets/images/screenshots/mobile/mobile-6--contact.png)
+*Project portfolio with real applications and GitHub integration*
+
 
 ---
 
@@ -632,14 +654,14 @@ Bilbao, Rekalde, ES
 - **GitHub**: [GitHub|Anthony Bonilla](https://github.com/4n7n)
 
 #### 📱 **Social Media**
-- **Portfolio**: [https://portafoliofullstack.netlify.app/](https://portafoliofullstack.netlify.app/)
-- **Instagram**: [https://www.instagram.com/desctrid/?next=%2F](https://www.instagram.com/desctrid/?next=%2F)
+- **Portfolio**: [PortafolioFullStack](https://portafoliofullstack.netlify.app/)
+- **Instagram**: [Instagram|Desctrid](https://www.instagram.com/desctrid/?next=%2F)
 - **Discord**: abp2002
-- **Twitter/X**: [https://x.com/Coffingurid](https://x.com/Coffingurid)
+- **Twitter/X**: [X|Coffingurid](https://x.com/Coffingurid)
 
 #### 📄 **Professional Documents**
-- **Resume**: [Download CV (Spanish)](./assets/documents/cv-es.pdf)
-- **Certifications**: [Full Stack Development Certificate](./assets/documents/certificates.pdf)
+- **Resume**: [Download CV (Spanish)](./assets/images/documents/cv-es.pdf)
+- **Certifications**: [Full Stack Development Certificate](./assets/images/documents/Anthony%20Bonillla%20certificado_desarrollo_web_full_stack_bbk.pdf)
 - **Portfolio**: Live project demonstrations available
 
 #### 💼 **Collaboration Inquiries**
