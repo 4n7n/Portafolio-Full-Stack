@@ -1,4 +1,4 @@
-# Anthony Bonilla - Professional Portfolio
+# Portafolio-Full-Stack
 
 > **Enterprise-level Full Stack Developer Portfolio**  
 > Modern, responsive, and accessible web portfolio showcasing professional development expertise
@@ -184,42 +184,135 @@ Bash, SSH, VirtualBox
 
 ### 🖥️ Desktop Experience
 ![Desktop Hero](./assets/images/screenshots/desktop/desktop-1--hero.png)
-*Professional hero section with dynamic typing effects and social integration*
+Main Element: Hero section with dark theme design
+Highlighted Content:
+- Main title: "FULL STACK DEVELOPER"
+- Subtitle: "MERN Stack Specialist"
+- Professional description with highlighted technologies
+- Professional avatar with modern circular design
+- Key statistics: 480 training hours, 15+ projects, 12+ technologies
+- CTAs: "VIEW PROJECTS" (red) and "CONTACT" (outline)
+- "Certified Full Stack" badge in the upper right corner
 
 ![Desktop About](./assets/images/screenshots/desktop/desktop-2--about.png)
-*Interactive skills showcase with 165+ technology icons and progress indicators*
+Main Element: "About Me" section with professional information
+Key Content:
+- Detailed professional biography
+- Visible official BBK certificate
+- Professional metrics: 480 hours, 96% employability, 100% dedication
+- Official The Bridge Digital Talent Accelerator certification
+- "View Certificate" button for validation
+- Grid layout with certificate image + descriptive text
 
 ![Desktop Skills](./assets/images/screenshots/desktop/desktop-3--skills.png)
-*Project portfolio with real applications and GitHub integration*
+Main Element: "MERN Technology Stack"
+Content Organization:
+- Frontend section with technology icons
+- 4x3 grid layout for technologies
+- Technologies shown: HTML5, CSS3, JavaScript, React
+- Second row: React Router, SASS, Chart.js, Bootstrap
+- Third row: Webpack, Babel, D3.js
+- Clean design with consistent spacing
 
 ![Desktop Experience](./assets/images/screenshots/desktop/desktop-4--experience.png)
-*Professional hero section with dynamic typing effects and social integration*
+Main Element: "Formación y Experiencia" (Training & Experience) timeline
+Content Structure:
+- Section title: "Mi trayectoria en el desarrollo web"
+- Timeline with 3 main experiences:
+  1. "Bootcamp Full Stack Developer" - The Bridge Digital Talent Accelerator
+  2. "Proyectos de Desarrollo Web" - Academic & Personal Projects  
+  3. "Especialización Frontend" - Self-taught & The Bridge
+- Each entry includes dates, descriptions, and technology stacks
+- Icons on left side marking each milestone
+- Detailed descriptions of MERN stack specialization and project development
 
 ![Desktop Projects](./assets/images/screenshots/desktop/desktop-5--projects.png)
-*Interactive skills showcase with 165+ technology icons and progress indicators*
+Main Element: Mobile-optimized projects gallery
+Mobile Features:
+- Single-column layout for better mobile experience
+- Filter buttons remain accessible at top
+- Project cards stacked vertically
+- Maintained visual impact of project illustrations
+- Touch-optimized card spacing and sizing
+- Technology icons preserved for mobile viewing
+- Full project descriptions readable on small screens
 
 ![Desktop Contact](./assets/images/screenshots/desktop/desktop-6--contact.png)
-*Project portfolio with real applications and GitHub integration*
+Main Element: "Hablemos" (Let's Talk) contact form and information
+Left Side Information:
+- Professional introduction and credentials
+- Contact details: email (anthonybonillaparedes7@gmail.com)
+- Phone number: +34 624 42 56 67
+- Location: España
+- Professional title: "The Bridge Certified Full Stack Developer"
+- "Descargar CV" (Download CV) button
+Right Side Form:
+- Contact form fields: NOMBRE, EMAIL, ASUNTO, MENSAJE
+- Clean form design with red accent borders
+- "Enviar Mensaje" (Send Message) button
 
 ### 📱 Mobile Experience
 ![Mobile Hero](./assets/images/screenshots/mobile/mobile-1--hero.png)
-*Professional hero section with dynamic typing effects and social integration*
+Main Element: Mobile-responsive version of the hero
+Mobile Adaptations:
+- Optimized vertical stack layout
+- Maintained visual hierarchy
+- Repositioned avatar for better mobile UX
+- Statistics in vertical cards
+- Touch-friendly buttons with appropriate spacing
+- Adjusted typography for mobile readability
 
 ![Mobile About](./assets/images/screenshots/mobile/mobile-2--about.png)
-*Interactive skills showcase with 165+ technology icons and progress indicators*
+Main Element: About section adapted for mobile
+Mobile Optimizations:
+- Certificate in vertical card format
+- Stacked information for easier reading
+- Prominent and legible certificate image
+- Text optimized for small screens
+- Maintain credibility with visible certification
 
 ![Mobile Skills](./assets/images/screenshots/mobile/mobile-3--skills.png)
-*Project portfolio with real applications and GitHub integration*
+Main Element: Tech stack in mobile-responsive version
+Mobile Adaptations:
+- Grid converted to vertical layout
+- Icons maintaining legible size
+- Technology stack in a single column
+- Order: HTML5 → CSS3 → JavaScript → React → React Router → SASS → Chart.js → Bootstrap
+- Spacing optimized for touch interaction
+- Vertical scrolling friendly for more technologies
 
 ![Mobile Experience](./assets/images/screenshots/mobile/mobile-4--experience.png)
-*Professional hero section with dynamic typing effects and social integration*
+Main Element: Mobile responsive version of experience timeline
+Mobile Adaptations:
+- Vertical stack layout optimized for mobile reading
+- Maintained timeline visual hierarchy with left-side indicators
+- Condensed but complete information preservation
+- Touch-friendly spacing between timeline entries
+- Typography scaled appropriately for mobile screens
+- Same 3 main experience blocks in vertical progression
 
 ![Mobile Projects](./assets/images/screenshots/mobile/mobile-5--projects.png)
-*Interactive skills showcase with 165+ technology icons and progress indicators*
+Main Element: Mobile-optimized projects gallery
+Mobile Features:
+- Single-column layout for better mobile experience
+- Filter buttons remain accessible at top
+- Project cards stacked vertically
+- Maintained visual impact of project illustrations
+- Touch-optimized card spacing and sizing
+- Technology icons preserved for mobile viewing
+- Full project descriptions readable on small screens
 
 ![Mobile Contact](./assets/images/screenshots/mobile/mobile-6--contact.png)
-*Project portfolio with real applications and GitHub integration*
-
+Main Element: Mobile-responsive contact section
+Mobile Layout:
+- Single-column stacked design
+- Contact information section at top
+- Professional credentials prominently displayed
+- Contact details (email, phone, location) clearly visible
+- CV download button accessible
+- Form fields maintained but optimized for mobile keyboards
+- Touch-friendly button sizing throughout
+- Maintained professional presentation in condensed format
 
 ---
 
@@ -649,15 +742,15 @@ Bilbao, Rekalde, ES
 *Available for remote work and on-site collaboration*
 
 #### 📧 **Professional Contact**
-- **Email**: [Email|Anthony Bonilla](mailto:anthonybonillaparedes7@gmail.com)
-- **LinkedIn**: [linkedin|Anthony Bonilla](https://www.linkedin.com/in/anthony-bonilla-paredes-b31090333/)
-- **GitHub**: [GitHub|Anthony Bonilla](https://github.com/4n7n)
+- **Email**: [AnthonyBonillaParedes7](mailto:anthonybonillaparedes7@gmail.com)
+- **LinkedIn**: [Anthony Bonilla Paredes](https://www.linkedin.com/in/anthony-bonilla-paredes-b31090333/)
+- **GitHub**: [4n7n](https://github.com/4n7n)
 
 #### 📱 **Social Media**
 - **Portfolio**: [PortafolioFullStack](https://portafoliofullstack.netlify.app/)
-- **Instagram**: [Instagram|Desctrid](https://www.instagram.com/desctrid/?next=%2F)
+- **Instagram**: [Desctrid](https://www.instagram.com/desctrid/?next=%2F)
 - **Discord**: abp2002
-- **Twitter/X**: [X|Coffingurid](https://x.com/Coffingurid)
+- **Twitter/X**: [Coffingurid](https://x.com/Coffingurid)
 
 #### 📄 **Professional Documents**
 - **Resume**: [Download CV (Spanish)](./assets/images/documents/cv-es.pdf)
