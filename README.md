@@ -4,10 +4,17 @@
 > Modern, responsive, and accessible web portfolio showcasing professional development expertise
 
 [![Portfolio Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com)
-[![Version](https://img.shields.io/badge/Version-2.0.0-blue)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue)](./CHANGELOG.md)
 [![Lighthouse](https://img.shields.io/badge/Lighthouse-95%2B-brightgreen)](https://developers.google.com/web/tools/lighthouse)
 [![WCAG](https://img.shields.io/badge/WCAG-2.1%20AA-blue)](https://www.w3.org/WAI/WCAG21/quickref/)
 [![Mobile](https://img.shields.io/badge/Mobile-Optimized-green)](https://developers.google.com/web/fundamentals/design-and-ux/responsive)
+
+![Desktop Hero](./assets/images/screenshots/desktop/desktop-1--hero.png)
+![Desktop Hero](./assets/images/screenshots/desktop/desktop-2--about.png)
+![Desktop Hero](./assets/images/screenshots/desktop/desktop-3--skills.png)
+![Desktop Hero](./assets/images/screenshots/desktop/desktop-4--experience.png)
+![Desktop Hero](./assets/images/screenshots/desktop/desktop-5--projects.png)
+![Desktop Hero](./assets/images/screenshots/desktop/desktop-6--contact.png)
 
 ---
 
@@ -616,13 +623,13 @@ git push origin main --tags
 **Full Stack Developer | Modern Web Technologies Specialist**
 
 #### 🌍 **Location**
-Oviedo, Asturias, Spain (ES)  
+Bilbao, Rekalde, ES  
 *Available for remote work and on-site collaboration*
 
 #### 📧 **Professional Contact**
-- **Email**: [anthonybonillaparedes7@gmail.com](mailto:anthonybonillaparedes7@gmail.com)
-- **LinkedIn**: [https://www.linkedin.com/in/anthony-bonilla-paredes-b31090333/](https://www.linkedin.com/in/anthony-bonilla-paredes-b31090333/)
-- **GitHub**: [https://github.com/4n7n](https://github.com/4n7n)
+- **Email**: [Email|Anthony Bonilla](mailto:anthonybonillaparedes7@gmail.com)
+- **LinkedIn**: [linkedin|Anthony Bonilla](https://www.linkedin.com/in/anthony-bonilla-paredes-b31090333/)
+- **GitHub**: [GitHub|Anthony Bonilla](https://github.com/4n7n)
 
 #### 📱 **Social Media**
 - **Portfolio**: [https://portafoliofullstack.netlify.app/](https://portafoliofullstack.netlify.app/)
