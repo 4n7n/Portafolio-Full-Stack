@@ -340,7 +340,7 @@ This major release represents the completion of a full-featured, enterprise-leve
 ## Contact & Collaboration
 
 ### 👤 Anthony Bonilla - Full Stack Developer
-- **Location**: Oviedo, Asturias, ES
+- **Location**: Bilbao, Rekalde, ES
 - **Email**: anthonybonillaparedes7@gmail.com
 - **Phone**: +34 624 42 56 67
 - **Portfolio**: [portafoliofullstack.netlify.app](https://portafoliofullstack.netlify.app/)
